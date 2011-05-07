@@ -14,7 +14,6 @@
 #include "inifiles.hpp"
 #include "AI.cpp"
 #include "uSettings.h"
-// #include "WMPLib_OCX.cpp"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TeeFilters"
