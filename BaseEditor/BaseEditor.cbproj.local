@@ -4,8 +4,11 @@
     <Transaction>2011.05.07 22:31:21.918,=C:\Users\endAurum\Documents\RAD Studio\Projects\Project1.res</Transaction>
     <Transaction>2011.05.07 22:31:21.967,=C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.cpp</Transaction>
     <Transaction>2011.05.07 22:34:17.003,E:\Projects\Roulette\BaseEditor\main.cpp=C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.cpp</Transaction>
-    <Transaction>2011.05.07 22:34:17.003,E:\Projects\Roulette\BaseEditor\main.h=C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.h</Transaction>
     <Transaction>2011.05.07 22:34:17.003,E:\Projects\Roulette\BaseEditor\main.dfm=C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2011.05.07 22:34:17.003,E:\Projects\Roulette\BaseEditor\main.h=C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.h</Transaction>
     <Transaction>2011.05.07 22:34:23.733,E:\Projects\Roulette\BaseEditor\BaseEditor.cbproj=C:\Users\endAurum\Documents\RAD Studio\Projects\Project1.cbproj</Transaction>
+    <Transaction>2011.05.08 00:26:44.927,=E:\Projects\Roulette\BaseEditor\Unit1.cpp</Transaction>
+    <Transaction>2011.05.08 00:29:28.297,E:\Projects\Roulette\BaseEditor\base.cpp=E:\Projects\Roulette\BaseEditor\Unit1.cpp</Transaction>
+    <Transaction>2011.05.08 00:29:28.297,E:\Projects\Roulette\BaseEditor\base.h=E:\Projects\Roulette\BaseEditor\Unit1.h</Transaction>
   </Transactions>
 </BorlandProject>

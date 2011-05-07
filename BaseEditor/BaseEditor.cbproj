@@ -63,6 +63,10 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
+			<CppCompile Include="base.cpp">
+				<DependentOn>base.h</DependentOn>
+				<BuildOrder>3</BuildOrder>
+			</CppCompile>
 			<CppCompile Include="BaseEditor.cpp">
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
