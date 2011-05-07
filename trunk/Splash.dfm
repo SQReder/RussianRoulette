@@ -4,10 +4,10 @@ object SplashForm: TSplashForm
   AlphaBlend = True
   AlphaBlendValue = 0
   BorderIcons = []
-  BorderStyle = bsSizeToolWin
-  ClientHeight = 286
-  ClientWidth = 401
-  Color = clWindow
+  BorderStyle = bsNone
+  ClientHeight = 320
+  ClientWidth = 417
+  Color = clBlack
   DoubleBuffered = True
   ParentFont = True
   GlassFrame.Enabled = True

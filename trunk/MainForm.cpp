@@ -2,6 +2,7 @@
 
 #include <vcl.h>
 #include <stdio.h>
+#include <algorithm>
 #pragma hdrstop
 
 #include <assert.h>
@@ -28,7 +29,7 @@ char MechanizmOn = 0;
 int SpeedOfRotation = _StartRotaingSpeed;
 bool SoundOn = true;
 int TimeOfQuestion; // время, данное на ответ игроку
-char mode = 0; // режим начисления денег (1 - 1-ому игроку, 2 - 2-ому и т.д.; a - всем)
+char MoneyTransferMode = 0; // режим начисления денег (1 - 1-ому игроку, 2 - 2-ому и т.д.; a - всем)
 int ModeOfGame; // режим игры (определяет порядок действий в GameLogic и tmrWaiting)
 int ModeOfFinalGame; // режим финальной игры (опр. порядок действий в tmrWaitingFinal)
 bool TransferAll = 1; // режим начисления денег всем игрокам
@@ -37,13 +38,13 @@ bool CanAnswer = 0; // переменная, определяющая, может ли отвечать игрок
 bool CanChoose = 1; // переменная, определяющая, можно ли выбирать игрока/игровое место или нет
 int QuestionsLeft; // переменная, определяющая количество оставшихся вопросов в раунде
 int colquestions[4]; // массив, определяющий максимальное количество вопросов по раундам
-int max; // переменная, определяющая максимальное значение среди сумм игроков
-int maxis; // переменная, определяющая кол-во максимумов среди игроков
+int MaximalSumm; // переменная, определяющая максимальное значение среди сумм игроков
+int MaximalSummCount; // переменная, определяющая кол-во максимумов среди игроков
 int indexes[5], variants[5]; // массивы, помогающие случайно распредлить варианты ответов
 int MechState = 1;
 bool spin_round_mode; // определяет анимацию (1 - по часовой, 0 - против часовой)
 int TimeToDecide; // время, необходимое боту для принятия решения
-int Leader; // порядковый индекс игрока, прошедшего в финал (необходимо для принятия решений)
+int LeaderPlayerAtFinal; // порядковый индекс игрока, прошедшего в финал (необходимо для принятия решений)
 TBot* bot[5];
 void ReadCfgFile();
 void SetQuestionsMaximum(int FirstRound, int SecondRound, int ThirdRound, int FouthRound);
@@ -224,7 +225,7 @@ void __fastcall TF::Button1Click(TObject* Sender) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::FormCreate(TObject* Sender) {
-	// InitializeSettings();
+	// InitializeSettings(); Зачем оно тут? О_о
 }
 
 // ---------------------------------------------------------------------------
@@ -488,7 +489,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 				lblTimer->Caption = IntToStr(TimeOfQuestion);
 				Wait = 0;
 				if (TransferAll == 1) {
-					F->mode = 'a';
+					F->MoneyTransferMode = 'a';
 					F->ModeOfGame = 1;
 					RoundOfGame = 1;
 				}
@@ -512,7 +513,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 			if (TransferAll == 1) {
 				F->Reward = 1000;
 				tmrMoney->Enabled = True;
-				mode = 'a';
+				MoneyTransferMode = 'a';
 			}
 			else
 				CanChoose = 1;
@@ -549,7 +550,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 				spin_round_mode = 1;
 				PlayMusic("rr_choosen.wav");
 			}
-			mode = 'c';
+			MoneyTransferMode = 'c';
 			choosenplayer();
 			if (F->Settings->PlayerType[chooseplayer - 1] != bbHuman) {
 				switch (F->Settings->PlayerType[chooseplayer - 1]) {
@@ -701,7 +702,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 			imgChAnsRight->Visible = true;
 			imgChoosenAnswer->Width = 20 + lblAnswers[RandomPlace]->Width - 5;
 			Choosen_Answer_Change_Position();
-			mode = chooseplayer;
+			MoneyTransferMode = chooseplayer;
 			tmrMoney->Enabled = True;
 			PlaySound("rr_money.wav");
 		}
@@ -820,19 +821,19 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 	case 8: // определение лидера в случае окончания вопросов
 		{
 			if (Wait == 8) {
-				max = 0;
-				maxis = 0;
+				MaximalSumm = 0;
+				MaximalSummCount = 0;
 				for (int i = 0; i < 5; i++) {
-					if (money[i] > max)
-						max = money[i];
+					if (money[i] > MaximalSumm)
+						MaximalSumm = money[i];
 				}
 				for (int i = 0; i < 5; i++) {
-					if (money[i] == max) {
-						maxis++ ;
+					if (money[i] == MaximalSumm) {
+						MaximalSummCount++ ;
 						CantFall = i;
 					}
 				}
-				if (maxis > 1 || RoundOfGame == 4) {
+				if (MaximalSummCount > 1 || RoundOfGame == 4) {
 					CantFall = -1;
 				}
 				tmrWaiting->Enabled = False;
@@ -848,7 +849,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 				OpenRndHatches();
 				PlayMusic("rr_fall.wav");
 				ingame[chooseplayer - 1] = 0;
-				mode = 'a';
+				MoneyTransferMode = 'a';
 				for (int i = 0; i < 5; i++)
 					if (ingame[i])
 						NumberOfPlayers++ ;
@@ -938,8 +939,8 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 			}
 		} break;
 	case 12: {
-			max = 0;
-			maxis = 0;
+			MaximalSumm = 0;
+			MaximalSummCount = 0;
 			switch (RoundOfGame) {
 			case 2:
 				QuestionsLeft = colquestions[1];
@@ -953,19 +954,19 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 			}
 			if (Wait == 5) {
 				for (int i = 0; i < 5; i++) {
-					if (money[i] > max) {
-						max = money[i];
+					if (money[i] > MaximalSumm) {
+						MaximalSumm = money[i];
 						CurrentHatch = i + 1;
 						chooseplayer = 255;
 					}
 				}
 				for (int i = 0; i < 5; i++) {
-					if (money[i] == max) {
-						maxis++ ;
+					if (money[i] == MaximalSumm) {
+						MaximalSummCount++ ;
 						CurrentHatch = i + 1;
 					}
 				}
-				if (maxis > 1) {
+				if (MaximalSummCount > 1) {
 					CurrentHatch = 0;
 					TempRoundOfGame = RoundOfGame;
 					RoundOfGame = -1;
@@ -997,7 +998,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::tmrMoneyTimer(TObject* Sender) {
-	if (mode == 'a') {
+	if (MoneyTransferMode == 'a') {
 		int control = 0;
 		if (ModeOfGame != 9) // стартовое начисление по 1000 игрокам
 		{
@@ -1284,7 +1285,7 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
 		imgMechanizmClick(imgMechanizm);
 	// выбор игрового места в финале
 	if (FinalRoundOfGame > 0 && ModeOfGame == 0 && (((Key >= '1') && (Key <= '6')) || ((Key >= VK_NUMPAD1) && (Key <=
-					VK_NUMPAD6))) && F->Settings->PlayerType[Leader] == bbHuman) {
+					VK_NUMPAD6))) && F->Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
 		switch (Key) {
 		case '1':
 		case VK_NUMPAD1:
@@ -1420,7 +1421,7 @@ void __fastcall TF::tmrTimeTimer(TObject* Sender) {
 	}
 	else {
 		if (TimeOfQuestion == (10 - TimeToDecide)) {
-			if (bot[Leader]->Get_Answer()) {
+			if (bot[LeaderPlayerAtFinal]->Get_Answer()) {
 				String q = base[NumberOfQuestion].Answers[0];
 				edFinalAnswer->Text = q;
 				ModeOfGame = 3;
@@ -1594,7 +1595,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
 				CanChoose = 0;
 				for (int i = 0; i < 5; i++) {
 					if (ingame[i]) {
-						Leader = i;
+						LeaderPlayerAtFinal = i;
 					}
 				}
 				PlaySound("rr_final.wav");
@@ -1656,12 +1657,12 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
 				imgQuestion->Visible = False;
 				LabelQuestion->Visible = False;
 				lblRightAnswer->Visible = False;
-				if (F->Settings->PlayerType[Leader] == bbHuman) {
+				if (F->Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
 					btnMechStart->Enabled = True;
 					imgMechanizm->Enabled = True;
 				}
 				else {
-					switch (F->Settings->PlayerType[Leader]) {
+					switch (F->Settings->PlayerType[LeaderPlayerAtFinal]) {
 					case bbFoooool:
 						TimeToDecide = 5 + random(41);
 						break;
@@ -1721,7 +1722,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
 				edFinalAnswer->Top = imgQuestion->Top + imgQuestion->Height - 30 - edFinalAnswer->Height;
 				edFinalAnswer->Left = (int)(imgQuestion->Left + (imgQuestion->Width - edFinalAnswer->Width) / 2.);
 				edFinalAnswer->Visible = True;
-				if (F->Settings->PlayerType[Leader] == bbHuman)
+				if (F->Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman)
 					edFinalAnswer->Enabled = true;
 				else
 					edFinalAnswer->Enabled = false;
@@ -1791,7 +1792,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
 		} break;
 	case 4: {
 			if (Wait == 8) {
-				mode = 0;
+				MoneyTransferMode = 0;
 				tmrMoney->Enabled = True;
 			}
 			if (Wait == 18) {
@@ -2338,6 +2339,9 @@ void __fastcall TF::FormResize(TObject* Sender) {
 	if (ingame[4])
 		imgPlayer5->Visible = True;
 
+	imgSplash->Center = true;
+	imgSplash->Width = std::max(F->Width, F->Height);
+	imgSplash->Height = imgSplash->Width;
 }
 
 // ---------------------------------------------------------------------------

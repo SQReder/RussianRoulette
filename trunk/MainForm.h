@@ -52,6 +52,8 @@ public:
 
 		Fullscreen = True;
 
+		FormsTop = 0;
+		FormsLeft = 0;
 		FormsWidth = 1024;
 		FormsHeight = 768;
 
@@ -68,6 +70,7 @@ public:
 		LastBase = "main.dat";
 
 		BaseNames = new TStringList;
+		HostMode = false;
 	};
 
 };
@@ -195,7 +198,7 @@ public: // User declarations
 	int opened_now[6]; // указывает какие люки будут открыты после остановки механизма
 	int CurrentHatch;
 	char TempRoundOfGame;
-	char mode;
+	char MoneyTransferMode;
 	int ModeOfGame;
 	int chooseplayer;
 	int RndHatch;
