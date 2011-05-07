@@ -75,6 +75,7 @@
 			<CppCompile Include="AI.cpp">
 				<BuildOrder>11</BuildOrder>
 			</CppCompile>
+			<None Include="Debug\settings.cfg"/>
 			<CppCompile Include="GameLogic.cpp">
 				<DependentOn>GameLogic.h</DependentOn>
 				<BuildOrder>5</BuildOrder>
@@ -96,6 +97,7 @@
 			<None Include="pch1.h">
 				<BuildOrder>12</BuildOrder>
 			</None>
+			<None Include="Release\settings.cfg"/>
 			<CppCompile Include="russian roulette.cpp">
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
