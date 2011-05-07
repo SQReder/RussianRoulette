@@ -132,7 +132,7 @@ BOOL OSIsWin7() {
     ZeroMemory(& osvi, sizeof(OSVERSIONINFOEX));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
-    if (!(bOsVersionInfoEx = GetVersionEx((OSVERSIONINFO *) &osvi))) {
+	if (!GetVersionEx((OSVERSIONINFO *) &osvi)) {
         // Если OSVERSIONINFOEX не работает, то используем OSVERSIONINFO.
         osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
         if (!GetVersionEx((OSVERSIONINFO*)& osvi))
@@ -140,10 +140,10 @@ BOOL OSIsWin7() {
     }
 
     // ShowMessage(IntToStr((int)osvi.dwMajorVersion));
-    if (osvi.dwMajorVersion >= 6)
-        return True;
+	if (osvi.dwMajorVersion >= 6)
+        return true;
 
-    return 0;
+    return false;
 }
 // ---------------------------------------------------------------------------
 void __fastcall TSplashForm::FormCreate(TObject* Sender) {
