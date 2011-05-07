@@ -79,6 +79,10 @@
 				<DependentOn>main.h</DependentOn>
 				<BuildOrder>2</BuildOrder>
 			</CppCompile>
+			<CppCompile Include="question.cpp">
+				<DependentOn>question.h</DependentOn>
+				<BuildOrder>4</BuildOrder>
+			</CppCompile>
 			<FormResources Include="main.dfm"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
