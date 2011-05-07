@@ -288,10 +288,9 @@ object AboutForm: TAboutForm
   object Label1: TLabel
     Left = 8
     Top = 57
-    Width = 139
+    Width = 211
     Height = 16
-    Alignment = taRightJustify
-    Caption = #1042#1077#1088#1089#1080#1103' '#1080#1075#1088#1099':  v1.2'
+    Caption = #1042#1077#1088#1089#1080#1103' '#1080#1075#1088#1099':  v1.2 pre alpha'
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
     Font.Height = -13
@@ -340,7 +339,6 @@ object AboutForm: TAboutForm
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    OnLinkClick = LinkLabel1LinkClick
   end
   object tmrScroll: TTimer
     Enabled = False

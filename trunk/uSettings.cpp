@@ -14,22 +14,18 @@
 #pragma resource "*.dfm"
 TSettingsForm* SettingsForm;
 void ListFiles(String path, TStrings* List);
-std::vector<std::pair<UnicodeString, UnicodeString> >BaseFiles;
+std::vector <std::pair <UnicodeString, UnicodeString> > BaseFiles;
 
 // ---------------------------------------------------------------------------
-__fastcall TSettingsForm::TSettingsForm(TComponent* Owner) : TForm(Owner) {
-}
+__fastcall TSettingsForm::TSettingsForm(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSettingsForm::FormShow(TObject* Sender) {
-	F->InitializeSettings();
-}
+void __fastcall TSettingsForm::FormShow(TObject* Sender) { F->InitializeSettings(); }
 // ---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
 	// <- Загрузка соответствий файлов баз данных их именам
-	TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) +
-		"settings.cfg");
+	TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
 
 	int i = 0;
 	BaseFiles.clear();
@@ -42,7 +38,7 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
 		}
 		else
 			break;
-		i++;
+		i++ ;
 	}
 
 	ini->Free();
@@ -105,14 +101,12 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
 void __fastcall TSettingsForm::btnCancelClick(TObject* Sender) {
 	SettingsForm->Hide();
 	SettingsForm->Close();
-	SettingsForm->FileListBox1->Directory =
-		ExtractFileDir(Application->ExeName);
+	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName);
 }
 
 // ---------------------------------------------------------------------------
 void SaveSettings() {
-	TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) +
-		"settings.cfg");
+	TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
 	ini->WriteBool("Global", "FullScreen", F->Settings->Fullscreen);
 	ini->WriteInteger("Global", "Width", F->Settings->FormsWidth);
 	ini->WriteInteger("Global", "Height", F->Settings->FormsHeight);
@@ -124,18 +118,15 @@ void SaveSettings() {
 	ini->WriteString("Global", "LastBase", F->Settings->LastBase);
 
 	for (int i = 1; i <= 5; i++) {
-		ini->WriteString("Players", "Player" + IntToStr(i),
-			F->Settings->PlayerNames[i - 1]);
-		ini->WriteInteger("Players", "PlayerType" + IntToStr(i),
-			(int) F->Settings->PlayerType[i - 1]);
+		ini->WriteString("Players", "Player" + IntToStr(i), F->Settings->PlayerNames[i - 1]);
+		ini->WriteInteger("Players", "PlayerType" + IntToStr(i), (int) F->Settings->PlayerType[i - 1]);
 	}
 
 	// SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName) + "\\base\\";
 	// SettingsForm->FileListBox1->Update();
 	for (int i = 0; i < SettingsForm->cmbListOfBases->Items->Count; i++) {
 		ini->WriteString("Bases", "basename" + IntToStr(i), BaseFiles[i].first);
-		ini->WriteString("Bases", "base" + IntToStr(i),
-			ExtractFileName(BaseFiles[i].second));
+		ini->WriteString("Bases", "base" + IntToStr(i), ExtractFileName(BaseFiles[i].second));
 	}
 	ini->Free();
 
@@ -174,23 +165,16 @@ void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::FormClose(TObject* Sender, TCloseAction& Action)
-{
-	SettingsForm->FileListBox1->Directory =
-		ExtractFileDir(Application->ExeName);
-}
+void __fastcall TSettingsForm::FormClose(TObject* Sender, TCloseAction& Action) {
+	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName); }
 // ---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::tbSoundVolumeChange(TObject* Sender) {
-	lblSoundVolume->Caption = "Громкость звука: " +
-		IntToStr(tbSoundVolume->Position) + "%";
-}
+	lblSoundVolume->Caption = "Громкость звука: " + IntToStr(tbSoundVolume->Position) + "%"; }
 // ---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::tbMusicVolumeChange(TObject* Sender) {
-	lblMusicVolume->Caption = "Громкость музыки: " +
-		IntToStr(tbMusicVolume->Position) + "%";
-}
+	lblMusicVolume->Caption = "Громкость музыки: " + IntToStr(tbMusicVolume->Position) + "%"; }
 // ---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::cbSoundOnOffClick(TObject* Sender) {
@@ -208,12 +192,10 @@ void __fastcall TSettingsForm::cbMusicOnOffClick(TObject* Sender) {
 void __fastcall TSettingsForm::addBaseClick(TObject* Sender) {
 	if (OpenDialog1->Execute()) {
 		WCHAR* from = (OpenDialog1->FileName).w_str();
-		WCHAR* to = (ExtractFilePath(Application->ExeName) + "Base\\" +
-			ExtractFileName(OpenDialog1->FileName)).w_str();
+		WCHAR* to = (ExtractFilePath(Application->ExeName) + "Base\\" + ExtractFileName(OpenDialog1->FileName)).w_str();
 		if (CopyFileW(from, to, 0)) {
-			String name = InputBox("Русская рулетка :: Добавить базу",
-				"Введите имя новой базы",
-			ExtractFileName(OpenDialog1->FileName));
+			String name = InputBox("Русская рулетка :: Добавить базу", "Введите имя новой базы",
+				ExtractFileName(OpenDialog1->FileName));
 			BaseFiles.push_back(std::make_pair(name, OpenDialog1->FileName));
 
 			cmbListOfBases->Clear();

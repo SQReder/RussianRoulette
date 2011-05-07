@@ -13,56 +13,62 @@ const float _biFoooool = 0.10;
 // -----------------------------------------------------------------------------
 
 class TBot { // класс ботов
-protected:
-    float bBrain;
-    float bIdentity;
 
-    void SetBotIdentity(TBotType BotType);
-    void SetBotBrain(TBotType BotType);
+protected:
+	float bBrain;
+	float bIdentity;
+
+	void SetBotIdentity(TBotType BotType);
+	void SetBotBrain(TBotType BotType);
 
 public:
-    bool Get_Answer();
-    int ChooseAnyPlayer(bool* players_state, int _ch);
+	bool Get_Answer();
+	int ChooseAnyPlayer(bool* players_state, int _ch);
 
-    TBot(TBotType bottype) {
-        switch (bottype) {
-        case bbVeryHard: bBrain = _bbVeryHard;
-            bIdentity = _biVeryHard;
-            break;
-        case bbHard: bBrain = _bbHard;
-            bIdentity = _biHard;
-            break;
-        case bbNormal: bBrain = _bbNormal;
-            bIdentity = _biNormal;
-            break;
-        case bbFooly: bBrain = _bbFooly;
-            bIdentity = _biFooly;
-            break;
-        case bbFoooool: bBrain = _bbFoooool;
-            bIdentity = _biFoooool;
-            break;
-        }
-    } ;
-} ;
+	TBot(TBotType bottype) {
+		switch (bottype) {
+		case bbVeryHard:
+			bBrain = _bbVeryHard;
+			bIdentity = _biVeryHard;
+			break;
+		case bbHard:
+			bBrain = _bbHard;
+			bIdentity = _biHard;
+			break;
+		case bbNormal:
+			bBrain = _bbNormal;
+			bIdentity = _biNormal;
+			break;
+		case bbFooly:
+			bBrain = _bbFooly;
+			bIdentity = _biFooly;
+			break;
+		case bbFoooool:
+			bBrain = _bbFoooool;
+			bIdentity = _biFoooool;
+			break;
+		}
+	};
+};
 #pragma hdrstp
 // -----------------------------------------------------------------------------
 
 bool TBot::Get_Answer() {
-    // если человек не знает ответ на вопрос, ...
-    if ((random(100) / 100.) <= bBrain)
-        return (1);
-    // ...то он пытается добиться ответа интуицией.
-    if ((random(100) / 100.) <= bIdentity)
-        return (1);
-    return (0);
+	// если человек не знает ответ на вопрос, ...
+	if ((random(100) / 100.) <= bBrain)
+		return (1);
+	// ...то он пытается добиться ответа интуицией.
+	if ((random(100) / 100.) <= bIdentity)
+		return (1);
+	return (0);
 }
 // -----------------------------------------------------------------------------
 
 int TBot::ChooseAnyPlayer(bool players_state[6], int _ch) {
-    int s = random(5);
-    while (s == _ch - 1 || players_state[s] == 0) {
-        s = random(5);
-    }
-    return s + 1;
+	int s = random(5);
+	while (s == _ch - 1 || players_state[s] == 0) {
+		s = random(5);
+	}
+	return s + 1;
 }
 // -----------------------------------------------------------------------------

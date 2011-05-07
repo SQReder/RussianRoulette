@@ -14,73 +14,74 @@
 TMenuForm* MenuForm;
 
 // ---------------------------------------------------------------------------
-__fastcall TMenuForm::TMenuForm(TComponent* Owner): TForm(Owner) {}
+__fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::FormCreate(TObject* Sender) {
-    // MenuVisible = True;
-    F->InitializeSettings();
+	// MenuVisible = True;
+	F->InitializeSettings();
 
-    F->Settings->FormsTop = Top;
-    F->Settings->FormsLeft = Left;
+	F->Settings->FormsTop = Top;
+	F->Settings->FormsLeft = Left;
 
-    MenuForm->Constraints->MinWidth = F->Settings->MinWidth;
-    MenuForm->Constraints->MinHeight = F->Settings->MinHeight;
+	MenuForm->Constraints->MinWidth = F->Settings->MinWidth;
+	MenuForm->Constraints->MinHeight = F->Settings->MinHeight;
 
-    Color = clBlack;
+	Color = clBlack;
 
-    btnNewGame->Caption = "Новая Игра";
-    btnShowSettings->Caption = "Настройки";
-    btnGameRules->Caption = "Правила игры";
-    btnBblNTuHaxep->Caption = "Выйти";
-    btnAbout->Caption = "About";
+	btnNewGame->Caption = "Новая Игра";
+	btnShowSettings->Caption = "Настройки";
+	btnGameRules->Caption = "Правила игры";
+	btnBblNTuHaxep->Caption = "Выйти";
+	btnAbout->Caption = "About";
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::FormClose(TObject* Sender, TCloseAction& Action) {exit(0);}
+void __fastcall TMenuForm::FormClose(TObject* Sender, TCloseAction& Action) { exit(0); }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::_btnBblNTuHaxepClick(TObject* Sender) {exit(0);}
+void __fastcall TMenuForm::_btnBblNTuHaxepClick(TObject* Sender) { exit(0); }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
-    F->LoadQuestionFromBase(F->Settings->LastBase);
+	F->LoadQuestionFromBase(F->Settings->LastBase);
 
-    if (!F->Settings->Fullscreen) {
-        F->Settings->FormsWidth = Width;
-        F->Settings->FormsHeight = Height;
-        F->Settings->FormsTop = Top;
-        F->Settings->FormsLeft = Left;
-    }
-    SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName);
-    F->Show();
-    MenuForm->Hide();
+	if (!F->Settings->Fullscreen) {
+		F->Settings->FormsWidth = Width;
+		F->Settings->FormsHeight = Height;
+		F->Settings->FormsTop = Top;
+		F->Settings->FormsLeft = Left;
+	}
+	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName);
+	F->Show();
+	MenuForm->Hide();
 }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnShowSettingsClick(TObject* Sender) {
-    SettingsForm->ShowModal();
-    SettingsForm->FileListBox1->Directory = "\Base";
-    if (F->Settings->Fullscreen) {
-        BorderStyle = bsNone;
-        Width = Screen->Width;
-        Height = Screen->Height;
-        Top = 0;
-        Left = 0;
-    } else {
-        BorderStyle = bsSizeable;
-        Width = F->Settings->FormsWidth;
-        Height = F->Settings->FormsHeight;
-        // Left = F->Sett
-    }
+	SettingsForm->ShowModal();
+	SettingsForm->FileListBox1->Directory = "\Base";
+	if (F->Settings->Fullscreen) {
+		BorderStyle = bsNone;
+		Width = Screen->Width;
+		Height = Screen->Height;
+		Top = 0;
+		Left = 0;
+	}
+	else {
+		BorderStyle = bsSizeable;
+		Width = F->Settings->FormsWidth;
+		Height = F->Settings->FormsHeight;
+		// Left = F->Sett
+	}
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::btnAboutClick(TObject* Sender) {AboutForm->Show();}
+void __fastcall TMenuForm::btnAboutClick(TObject* Sender) { AboutForm->ShowModal(); }
 // ---------------------------------------------------------------------------
 
 void __fastcall TMenuForm::FormResize(TObject* Sender) {
-    const spacer = 0;
+	const spacer = 0;
 
 	if (F->Settings->Fullscreen) {
 		BorderStyle = bsNone;
@@ -88,7 +89,8 @@ void __fastcall TMenuForm::FormResize(TObject* Sender) {
 		Height = Screen->Height;
 		Top = 0;
 		Left = 0;
-	} else {
+	}
+	else {
 		BorderStyle = bsSizeable;
 		Width = F->Settings->FormsWidth;
 		Height = F->Settings->FormsHeight;
@@ -117,30 +119,31 @@ void __fastcall TMenuForm::FormResize(TObject* Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TMenuForm::FormShow(TObject* Sender) {
-    MenuForm->Resize();
-    // SettingsForm->FileListBox1->Directory = "\Base";
-    if (F->Settings->Fullscreen) {
-        BorderStyle = bsNone;
-        Width = Screen->Width;
-        Height = Screen->Height;
-        Top = 0;
-        Left = 0;
-    } else {
-        BorderStyle = bsSizeable;
-        Width = F->Settings->FormsWidth;
-        Height = F->Settings->FormsHeight;
-        Left = F->Settings->FormsLeft;
-        Top = F->Settings->FormsTop;
-    }
+	MenuForm->Resize();
+	// SettingsForm->FileListBox1->Directory = "\Base";
+	if (F->Settings->Fullscreen) {
+		BorderStyle = bsNone;
+		Width = Screen->Width;
+		Height = Screen->Height;
+		Top = 0;
+		Left = 0;
+	}
+	else {
+		BorderStyle = bsSizeable;
+		Width = F->Settings->FormsWidth;
+		Height = F->Settings->FormsHeight;
+		Left = F->Settings->FormsLeft;
+		Top = F->Settings->FormsTop;
+	}
 }
 // ---------------------------------------------------------------------------
 
 void __fastcall TMenuForm::FormHide(TObject* Sender) {
-    if (!F->Settings->Fullscreen) {
-        F->Settings->FormsWidth = Width;
-        F->Settings->FormsHeight = Height;
-        F->Settings->FormsTop = Top;
-        F->Settings->FormsLeft = Left;
-    }
+	if (!F->Settings->Fullscreen) {
+		F->Settings->FormsWidth = Width;
+		F->Settings->FormsHeight = Height;
+		F->Settings->FormsTop = Top;
+		F->Settings->FormsLeft = Left;
+	}
 }
 // ---------------------------------------------------------------------------
