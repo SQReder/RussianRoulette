@@ -291,7 +291,7 @@ object AboutForm: TAboutForm
     Width = 139
     Height = 16
     Alignment = taRightJustify
-    Caption = #1042#1077#1088#1089#1080#1103' '#1080#1075#1088#1099':  v1.0'
+    Caption = #1042#1077#1088#1089#1080#1103' '#1080#1075#1088#1099':  v1.2'
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
     Font.Height = -13
