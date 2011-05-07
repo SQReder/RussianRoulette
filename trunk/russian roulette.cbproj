@@ -103,6 +103,7 @@
 				<BuildOrder>1</BuildOrder>
 			</ResFiles>
 			<None Include="russian roulette.todo"/>
+			<None Include="settings.cfg"/>
 			<CppCompile Include="Splash.cpp">
 				<Form>SplashForm</Form>
 				<DependentOn>Splash.h</DependentOn>
