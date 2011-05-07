@@ -20,7 +20,7 @@
 #pragma link "TeeFilters"
 #pragma link "SHDocVw_OCX"
 #pragma resource "*.dfm"
-#define _StartRotaingSpeed 100
+#define _StartRotaingSpeed 50
 extern int key;
 
 TF* F;
@@ -302,7 +302,7 @@ void __fastcall TF::btnMechStartClick(TObject* Sender) {
 	else
 		SpeedOfRotation = _StartRotaingSpeed;
 	if (RoundOfGame == -1 || FinalRoundOfGame > 0) {
-		SpeedOfRotation = 45;
+		SpeedOfRotation = 35;
 	}
 	tmrRotator->Interval = SpeedOfRotation;
 	MechanizmOn = -1;
@@ -489,7 +489,6 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 				lblTimer->Caption = IntToStr(TimeOfQuestion);
 				Wait = 0;
 				if (TransferAll == 1) {
-					F->MoneyTransferMode = 'a';
 					F->ModeOfGame = 1;
 					RoundOfGame = 1;
 				}
@@ -2171,7 +2170,7 @@ void __fastcall TF::FormShow(TObject* Sender) {
 		lblPlayer[i]->Caption = Settings->PlayerNames[i];
 	}
 
-	SetQuestionsMaximum(1, 1, 1, 1);
+	SetQuestionsMaximum(8, 7, 7, 4);
 
 	Initialize();
 
