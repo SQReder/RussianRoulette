@@ -1,5 +1,6 @@
 #include "question.h"
 #pragma package(smart_init)
+
 // ------------------------------------------------------------------
 sQuestion::sQuestion() {
 	question = "";
@@ -8,11 +9,7 @@ sQuestion::sQuestion() {
 	_true_answer = -1;
 }
 
-sQuestion::~sQuestion() {
-	question = "";
-	question_comment = "";
-	delete answers;
-}
+sQuestion::~sQuestion() { delete answers; }
 // ------------------------------------------------------------------
 
 void sQuestion::SetTrue(int new_true) {

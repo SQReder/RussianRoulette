@@ -27,7 +27,7 @@
 			<Multithreaded>true</Multithreaded>
 			<LinkPackageImports>rtl.bpi;vcl.bpi</LinkPackageImports>
 			<_TCHARMapping>wchar_t</_TCHARMapping>
-			<AllPackageLibs>rtl.lib;vcl.lib</AllPackageLibs>
+			<AllPackageLibs>rtl.lib;vcl.lib;vclx.lib</AllPackageLibs>
 			<ProjectType>CppVCLApplication</ProjectType>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE</DCC_UnitAlias>
@@ -75,7 +75,7 @@
 				<BuildOrder>1</BuildOrder>
 			</ResFiles>
 			<CppCompile Include="main.cpp">
-				<Form>Form1</Form>
+				<Form>MainForm</Form>
 				<DependentOn>main.h</DependentOn>
 				<BuildOrder>2</BuildOrder>
 			</CppCompile>

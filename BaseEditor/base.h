@@ -1,7 +1,6 @@
 #ifndef baseH
 #define baseH
-#include <map>
-#include <vector>
+#include <list>
 #include "question.h"
 
 // ---------------------------------------------------------------------------
@@ -11,10 +10,11 @@ public:
 	~sBase();
 
 	void add(sQuestion* question);
+	void drop(sQuestion* question);
 
 private:
-	std::vector <sQuestion> questions;
-	std::vector <bool> question_is_used;
+	std::list <sQuestion*> questions;
+	std::list <bool> question_is_used;
 };
 // ---------------------------------------------------------------------------
 #endif
