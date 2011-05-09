@@ -13,8 +13,10 @@ public:
 	void drop(sQuestion* question);
 	void replace(sQuestion* question);
 
-	sQuestion* GetQuestionPointer(unsigned index);
+	sQuestion* GetQuestionPointer(unsigned index) const;
 	const TStrings* GetQuestionsList() const ;
+
+	const sQuestion* GetRandomQuestion() const ;
 
 private:
 	std::list <sQuestion *> questions;

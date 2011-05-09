@@ -12,7 +12,7 @@
 #include <ExtCtrls.hpp>
 #include <ComCtrls.hpp>
 //---------------------------------------------------------------------------
-class TMainForm : public TForm
+class Tf : public TForm
 {
 __published:	// IDE-managed Components
 	TEdit *edAnswer;
@@ -29,6 +29,7 @@ __published:	// IDE-managed Components
 	TEdit *edSearch;
 	TPanel *pAddAnswer;
 	TStatusBar *StatusBar;
+	TMemo *mComment;
 	void __fastcall btnAddAnswerClick(TObject *Sender);
 	void __fastcall edAnswerKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall lstAnswersDblClick(TObject *Sender);
@@ -38,11 +39,12 @@ __published:	// IDE-managed Components
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall SpinRoundUpClick(TObject *Sender);
 	void __fastcall btnAddQuestionToBaseClick(TObject *Sender);
+	void __fastcall lstQuestionsDblClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
-	__fastcall TMainForm(TComponent* Owner);
+	__fastcall Tf(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TMainForm *MainForm;
+extern PACKAGE Tf *f;
 //---------------------------------------------------------------------------
 #endif

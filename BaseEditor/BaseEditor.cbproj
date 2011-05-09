@@ -25,9 +25,9 @@
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<PackageImports>rtl.bpi;vclimg.bpi;vcl.bpi;vclx.bpi;vcldb.bpi;dbrtl.bpi;xmlrtl.bpi;vclactnband.bpi;dsnap.bpi;IndyCore.bpi;IndySystem.bpi;vclie.bpi;webdsnap.bpi;inet.bpi;IndyProtocols.bpi;inetdbbde.bpi;inetdbxpress.bpi;dbexpress.bpi;DbxCommonDriver.bpi;dbxcds.bpi;bcbsmp.bpi;VclSmp.bpi;svnui.bpi;svn.bpi</PackageImports>
 			<Multithreaded>true</Multithreaded>
-			<LinkPackageImports>rtl.bpi;vcl.bpi</LinkPackageImports>
+			<LinkPackageImports>rtl.bpi;vcl.bpi;vclx.bpi;VclSmp.bpi</LinkPackageImports>
 			<_TCHARMapping>wchar_t</_TCHARMapping>
-			<AllPackageLibs>rtl.lib;vcl.lib;vclx.lib</AllPackageLibs>
+			<AllPackageLibs>rtl.lib;vcl.lib;vclx.lib;VclSmp.lib</AllPackageLibs>
 			<ProjectType>CppVCLApplication</ProjectType>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE</DCC_UnitAlias>
@@ -75,7 +75,7 @@
 				<BuildOrder>1</BuildOrder>
 			</ResFiles>
 			<CppCompile Include="main.cpp">
-				<Form>MainForm</Form>
+				<Form>f</Form>
 				<DependentOn>main.h</DependentOn>
 				<BuildOrder>2</BuildOrder>
 			</CppCompile>

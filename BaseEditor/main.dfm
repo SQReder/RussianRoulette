@@ -1,4 +1,4 @@
-object MainForm: TMainForm
+object f: Tf
   Left = 0
   Top = 0
   Caption = 'Roulette Base Editor'
@@ -39,6 +39,7 @@ object MainForm: TMainForm
       ParentFont = False
       TabOrder = 0
       OnClick = btnAddQuestionToBaseClick
+      ExplicitTop = 6
     end
     object edRound: TEdit
       AlignWithMargins = True
@@ -119,16 +120,16 @@ object MainForm: TMainForm
     Left = 0
     Top = 57
     Width = 289
-    Height = 328
+    Height = 289
     Align = alLeft
-    Caption = 'pAnswers'
     TabOrder = 1
+    ExplicitHeight = 328
     object lstAnswers: TCheckListBox
       AlignWithMargins = True
       Left = 4
       Top = 36
       Width = 281
-      Height = 288
+      Height = 249
       Margins.Top = 0
       OnClickCheck = lstAnswersClickCheck
       Align = alClient
@@ -138,7 +139,9 @@ object MainForm: TMainForm
         'Pellentesque habitant morbi turpis duis')
       TabOrder = 0
       OnDblClick = lstAnswersDblClick
-      ExplicitHeight = 221
+      ExplicitLeft = -12
+      ExplicitTop = 60
+      ExplicitHeight = 255
     end
     object pAddAnswer: TPanel
       AlignWithMargins = True
@@ -150,7 +153,6 @@ object MainForm: TMainForm
       Margins.Top = 0
       Margins.Right = 0
       Align = alTop
-      Caption = 'pAddAnswer'
       TabOrder = 1
       object edAnswer: TEdit
         AlignWithMargins = True
@@ -184,20 +186,22 @@ object MainForm: TMainForm
     Left = 289
     Top = 57
     Width = 325
-    Height = 328
+    Height = 289
     Align = alClient
-    Caption = 'pQuestions'
     TabOrder = 2
+    ExplicitHeight = 328
     object lstQuestions: TListBox
       AlignWithMargins = True
       Left = 4
       Top = 31
       Width = 317
-      Height = 293
+      Height = 254
       Align = alClient
       ItemHeight = 13
       TabOrder = 0
+      OnDblClick = lstQuestionsDblClick
       ExplicitLeft = 6
+      ExplicitHeight = 293
     end
     object edSearch: TEdit
       AlignWithMargins = True
@@ -222,5 +226,17 @@ object MainForm: TMainForm
         Width = 50
       end>
     ParentBiDiMode = False
+  end
+  object mComment: TMemo
+    AlignWithMargins = True
+    Left = 3
+    Top = 349
+    Width = 608
+    Height = 33
+    Align = alBottom
+    TabOrder = 4
+    ExplicitLeft = 0
+    ExplicitTop = 352
+    ExplicitWidth = 614
   end
 end

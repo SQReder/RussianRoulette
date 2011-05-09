@@ -4,9 +4,10 @@
 // ------------------------------------------------------------------
 sQuestion::sQuestion() {
 	question = "";
-	question_comment = "";
+	comment = "";
 	answers = new TStringList();
 	_true_answer = -1;
+  _round = 0;
 }
 
 sQuestion::~sQuestion() { delete answers; }
@@ -24,5 +25,10 @@ void sQuestion::SetRound(unsigned new_value) {
 // ------------------------------------------------------------------
 
 void sQuestion::AssignAnswersList(const TStrings* answers_list) {
-    answers->Assign(answers_list);
+	answers->Assign(answers_list);
+}
+
+// ------------------------------------------------------------------
+const TStrings* sQuestion::GetAnswersList() const {
+	return answers;
 }

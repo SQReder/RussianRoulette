@@ -26,10 +26,10 @@ void sBase::replace(sQuestion* question) {
 }
 // ---------------------------------------------------------------------------
 
-sQuestion* sBase::GetQuestionPointer(unsigned index) {
+sQuestion* sBase::GetQuestionPointer(unsigned index) const{
 	if (index < questions.size()) {
 		// get first element of list
-		std::list <sQuestion *> ::iterator it = questions.begin();
+		std::list <sQuestion *> ::const_iterator it = questions.begin();
 
 		// and go for [index] steps
 		for (unsigned i = 0; i < index; ++i, ++it);
@@ -49,4 +49,5 @@ const TStrings* sBase::GetQuestionsList() const {
 	return list;
 }
 // ---------------------------------------------------------------------------
+
 // ---------------------------------------------------------------------------
