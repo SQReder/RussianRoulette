@@ -39,7 +39,6 @@ object f: Tf
       ParentFont = False
       TabOrder = 0
       OnClick = btnAddQuestionToBaseClick
-      ExplicitTop = 6
     end
     object edRound: TEdit
       AlignWithMargins = True
@@ -123,7 +122,6 @@ object f: Tf
     Height = 289
     Align = alLeft
     TabOrder = 1
-    ExplicitHeight = 328
     object lstAnswers: TCheckListBox
       AlignWithMargins = True
       Left = 4
@@ -139,9 +137,6 @@ object f: Tf
         'Pellentesque habitant morbi turpis duis')
       TabOrder = 0
       OnDblClick = lstAnswersDblClick
-      ExplicitLeft = -12
-      ExplicitTop = 60
-      ExplicitHeight = 255
     end
     object pAddAnswer: TPanel
       AlignWithMargins = True
@@ -189,29 +184,51 @@ object f: Tf
     Height = 289
     Align = alClient
     TabOrder = 2
-    ExplicitHeight = 328
     object lstQuestions: TListBox
       AlignWithMargins = True
       Left = 4
-      Top = 31
+      Top = 36
       Width = 317
-      Height = 254
+      Height = 249
       Align = alClient
       ItemHeight = 13
       TabOrder = 0
       OnDblClick = lstQuestionsDblClick
-      ExplicitLeft = 6
-      ExplicitHeight = 293
+      ExplicitTop = 31
+      ExplicitHeight = 254
     end
-    object edSearch: TEdit
-      AlignWithMargins = True
-      Left = 4
-      Top = 4
-      Width = 317
-      Height = 21
+    object Panel1: TPanel
+      Left = 1
+      Top = 1
+      Width = 323
+      Height = 32
       Align = alTop
       TabOrder = 1
-      Text = 'edSearch'
+      object edSearch: TEdit
+        AlignWithMargins = True
+        Left = 4
+        Top = 4
+        Width = 276
+        Height = 24
+        Margins.Right = 0
+        Align = alClient
+        TabOrder = 0
+        Text = 'edSearch'
+        OnChange = edSearchChange
+        ExplicitWidth = 261
+      end
+      object btnClearSearchField: TButton
+        AlignWithMargins = True
+        Left = 280
+        Top = 4
+        Width = 39
+        Height = 24
+        Margins.Left = 0
+        Align = alRight
+        Caption = 'Clear'
+        TabOrder = 1
+        OnClick = btnClearSearchFieldClick
+      end
     end
   end
   object StatusBar: TStatusBar
@@ -235,8 +252,5 @@ object f: Tf
     Height = 33
     Align = alBottom
     TabOrder = 4
-    ExplicitLeft = 0
-    ExplicitTop = 352
-    ExplicitWidth = 614
   end
 end

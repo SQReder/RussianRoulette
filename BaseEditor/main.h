@@ -30,6 +30,8 @@ __published:	// IDE-managed Components
 	TPanel *pAddAnswer;
 	TStatusBar *StatusBar;
 	TMemo *mComment;
+	TPanel *Panel1;
+	TButton *btnClearSearchField;
 	void __fastcall btnAddAnswerClick(TObject *Sender);
 	void __fastcall edAnswerKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall lstAnswersDblClick(TObject *Sender);
@@ -40,6 +42,8 @@ __published:	// IDE-managed Components
 	void __fastcall SpinRoundUpClick(TObject *Sender);
 	void __fastcall btnAddQuestionToBaseClick(TObject *Sender);
 	void __fastcall lstQuestionsDblClick(TObject *Sender);
+	void __fastcall edSearchChange(TObject *Sender);
+	void __fastcall btnClearSearchFieldClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall Tf(TComponent* Owner);

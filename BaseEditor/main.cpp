@@ -101,13 +101,31 @@ void __fastcall Tf::SpinRoundDownClick(TObject* Sender) {
 void __fastcall Tf::FormCreate(TObject* Sender) {
 	QuestionRound = 1;
 	edRound->Text = "1";
+	edSearch->Clear();
 }
 // ---------------------------------------------------------------------------
 
 void __fastcall Tf::btnAddQuestionToBaseClick(TObject* Sender) {
-	bool QuestionNotNull = Trim(mQuestion->Text).Length() > 0;
-	if (QuestionRound ) {
+	bool QuestionIsNull = Trim(mQuestion->Text).Length() == 0;
+	if (QuestionIsNull) {
+		StatusBar->Panels->Items[0]->Text = "Fill question";
+		return;
+	}
 
+	bool TrueAnswerNotChoosed = true;
+	for (int i = 0; (i < lstAnswers->Count) && TrueAnswerNotChoosed; ++i)
+		if (lstAnswers->Checked[i])
+			TrueAnswerNotChoosed = false;
+
+	if (TrueAnswerNotChoosed) {
+		StatusBar->Panels->Items[0]->Text = "Choose true answer";
+		return;
+	}
+
+	bool AnswersNotFilled = lstAnswers->Count <= QuestionRound;
+	if (AnswersNotFilled) {
+		StatusBar->Panels->Items[0]->Text = "Add more answers";
+		return;
 	}
 
 	if (CheckAnswersCount(true)) {
@@ -160,4 +178,20 @@ void __fastcall Tf::lstQuestionsDblClick(TObject* Sender) {
 	mComment->Text = question->comment;
 }
 
+// ---------------------------------------------------------------------------
+void __fastcall Tf::edSearchChange(TObject* Sender) {
+	UnicodeString substr = Trim(edSearch->Text);
+	if (substr != "") {
+		for (int i = 0; i < lstQuestions->Count; ++i) {
+			if (!lstQuestions->Items->Strings[i].Pos(substr))
+				lstQuestions->Items->Delete(i);
+		}
+	}
+	else {
+		lstQuestions->Items->Assign(base->GetQuestionsList());
+	}
+}
+
+// ---------------------------------------------------------------------------
+void __fastcall Tf::btnClearSearchFieldClick(TObject* Sender) { edSearch->Clear(); }
 // ---------------------------------------------------------------------------
