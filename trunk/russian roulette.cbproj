@@ -75,7 +75,6 @@
 			<CppCompile Include="AI.cpp">
 				<BuildOrder>11</BuildOrder>
 			</CppCompile>
-			<None Include="Debug\settings.cfg"/>
 			<CppCompile Include="GameLogic.cpp">
 				<DependentOn>GameLogic.h</DependentOn>
 				<BuildOrder>5</BuildOrder>
@@ -97,7 +96,6 @@
 			<None Include="pch1.h">
 				<BuildOrder>12</BuildOrder>
 			</None>
-			<None Include="Release\settings.cfg"/>
 			<CppCompile Include="russian roulette.cpp">
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
@@ -105,7 +103,6 @@
 				<BuildOrder>1</BuildOrder>
 			</ResFiles>
 			<None Include="russian roulette.todo"/>
-			<None Include="settings.cfg"/>
 			<CppCompile Include="Splash.cpp">
 				<Form>SplashForm</Form>
 				<DependentOn>Splash.h</DependentOn>
@@ -114,6 +111,10 @@
 			<CppCompile Include="uAnimate.cpp">
 				<DependentOn>uAnimate.h</DependentOn>
 				<BuildOrder>5</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="uHostMode.cpp">
+				<DependentOn>uHostMode.h</DependentOn>
+				<BuildOrder>13</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="uSettings.cpp">
 				<Form>SettingsForm</Form>

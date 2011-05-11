@@ -12,7 +12,7 @@
 // ---------------------------------------------------------------------------
 class TAboutForm : public TForm {
 __published: // IDE-managed Components
-<<<<<<< .mine
+//<<<<<<< .mine
     TTimer* tmrScroll;
     TLabel* lblAboutText;
     TLabel* Label1;
@@ -42,8 +42,8 @@ __published: // IDE-managed Components
     void __fastcall lblAboutTextClick(TObject* Sender);
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall FormClick(TObject* Sender);
-=======
->>>>>>> .r12
+//=======
+/*>>>>>>> .r12
 
 	TTimer* tmrScroll;
 	TLabel* lblAboutText;
@@ -74,7 +74,7 @@ __published: // IDE-managed Components
 	void __fastcall FormShow(TObject* Sender);
 	void __fastcall lblAboutTextClick(TObject* Sender);
 	void __fastcall FormCreate(TObject* Sender);
-	void __fastcall FormClick(TObject* Sender);
+	void __fastcall FormClick(TObject* Sender);      */
 
 private: // User declarations
 		public : // User declarations

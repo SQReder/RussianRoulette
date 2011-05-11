@@ -15,6 +15,7 @@
 #include "inifiles.hpp"
 #include "AI.cpp"
 #include "uSettings.h"
+#include "uHostMode.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TeeFilters"
@@ -1267,6 +1268,9 @@ void __fastcall TF::imgHatch2Click(TObject* Sender) {
 }
 
 void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
+	if (Screen->MonitorCount > 1 && Key == 'H') {
+		initialize_host_mode();
+	}
 	if (Key == VK_RIGHT && F->Settings->HostMode == true) {
 		if (RoundOfGame >= 1 && RoundOfGame <= 4) {
 			if (ModeOfGame == 3) {
