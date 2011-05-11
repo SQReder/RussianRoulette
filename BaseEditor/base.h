@@ -18,6 +18,8 @@ public:
 
 	const sQuestion* GetRandomQuestion() const ;
 
+	void save(UnicodeString filename);
+
 private:
 	std::list <sQuestion *> questions;
 	std::list <bool> question_is_used;

@@ -23,6 +23,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<OutputExt>exe</OutputExt>
 			<PackageImports>rtl.bpi;vclimg.bpi;vcl.bpi;vclx.bpi;vcldb.bpi;dbrtl.bpi;xmlrtl.bpi;vclactnband.bpi;dsnap.bpi;IndyCore.bpi;IndySystem.bpi;vclie.bpi;webdsnap.bpi;inet.bpi;IndyProtocols.bpi;inetdbbde.bpi;inetdbxpress.bpi;dbexpress.bpi;DbxCommonDriver.bpi;dbxcds.bpi;bcbsmp.bpi;VclSmp.bpi;svnui.bpi;svn.bpi</PackageImports>
 			<Multithreaded>true</Multithreaded>
 			<LinkPackageImports>rtl.bpi;vcl.bpi;vclx.bpi;VclSmp.bpi</LinkPackageImports>
@@ -41,6 +42,11 @@
 			<ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<BCC_wntn>true</BCC_wntn>
+			<BCC_wdef>true</BCC_wdef>
+			<BCC_wstu>true</BCC_wstu>
+			<BCC_wsig>true</BCC_wsig>
+			<ILINK_wdpl>true</ILINK_wdpl>
 			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
 			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
 			<DCC_Optimize>false</DCC_Optimize>
@@ -71,7 +77,6 @@
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
 			<ResFiles Include="BaseEditor.res">
-				<ModuleName>BaseEditor.res</ModuleName>
 				<BuildOrder>1</BuildOrder>
 			</ResFiles>
 			<CppCompile Include="main.cpp">
@@ -83,6 +88,9 @@
 				<DependentOn>question.h</DependentOn>
 				<BuildOrder>4</BuildOrder>
 			</CppCompile>
+			<None Include="sQuestionSpec.txt">
+				<ModuleName>New1</ModuleName>
+			</None>
 			<FormResources Include="main.dfm"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>

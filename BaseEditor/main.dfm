@@ -1,16 +1,19 @@
 object f: Tf
   Left = 0
   Top = 0
-  Caption = 'Roulette Base Editor'
-  ClientHeight = 404
-  ClientWidth = 614
+  Caption = 'Russian Roulette Base Editor v0.0.0.0.0.0(.0)'
+  ClientHeight = 371
+  ClientWidth = 618
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 600
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = MainMenu
   OldCreateOrder = False
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -18,16 +21,17 @@ object f: Tf
   object pTop: TPanel
     Left = 0
     Top = 0
-    Width = 614
+    Width = 618
     Height = 57
     Align = alTop
     TabOrder = 0
     object btnAddQuestionToBase: TButton
       AlignWithMargins = True
-      Left = 575
+      Left = 579
       Top = 4
       Width = 35
       Height = 49
+      Hint = 'Add question to base'
       Margins.Left = 0
       Align = alRight
       Caption = 'v'
@@ -66,21 +70,18 @@ object f: Tf
       AlignWithMargins = True
       Left = 74
       Top = 4
-      Width = 501
+      Width = 505
       Height = 49
       Margins.Right = 0
       TabStop = False
       Align = alClient
       Lines.Strings = (
-        
-          'Fusce facilisis, risus in venenatis commodo, purus magna ornare ' +
-          'metus, a aliquam mi elit eget purus. '
-        
-          'Etiam porttitor viverra mi et fringilla. Aenean tincidunt lacus ' +
-          'quis dui laoreet in convallis leo molestie. '
-        'Cras faucibus odio id urna adipiscing id amet')
+        'Some question')
+      MaxLength = 255
       TabOrder = 2
       WantReturns = False
+      OnEnter = mQuestionEnter
+      OnExit = mQuestionExit
     end
     object SpinRound: TSpinButton
       AlignWithMargins = True
@@ -119,7 +120,7 @@ object f: Tf
     Left = 0
     Top = 57
     Width = 289
-    Height = 289
+    Height = 256
     Align = alLeft
     TabOrder = 1
     object lstAnswers: TCheckListBox
@@ -127,7 +128,7 @@ object f: Tf
       Left = 4
       Top = 36
       Width = 281
-      Height = 249
+      Height = 216
       Margins.Top = 0
       OnClickCheck = lstAnswersClickCheck
       Align = alClient
@@ -160,6 +161,8 @@ object f: Tf
         MaxLength = 40
         TabOrder = 0
         Text = 'Integer vulputate, lacus vel massa nunc.'
+        OnEnter = edAnswerEnter
+        OnExit = edAnswerExit
         OnKeyDown = edAnswerKeyDown
         ExplicitHeight = 21
       end
@@ -169,6 +172,7 @@ object f: Tf
         Top = 4
         Width = 25
         Height = 24
+        Hint = 'Add answer to question'
         Margins.Left = 0
         Align = alRight
         Caption = 'v'
@@ -180,27 +184,25 @@ object f: Tf
   object pQuestions: TPanel
     Left = 289
     Top = 57
-    Width = 325
-    Height = 289
+    Width = 329
+    Height = 256
     Align = alClient
     TabOrder = 2
     object lstQuestions: TListBox
       AlignWithMargins = True
       Left = 4
       Top = 36
-      Width = 317
-      Height = 249
+      Width = 321
+      Height = 216
       Align = alClient
       ItemHeight = 13
       TabOrder = 0
       OnDblClick = lstQuestionsDblClick
-      ExplicitTop = 31
-      ExplicitHeight = 254
     end
     object Panel1: TPanel
       Left = 1
       Top = 1
-      Width = 323
+      Width = 327
       Height = 32
       Align = alTop
       TabOrder = 1
@@ -208,18 +210,20 @@ object f: Tf
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 276
+        Width = 280
         Height = 24
         Margins.Right = 0
         Align = alClient
         TabOrder = 0
         Text = 'edSearch'
         OnChange = edSearchChange
-        ExplicitWidth = 261
+        OnEnter = edSearchEnter
+        OnExit = edSearchExit
+        ExplicitHeight = 21
       end
       object btnClearSearchField: TButton
         AlignWithMargins = True
-        Left = 280
+        Left = 284
         Top = 4
         Width = 39
         Height = 24
@@ -233,8 +237,8 @@ object f: Tf
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 385
-    Width = 614
+    Top = 352
+    Width = 618
     Height = 19
     BiDiMode = bdLeftToRight
     Panels = <
@@ -247,10 +251,49 @@ object f: Tf
   object mComment: TMemo
     AlignWithMargins = True
     Left = 3
-    Top = 349
-    Width = 608
+    Top = 316
+    Width = 612
     Height = 33
     Align = alBottom
+    MaxLength = 255
     TabOrder = 4
+    OnEnter = mCommentEnter
+    OnExit = mCommentExit
+    ExplicitLeft = 8
+    ExplicitTop = 313
+  end
+  object MainMenu: TMainMenu
+    Left = 304
+    Top = 192
+    object mmFile: TMenuItem
+      Caption = 'File'
+      object mmNewBase: TMenuItem
+        Caption = 'New'
+        ShortCut = 16462
+        OnClick = mmNewBaseClick
+      end
+      object mmOpenBase: TMenuItem
+        Caption = 'Open...'
+        ShortCut = 16463
+      end
+      object mmSaveBase: TMenuItem
+        Caption = 'Save...'
+        ShortCut = 16467
+        OnClick = mmSaveBaseClick
+      end
+      object mmSaveBaseAs: TMenuItem
+        Caption = 'Save as...'
+      end
+      object mmExit: TMenuItem
+        Break = mbBarBreak
+        Caption = 'Exit'
+        ShortCut = 16471
+        OnClick = mmExitClick
+      end
+    end
+    object mmAbout: TMenuItem
+      Caption = 'About...'
+      ShortCut = 112
+    end
   end
 end

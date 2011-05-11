@@ -25,7 +25,7 @@ private:
 
 	void SetRound(unsigned);
 
-	// if (it == -1) then it is a question for final round
+	// if (it == 255) then it is a question for final round
 	int _true_answer;
 
 	void SetTrue(int);

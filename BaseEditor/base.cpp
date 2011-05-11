@@ -26,7 +26,7 @@ void sBase::replace(sQuestion* question) {
 }
 // ---------------------------------------------------------------------------
 
-sQuestion* sBase::GetQuestionPointer(unsigned index) const{
+sQuestion* sBase::GetQuestionPointer(unsigned index) const {
 	if (index < questions.size()) {
 		// get first element of list
 		std::list <sQuestion *> ::const_iterator it = questions.begin();
@@ -49,5 +49,30 @@ const TStrings* sBase::GetQuestionsList() const {
 	return list;
 }
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 
+const AnsiString signature = "rrb1";
+
+TFileStream* stream;
+
+template <class T>
+void WriteString(T str) { stream->WriteBuffer(&str[1], str.Length() *sizeof(str[1])); }
+
+template <class T>
+void WriteX(T x) { stream->WriteBuffer(&x, sizeof(T)); }
+
+void sBase::save(UnicodeString filename) {
+	stream = new TFileStream(filename, fmCreate);
+	WriteString(signature);
+
+	// start writing questions
+	std::list <sQuestion *> ::iterator it;
+	for (it = questions.begin(); it != questions.end(); ++it) {
+		sQuestion* q = *it;
+		WriteX((char)q->question.Length());
+		WriteString(q->question);
+	}
+
+	delete stream;
+}
 // ---------------------------------------------------------------------------

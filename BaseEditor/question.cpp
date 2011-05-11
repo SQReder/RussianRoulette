@@ -6,7 +6,7 @@ sQuestion::sQuestion() {
 	question = "";
 	comment = "";
 	answers = new TStringList();
-	_true_answer = -1;
+	_true_answer = 255;
   _round = 0;
 }
 
@@ -14,7 +14,7 @@ sQuestion::~sQuestion() { delete answers; }
 // ------------------------------------------------------------------
 
 void sQuestion::SetTrue(int new_value) {
-	if (new_value <= answers->Count)
+	if (new_value <= answers->Count || new_value == 255)
 		_true_answer = new_value;
 }
 
