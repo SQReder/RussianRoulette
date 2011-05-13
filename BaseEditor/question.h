@@ -17,7 +17,7 @@ public:
 	__property unsigned round = { read = _round, write = SetRound };
 
 	void AssignAnswersList(const TStrings* answers_list);
-	const TStrings* GetAnswersList() const;
+	const TStringList* GetAnswersList() const;
 
 private:
 	// round may be it [1..5]. 5 is a final round

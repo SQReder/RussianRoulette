@@ -259,8 +259,15 @@ object f: Tf
     TabOrder = 4
     OnEnter = mCommentEnter
     OnExit = mCommentExit
-    ExplicitLeft = 8
-    ExplicitTop = 313
+  end
+  object Button1: TButton
+    Left = 8
+    Top = 285
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 5
+    OnClick = Button1Click
   end
   object MainMenu: TMainMenu
     Left = 304
@@ -275,6 +282,7 @@ object f: Tf
       object mmOpenBase: TMenuItem
         Caption = 'Open...'
         ShortCut = 16463
+        OnClick = mmOpenBaseClick
       end
       object mmSaveBase: TMenuItem
         Caption = 'Save...'

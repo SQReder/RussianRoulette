@@ -29,6 +29,6 @@ void sQuestion::AssignAnswersList(const TStrings* answers_list) {
 }
 
 // ------------------------------------------------------------------
-const TStrings* sQuestion::GetAnswersList() const {
+const TStringList* sQuestion::GetAnswersList() const {
 	return answers;
 }

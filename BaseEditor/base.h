@@ -19,6 +19,7 @@ public:
 	const sQuestion* GetRandomQuestion() const ;
 
 	void save(UnicodeString filename);
+	void load(UnicodeString filename);
 
 private:
 	std::list <sQuestion *> questions;

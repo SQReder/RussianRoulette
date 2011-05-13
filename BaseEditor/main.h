@@ -41,6 +41,7 @@ __published:	// IDE-managed Components
 	TMenuItem *mmSaveBase;
 	TMenuItem *mmSaveBaseAs;
 	TMenuItem *mmExit;
+	TButton *Button1;
 	void __fastcall btnAddAnswerClick(TObject *Sender);
 	void __fastcall edAnswerKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall lstAnswersDblClick(TObject *Sender);
@@ -64,6 +65,8 @@ __published:	// IDE-managed Components
 	void __fastcall mmExitClick(TObject *Sender);
 	void __fastcall mmNewBaseClick(TObject *Sender);
 	void __fastcall mmSaveBaseClick(TObject *Sender);
+	void __fastcall mmOpenBaseClick(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall Tf(TComponent* Owner);

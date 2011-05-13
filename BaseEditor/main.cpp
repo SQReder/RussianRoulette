@@ -314,6 +314,27 @@ void __fastcall Tf::mmNewBaseClick(TObject* Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall Tf::mmSaveBaseClick(TObject* Sender) { base->save("base.rrb"); }
+void __fastcall Tf::mmSaveBaseClick(TObject* Sender) { base->save(L"base.rrb"); }
 
+// ---------------------------------------------------------------------------
+void __fastcall Tf::mmOpenBaseClick(TObject* Sender) { base->load(L"base.rrb"); }
+
+// ---------------------------------------------------------------------------
+void __fastcall Tf::Button1Click(TObject* Sender) {
+	sQuestion* q = new sQuestion();
+
+	q->question = "some question";
+	q->comment =  "some comment";
+	q->round = 1;
+
+	TStringList* answers = new TStringList();
+	answers->Add("answer0");
+	answers->Add("answer1");
+	q->AssignAnswersList(answers);
+	base->add(q);
+
+	q->true_answer = 1;
+
+	lstQuestions->Items->Assign(base->GetQuestionsList());
+}
 // ---------------------------------------------------------------------------
