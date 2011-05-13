@@ -1,0 +1,1 @@
+for %%f in (*) do echo if (!FileExists("data\\sounds\\%%f")) nonExisten--Add("data\\sounds\\%%f"); >> nya.txt
