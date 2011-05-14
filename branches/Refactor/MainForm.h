@@ -132,12 +132,11 @@ public: // User declarations
 	TLabel* lblMoney[5]; // лейблы и конструктор для отображения денег на панели игроков.
 	TLabel* lblPlayer[5];
 	TLabel* lblAnswers[5];
-	int qcount;
 
 	int answer;
 	int Reward;
 
-	void TF::TransferMoney();
+	void TransferMoney();
 
 	int money[5]; // деньги игроков
 	int pulse[5]; // Пульсации кровяного давления

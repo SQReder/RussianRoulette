@@ -35,7 +35,7 @@ void LoadQuestionFromBase(String BaseFile) {
 		stream->Read(& tstr[1], 10);
 
 		tstr = ClearStr(tstr); // теперя тута храниццо кол-во вопросов в базе =^__^=
-		int qcount = StrToInt(tstr);
+		qcount = StrToInt(tstr);
 
 		base = new QA[qcount];
 

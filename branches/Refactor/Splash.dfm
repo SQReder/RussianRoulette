@@ -1032,12 +1032,12 @@ object SplashForm: TSplashForm
     Enabled = False
     OnTimer = tmrSplashTimer
     Left = 120
-    Top = 88
+    Top = 256
   end
   object tmrOpenSplash: TTimer
     Interval = 1
     OnTimer = tmrOpenSplashTimer
-    Left = 176
-    Top = 144
+    Left = 224
+    Top = 256
   end
 end
