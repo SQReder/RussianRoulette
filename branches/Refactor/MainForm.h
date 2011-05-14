@@ -12,82 +12,8 @@
 #include <MPlayer.hpp>
 #include <ComCtrls.hpp>
 #include <GIFImg.hpp>
+#include "uSettings.h"
 
-// ---------------------------------------------------------------------------
-enum TBotType {
-	bbHuman, bbFoooool, bbFooly, bbNormal, bbHard, bbVeryHard
-};
-
-class TSettings {
-public:
-	UnicodeString PlayerNames[5];
-	TBotType PlayerType[5];
-	bool Fullscreen;
-	int FormsWidth;
-	int FormsHeight;
-	int FormsTop;
-	int FormsLeft;
-	int MinWidth;
-	int MinHeight;
-	bool SoundEnabled;
-	int SoundVolume;
-	bool MusicEnabled;
-	int MusicVolume;
-	bool Win7Features;
-	bool HostMode;
-	String LastBase;
-	TStringList* BaseNames;
-
-	TSettings() {
-		PlayerNames[0] = "Игрок №1";
-		PlayerType[0] = bbHuman;
-		PlayerNames[1] = "Игрок №2";
-		PlayerType[1] = bbHuman;
-		PlayerNames[2] = "Игрок №3";
-		PlayerType[2] = bbHuman;
-		PlayerNames[3] = "Игрок №4";
-		PlayerType[3] = bbHuman;
-		PlayerNames[4] = "Игрок №5";
-		PlayerType[4] = bbHuman;
-
-		Fullscreen = True;
-
-		FormsTop = 0;
-		FormsLeft = 0;
-		FormsWidth = 1024;
-		FormsHeight = 768;
-
-		MinWidth = 1024;
-		MinHeight = 768;
-
-		SoundEnabled = True;
-		SoundVolume = 100;
-		MusicEnabled = True;
-		MusicVolume = 100;
-
-		Win7Features = False;
-
-		LastBase = "main.dat";
-
-		BaseNames = new TStringList;
-		HostMode = false;
-	};
-
-};
-
-// -----------------------------------------------------------------------------
-class QA {
-public:
-	char Round;
-	UnicodeString Question;
-	UnicodeString Answers[5];
-	int TrueAnswer;
-
-	QA() {
-		TrueAnswer = -1;
-		Round = -1;
-	}
-};
 
 // -----------------------------------------------------------------------------
 class TF : public TForm {
@@ -208,11 +134,9 @@ public: // User declarations
 	TLabel* lblAnswers[5];
 	int qcount;
 
-	QA* base;
 	int answer;
 	int Reward;
 
-	void LoadQuestionFromBase(String BaseName);
 	void TF::TransferMoney();
 
 	int money[5]; // деньги игроков
@@ -232,9 +156,6 @@ public: // User declarations
 	char FinalRound; // указывается номер финальной части раунда
 	int FinalRoundOfGame; // финальный раунд игры (определяет стоимость финального вопроса)
 
-	TSettings* Settings;
-
-	void InitializeSettings();
 	String FillChars(String str, int count);
 	String GetStr(String str, int begin, int size);
 	String ClearStr(String str);
@@ -246,6 +167,7 @@ public: // User declarations
 	void Choosen_Answer_Change_Position();
 };
 
+void LoadQuestionFromBase(String BaseName);
 void ShowError(int errcode);
 void DumpMemory(int errcode);
 // ---------------------------------------------------------------------------

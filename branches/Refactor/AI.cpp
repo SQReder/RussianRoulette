@@ -1,5 +1,6 @@
+#ifndef AIH
+#define AIH
 #include "stdlib.h"
-#include "MainForm.h"
 const float _bbVeryHard = 1.0;
 const float _biVeryHard = 0.05;
 const float _bbHard = 0.85;
@@ -10,7 +11,11 @@ const float _bbFooly = 1 / 3;
 const float _biFooly = 0.20;
 const float _bbFoooool = 0.30;
 const float _biFoooool = 0.10;
+
 // -----------------------------------------------------------------------------
+enum TBotType {
+	bbHuman, bbFoooool, bbFooly, bbNormal, bbHard, bbVeryHard
+};
 
 class TBot { // класс ботов
 
@@ -72,3 +77,4 @@ int TBot::ChooseAnyPlayer(bool players_state[6], int _ch) {
 	return s + 1;
 }
 // -----------------------------------------------------------------------------
+#endif

@@ -16,6 +16,7 @@
 #include "AI.cpp"
 #include "uSettings.h"
 #include "uHostMode.h"
+#include "base.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TeeFilters"
@@ -23,6 +24,9 @@
 #pragma resource "*.dfm"
 #define _StartRotaingSpeed 50
 extern int key;
+extern TSettings* Settings;
+extern QA* base;
+extern qcount;
 
 TF* F;
 extern Graphics::TPicture* pulse_pic;
@@ -225,9 +229,7 @@ void __fastcall TF::Button1Click(TObject* Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::FormCreate(TObject* Sender) {
-	// InitializeSettings(); Зачем оно тут? О_о
-}
+void __fastcall TF::FormCreate(TObject* Sender) { ; }
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrPulseAnimationTimer(TObject* Sender) { NextFrame(); }
@@ -235,34 +237,34 @@ void __fastcall TF::tmrPulseAnimationTimer(TObject* Sender) { NextFrame(); }
 
 void ReadCfgFile() {
 	TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
-	F->Settings->Fullscreen = ini->ReadBool("Global", "FullScreen", False);
-	F->Settings->FormsWidth = ini->ReadInteger("Global", "Width", 1024);
-	F->Settings->FormsHeight = ini->ReadInteger("Global", "Height", 1024);
-	F->Settings->SoundEnabled = ini->ReadBool("Global", "Sound", False);
-	F->Settings->SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
-	F->Settings->MusicEnabled = ini->ReadBool("Global", "Music", False);
-	F->Settings->MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
-	F->Settings->HostMode = ini->ReadBool("Global", "HostMode", False);
+	Settings->Fullscreen = ini->ReadBool("Global", "FullScreen", False);
+	Settings->FormsWidth = ini->ReadInteger("Global", "Width", 1024);
+	Settings->FormsHeight = ini->ReadInteger("Global", "Height", 1024);
+	Settings->SoundEnabled = ini->ReadBool("Global", "Sound", False);
+	Settings->SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
+	Settings->MusicEnabled = ini->ReadBool("Global", "Music", False);
+	Settings->MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
+	Settings->HostMode = ini->ReadBool("Global", "HostMode", False);
 
 	for (int i = 1; i <= 5; i++) {
-		F->Settings->PlayerNames[i - 1] = ini->ReadString("Players", "Player" + IntToStr(i), "FUUUUuuuuu...");
-		F->Settings->PlayerType[i - 1] = (TBotType)ini->ReadInteger("Players", "PlayerType" + IntToStr(i), 0);
+		Settings->PlayerNames[i - 1] = ini->ReadString("Players", "Player" + IntToStr(i), "FUUUUuuuuu...");
+		Settings->PlayerType[i - 1] = (TBotType)ini->ReadInteger("Players", "PlayerType" + IntToStr(i), 0);
 	}
 
-	F->Settings->LastBase = ini->ReadString("Global", "LastBase", "");
+	Settings->LastBase = ini->ReadString("Global", "LastBase", "");
 
 	int i = 0;
 	while (1) {
 		String str = ini->ReadString("Bases", "basename" + IntToStr(i), "");
 		if (str != "") {
-			F->Settings->BaseNames->Add(str);
+			Settings->BaseNames->Add(str);
 		}
 		else
 			break;
 		i++ ;
 	}
 
-	if (F->Settings->LastBase == "")
+	if (Settings->LastBase == "")
 		ShowError(1);
 
 	ini->Free();
@@ -271,12 +273,12 @@ void ReadCfgFile() {
 // ---------------------------------------------------------------------------
 void SetPlayers() {
 	for (int i = 0; i < 5; i++)
-		bot[i] = new TBot(F->Settings->PlayerType[i]);
+		bot[i] = new TBot(Settings->PlayerType[i]);
 }
 
 // ---------------------------------------------------------------------------
-void TF::InitializeSettings() {
-	Settings = new TSettings;
+void InitializeSettings() {
+	Settings = new TSettings();
 	ReadCfgFile();
 	SetPlayers();
 }
@@ -288,7 +290,7 @@ void __fastcall TF::Button2Click(TObject* Sender) {
 	 MechanizmSetHatchesStates(); */
 
 	// TWindowsMediaPlayer *mp1 = new TWindowsMediaPlayer(this);
-	// mp1->settings->set_volume(F->Settings->SoundVolume * 2.55);
+	// mp1->settings->set_volume(Settings->SoundVolume * 2.55);
 	// mp1->launchURL(String("sounds\\rr_fall.wav").w_str());
 	// mp1->URL = String("sounds\\rr_fall.wav").w_str();
 	// mp1->Error;
@@ -458,7 +460,7 @@ void __fastcall TF::tmrRotatorTimer(TObject* Sender) {
 			PlayMusic("rr_endround.wav");
 			switchonquestion();
 			ModeOfGame = 0;
-			if (F->Settings->HostMode == false) {
+			if (Settings->HostMode == false) {
 				tmrWaiting->Enabled = True;
 				Wait = 0;
 			}
@@ -526,7 +528,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 					choosingplayer();
 					MechanizmSetHatchesStates();
 					ModeOfGame = 2;
-					if (!F->Settings->HostMode)
+					if (!Settings->HostMode)
 						tmrWaiting->Enabled = True;
 				}
 			}
@@ -538,7 +540,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 						chooseplayer = i + 1;
 				choosingplayer();
 				ModeOfGame = 2;
-				if (!F->Settings->HostMode)
+				if (!Settings->HostMode)
 					tmrWaiting->Enabled = True;
 			}
 		}
@@ -552,8 +554,8 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 			}
 			MoneyTransferMode = 'c';
 			choosenplayer();
-			if (F->Settings->PlayerType[chooseplayer - 1] != bbHuman) {
-				switch (F->Settings->PlayerType[chooseplayer - 1]) {
+			if (Settings->PlayerType[chooseplayer - 1] != bbHuman) {
+				switch (Settings->PlayerType[chooseplayer - 1]) {
 				case bbFoooool:
 					TimeToDecide = 2 + random(20);
 					break;
@@ -637,7 +639,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 
 		if (Wait == 12) {
 			tmrWaiting->Enabled = False;
-			if (!F->Settings->HostMode) {
+			if (!Settings->HostMode) {
 				CanAnswer = 1;
 				PlayMusic("rr_20sec.wav");
 				tmrTime->Enabled = True;
@@ -650,7 +652,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 			CanAnswer = 0;
 			if (answer == RandomPlace) {
 				imgQuestion->Picture->LoadFromFile("Data\\quest_correct.png");
-				if (!F->Settings->HostMode)
+				if (!Settings->HostMode)
 					tmrWaiting->Enabled = True;
 				imgChoosenAnswer->Visible = True;
 				imgChAnsLeft->Visible = true;
@@ -686,7 +688,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 				PlayMusic("rr_bg1.mp3");
 			else
 				PlayMusic("rr_bg" + IntToStr(2 + random(4)) + ".mp3");
-			if (!F->Settings->HostMode)
+			if (!Settings->HostMode)
 				tmrWaiting->Enabled = True;
 			else
 				tmrWaiting->Enabled = False;
@@ -708,12 +710,12 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 		}
 		if (Wait == 7) {
 			tmrWaiting->Enabled = False;
-			if (F->Settings->PlayerType[chooseplayer - 1] == bbHuman) {
+			if (Settings->PlayerType[chooseplayer - 1] == bbHuman) {
 				btnMechStart->Enabled = 1;
 				imgMechanizm->Enabled = 1;
 			}
 			else {
-				switch (F->Settings->PlayerType[chooseplayer - 1]) {
+				switch (Settings->PlayerType[chooseplayer - 1]) {
 				case bbFoooool:
 					TimeToDecide = 10 + random(31);
 					break;
@@ -786,7 +788,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 					F->lblTimer->Visible = False;
 					F->imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
 					F->LabelQuestion->Visible = False;
-					if (!F->Settings->HostMode) {
+					if (!Settings->HostMode) {
 						tmrWaiting->Enabled = true;
 						Wait = 0;
 					}
@@ -805,7 +807,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 				}
 			}
 			if (Wait == (waitinger + 3)) {
-				if (!F->Settings->HostMode) {
+				if (!Settings->HostMode) {
 					F->tmrWaiting->Enabled = True;
 					Wait = 0;
 				}
@@ -878,7 +880,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 			}
 			if (Wait == (waitinger + 7)) {
 				PlayMusic("rr_bg1.mp3");
-				if (!F->Settings->HostMode) {
+				if (!Settings->HostMode) {
 					tmrWaiting->Enabled = True;
 					Wait = 0;
 				}
@@ -982,7 +984,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
 			}
 			if (Wait == 12) {
 				PlayMusic("rr_bg4.mp3");
-				if (!F->Settings->HostMode) {
+				if (!Settings->HostMode) {
 					Wait = 0;
 					tmrWaiting->Enabled = true;
 				}
@@ -1271,7 +1273,7 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
 	if (Screen->MonitorCount > 1 && Key == 'H') {
 		initialize_host_mode();
 	}
-	if (Key == VK_RIGHT && F->Settings->HostMode == true) {
+	if (Key == VK_RIGHT && Settings->HostMode == true) {
 		if (RoundOfGame >= 1 && RoundOfGame <= 4) {
 			if (ModeOfGame == 3) {
 				CanAnswer = 1;
@@ -1288,7 +1290,7 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
 		imgMechanizmClick(imgMechanizm);
 	// выбор игрового места в финале
 	if (FinalRoundOfGame > 0 && ModeOfGame == 0 && (((Key >= '1') && (Key <= '6')) || ((Key >= VK_NUMPAD1) && (Key <=
-					VK_NUMPAD6))) && F->Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
+					VK_NUMPAD6))) && Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
 		switch (Key) {
 		case '1':
 		case VK_NUMPAD1:
@@ -1323,7 +1325,7 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
 		}
 	}
 	if (ModeOfGame == 1 && (((Key >= '1') && (Key <= '5')) || ((Key >= VK_NUMPAD1) && (Key <= VK_NUMPAD5)))
-		&& F->Settings->PlayerType[F->CurrentHatch - 1] == bbHuman && CanChoose == 1) {
+		&& Settings->PlayerType[F->CurrentHatch - 1] == bbHuman && CanChoose == 1) {
 		switch (Key) {
 		case '1':
 		case VK_NUMPAD1:
@@ -1352,7 +1354,7 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
 			break;
 		}
 	}
-	if (ModeOfGame == 3 && CanAnswer == 1 && F->Settings->PlayerType[F->chooseplayer - 1] == bbHuman &&
+	if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[F->chooseplayer - 1] == bbHuman &&
 		(((Key >= '1') && (Key <= '5')) || ((Key >= VK_NUMPAD1) && (Key <= VK_NUMPAD5)))) {
 		switch (Key) {
 		case '1':
@@ -1385,20 +1387,21 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
 			tmrTime->Enabled = False;
 		}
 
-		switch (RoundOfGame) {
-		case 1:
-			F->Reward = 1000;
-			break;
-		case 2:
-			F->Reward = 2000;
-			break;
-		case 3:
-			F->Reward = 3000;
-			break;
-		case 4:
-			F->Reward = 4000;
-			break;
-		}
+		// switch (RoundOfGame) {
+		// case 1:
+		// F->Reward = 1000;
+		// break;
+		// case 2:
+		// F->Reward = 2000;
+		// break;
+		// case 3:
+		// F->Reward = 3000;
+		// break;
+		// case 4:
+		// F->Reward = 4000;
+		// break;
+		// }
+		F->Reward = RoundOfGame * 1000;
 	}
 }
 // ---------------------------------------------------------------------------
@@ -1508,7 +1511,7 @@ void TF::TransferMoney() {
 		Reward = 0;
 		if (answer == RandomPlace) {
 			ModeOfGame = 0;
-			if (!F->Settings->HostMode) {
+			if (!Settings->HostMode) {
 				Wait = 0;
 				tmrWaiting->Enabled = true;
 			}
@@ -1538,30 +1541,34 @@ void __fastcall TF::tmrLogTimer(TObject* Sender) {
 // ---------------------------------------------------------------------------
 void TF::blabla() // возвращает форму в исходное положение
 {
-	switch (RoundOfGame) {
-	case 1: {
-			F->lblAnswers[0]->Visible = False;
-			F->lblAnswers[1]->Visible = False;
-		} break;
-	case 2: {
-			F->lblAnswers[0]->Visible = False;
-			F->lblAnswers[1]->Visible = False;
-			F->lblAnswers[2]->Visible = False;
-		} break;
-	case 3: {
-			F->lblAnswers[0]->Visible = False;
-			F->lblAnswers[1]->Visible = False;
-			F->lblAnswers[2]->Visible = False;
-			F->lblAnswers[3]->Visible = False;
-		} break;
-	case 4: {
-			F->lblAnswers[0]->Visible = False;
-			F->lblAnswers[1]->Visible = False;
-			F->lblAnswers[2]->Visible = False;
-			F->lblAnswers[3]->Visible = False;
-			F->lblAnswers[4]->Visible = False;
-		} break;
-	}
+	// switch (RoundOfGame) {
+	// case 1: {
+	// F->lblAnswers[0]->Visible = False;
+	// F->lblAnswers[1]->Visible = False;
+	// } break;
+	// case 2: {
+	// F->lblAnswers[0]->Visible = False;
+	// F->lblAnswers[1]->Visible = False;
+	// F->lblAnswers[2]->Visible = False;
+	// } break;
+	// case 3: {
+	// F->lblAnswers[0]->Visible = False;
+	// F->lblAnswers[1]->Visible = False;
+	// F->lblAnswers[2]->Visible = False;
+	// F->lblAnswers[3]->Visible = False;
+	// } break;
+	// case 4: {
+	// F->lblAnswers[0]->Visible = False;
+	// F->lblAnswers[1]->Visible = False;
+	// F->lblAnswers[2]->Visible = False;
+	// F->lblAnswers[3]->Visible = False;
+	// F->lblAnswers[4]->Visible = False;
+	// } break;
+	// }
+
+	for (int i = 0; i < RoundOfGame; ++i)
+		F->lblAnswers[i]->Visible = false;
+
 	F->imgNumber1->Visible = False;
 	F->imgNumber2->Visible = False;
 	F->imgNumber3->Visible = False;
@@ -1660,12 +1667,12 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
 				imgQuestion->Visible = False;
 				LabelQuestion->Visible = False;
 				lblRightAnswer->Visible = False;
-				if (F->Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
+				if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
 					btnMechStart->Enabled = True;
 					imgMechanizm->Enabled = True;
 				}
 				else {
-					switch (F->Settings->PlayerType[LeaderPlayerAtFinal]) {
+					switch (Settings->PlayerType[LeaderPlayerAtFinal]) {
 					case bbFoooool:
 						TimeToDecide = 5 + random(41);
 						break;
@@ -1725,7 +1732,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
 				edFinalAnswer->Top = imgQuestion->Top + imgQuestion->Height - 30 - edFinalAnswer->Height;
 				edFinalAnswer->Left = (int)(imgQuestion->Left + (imgQuestion->Width - edFinalAnswer->Width) / 2.);
 				edFinalAnswer->Visible = True;
-				if (F->Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman)
+				if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman)
 					edFinalAnswer->Enabled = true;
 				else
 					edFinalAnswer->Enabled = false;
@@ -2105,8 +2112,6 @@ void __fastcall TF::FormClose(TObject* Sender, TCloseAction& Action) {
 	MediaPlayer1->Close();
 	MediaPlayer2->Close();
 
-	SettingsForm->FileListBox1->Directory = "\Base";
-	// F->Free();
 }
 // ---------------------------------------------------------------------------
 
@@ -2390,98 +2395,6 @@ void __fastcall TF::tmrSplashTimer(TObject* Sender) {
 void __fastcall TF::lblExitClick(TObject* Sender) { btnExitClick(btnExit); }
 
 // ---------------------------------------------------------------------------
-void TF::LoadQuestionFromBase(String BaseFile) {
-	/*
-	 5 символов - количество вопросов в базе
-	 далее блоками по 457 символов
-	 1 символ - номер раунда
-	 255 символов - вопрос
-	 по 40 символов ответы
-	 1 символ - номер правильного
-	 индексация начинается с нуля =)
-	 */
-
-	// открываем базу
-	try {
-		TFileStream* stream = new TFileStream(BaseFile, fmOpenRead);
-		// подготавливаем строку и считываем в нее количество вопросов в базе
-		String tstr = "     "; // длина строки = количеству считываемых символов
-		// считываем строку длиной в 10 байт, ибо юникод, а символов 5 =/
-		stream->Read(& tstr[1], 10);
-
-		tstr = ClearStr(tstr); // теперя тута храниццо кол-во вопросов в базе =^__^=
-		qcount = StrToInt(tstr);
-
-		base = new QA[qcount];
-
-		for (int i = 0; i < qcount; i++) {
-			String str = "";
-			// ну тут все ясно =)
-			str = FillChars(str, 457); // подготавливаем память для загрузки
-			stream->ReadBuffer(& str[1], 457* 2);
-			// и считываем блок данных
-
-			for (int i = 1; i < str.Length(); i++) // расшифровываем
-			{
-				str[i] = str[i] ^ (i % 7);
-			}
-
-			base[i].Round = GetStr(str, 1, 1)[1]; // суть номер раунда 1-4
-
-			base[i].Question = ClearStr(GetStr(str, 2, 255)); // вопрос
-
-			base[i].Answers[0] = ClearStr(GetStr(str, 257, 40));
-			// варианты ответа
-			base[i].Answers[1] = ClearStr(GetStr(str, 297, 40));
-			base[i].Answers[2] = ClearStr(GetStr(str, 337, 40));
-			base[i].Answers[3] = ClearStr(GetStr(str, 377, 40));
-			base[i].Answers[4] = ClearStr(GetStr(str, 417, 40));
-
-			base[i].TrueAnswer = StrToInt(GetStr(str, 457, 1));
-			// правильный ответ
-		}
-		stream->Free();
-	}
-	catch (...) {
-		ShowError(2);
-	}
-}
-
-// ---------------------------------------------------------------------------
-String TF::FillChars(String str, int count) {
-	for (int i = str.Length(); i < count; i++) {
-		str += '|';
-	}
-
-	return str;
-}
-
-// ---------------------------------------------------------------------------
-String TF::ClearStr(String str) {
-	String cl_str = "";
-	int i = 1;
-
-	while (str[i] != '|') {
-		cl_str += str[i];
-		if (i++ == str.Length())
-			break;
-	}
-
-	return cl_str;
-}
-
-// ---------------------------------------------------------------------------
-String TF::GetStr(String str, int begin, int size) {
-	String ret = "";
-
-	for (int i = begin; i < begin + size; i++) {
-		ret += str[i];
-	}
-
-	return ret;
-}
-
-// ---------------------------------------------------------------------------
 void ShowError(int errcode) {
 	switch (errcode) {
 	case 1:
@@ -2489,7 +2402,7 @@ void ShowError(int errcode) {
 		exit(1);
 	case 2:
 		F->FatalError = 1;
-		ShowMessage("Ошибка загрузки базы вопросов: база с именем '" + F->Settings->LastBase + "' не существует!");
+		ShowMessage("Ошибка загрузки базы вопросов: база с именем '" + Settings->LastBase + "' не существует!");
 		exit(1);
 	}
 }
@@ -2500,7 +2413,7 @@ void DumpMemory(int errcode) {
 
 	AnsiString str = "";
 
-	str = "LastBase = " + F->Settings->LastBase + "\n\r";
+	str = "LastBase = " + Settings->LastBase + "\n\r";
 	stream->Write(& str[1], str.Length());
 
 	int n = F->NumberOfQuestion;
@@ -2508,7 +2421,7 @@ void DumpMemory(int errcode) {
 	str = "Number of question = " + IntToStr(n) + "\n\r";
 	stream->Write(& str[1], str.Length());
 
-	str = "Question = " + IntToStr(F->base[n].Round) + ". " + F->base[n].Question + "\n\r";
+	str = "Question = " + IntToStr(base[n].Round) + ". " + base[n].Question + "\n\r";
 	stream->Write(& str[1], str.Length());
 
 	str = "Ingame = [";
@@ -2653,7 +2566,7 @@ void __fastcall TF::tmrLightAnimationTimer(TObject* Sender) {
 // ----------------------------------------------------------------------------
 
 void __fastcall TF::ControlLabelClick(TObject* Sender) {
-	if (ModeOfGame == 3 && CanAnswer == 1 && F->Settings->PlayerType[F->chooseplayer - 1] == bbHuman) {
+	if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[F->chooseplayer - 1] == bbHuman) {
 		switch (RoundOfGame) {
 		case 1:
 			F->Reward = 1000;
@@ -2685,7 +2598,7 @@ void __fastcall TF::ControlLabelClick(TObject* Sender) {
 		Proverka();
 		tmrTime->Enabled = False;
 	}
-	if (ModeOfGame == 1 && CanChoose == 1 && F->Settings->PlayerType[F->CurrentHatch - 1] == bbHuman) {
+	if (ModeOfGame == 1 && CanChoose == 1 && Settings->PlayerType[F->CurrentHatch - 1] == bbHuman) {
 		if (Sender == lblPlayer[0] && F->CurrentHatch != 1)
 			F->imgHatch1Click(imgHatch1);
 		if (Sender == lblPlayer[1] && F->CurrentHatch != 2)

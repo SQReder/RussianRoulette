@@ -44,14 +44,7 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
 	ini->Free();
 	// ->
 
-	FileListBox1->Directory = "\Base";
 	cmbListOfBases->Items->Assign(F->Settings->BaseNames);
-	for (int i = 0; i < FileListBox1->Items->Count; i++) {
-		if (BaseFiles[i].second == F->Settings->LastBase) {
-			cmbListOfBases->ItemIndex = i;
-			break;
-		}
-	}
 
 	edPlayer0->Text = F->Settings->PlayerNames[0];
 	edPlayer1->Text = F->Settings->PlayerNames[1];
@@ -101,7 +94,6 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
 void __fastcall TSettingsForm::btnCancelClick(TObject* Sender) {
 	SettingsForm->Hide();
 	SettingsForm->Close();
-	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName);
 }
 
 // ---------------------------------------------------------------------------
@@ -153,11 +145,6 @@ void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
 	F->Settings->Fullscreen = cbFullscreen->Checked;
 	F->Settings->Win7Features = cbWin7Features->Checked;
 	F->Settings->HostMode = cbHostModeOnOff->Checked;
-	FileListBox1->Update();
-
-	for (unsigned int i = 0; i < 10; i++) {
-		F->Settings->LastBase = BaseFiles[cmbListOfBases->ItemIndex].second;
-	}
 
 	SaveSettings();
 	SettingsForm->Hide();
@@ -165,9 +152,6 @@ void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::FormClose(TObject* Sender, TCloseAction& Action) {
-	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName); }
-// ---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::tbSoundVolumeChange(TObject* Sender) {
 	lblSoundVolume->Caption = "Громкость звука: " + IntToStr(tbSoundVolume->Position) + "%"; }

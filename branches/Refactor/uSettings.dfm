@@ -15,7 +15,6 @@ object SettingsForm: TSettingsForm
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -221,15 +220,6 @@ object SettingsForm: TSettingsForm
         #1050#1086#1084#1087#1100#1102#1090#1077#1088' - '#1089#1088#1077#1076#1085#1080#1081
         #1050#1086#1084#1087#1100#1102#1090#1077#1088' - '#1089#1083#1086#1078#1085#1099#1081
         #1050#1086#1084#1087#1100#1102#1090#1077#1088' - '#1089#1083#1086#1078#1085#1077#1081#1096#1080#1081)
-    end
-    object FileListBox1: TFileListBox
-      Left = 141
-      Top = -2
-      Width = 145
-      Height = 19
-      ItemHeight = 13
-      TabOrder = 10
-      Visible = False
     end
   end
   object btnOK: TButton

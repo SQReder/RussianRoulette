@@ -121,8 +121,8 @@
 				<DependentOn>uSettings.h</DependentOn>
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
-			<FormResources Include="uSettings.dfm"/>
 			<FormResources Include="Splash.dfm"/>
+			<FormResources Include="uSettings.dfm"/>
 			<FormResources Include="About.dfm"/>
 			<FormResources Include="MainMenu.dfm"/>
 			<FormResources Include="MainForm.dfm"/>
@@ -151,7 +151,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">323</VersionInfo>
+						<VersionInfo Name="Build">324</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -163,7 +163,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule inc.</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">just for fun</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.0.323</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.0.324</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GPL v3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

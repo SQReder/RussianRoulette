@@ -23,7 +23,6 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<BCC_PCHInject>pch1.h</BCC_PCHInject>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<BCC_AsmToObj>true</BCC_AsmToObj>
 			<LinkPackageStatics>rtl.lib;vcl.lib;vclimg.lib;vclx.lib;Tee.lib;bcbie.lib</LinkPackageStatics>
@@ -75,6 +74,10 @@
 			<CppCompile Include="AI.cpp">
 				<BuildOrder>11</BuildOrder>
 			</CppCompile>
+			<CppCompile Include="base.cpp">
+				<DependentOn>base.h</DependentOn>
+				<BuildOrder>13</BuildOrder>
+			</CppCompile>
 			<CppCompile Include="GameLogic.cpp">
 				<DependentOn>GameLogic.h</DependentOn>
 				<BuildOrder>5</BuildOrder>
@@ -93,9 +96,6 @@
 				<DependentOn>MainMenu.h</DependentOn>
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
-			<None Include="pch1.h">
-				<BuildOrder>12</BuildOrder>
-			</None>
 			<CppCompile Include="russian roulette.cpp">
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
@@ -121,8 +121,8 @@
 				<DependentOn>uSettings.h</DependentOn>
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
-			<FormResources Include="uSettings.dfm"/>
 			<FormResources Include="Splash.dfm"/>
+			<FormResources Include="uSettings.dfm"/>
 			<FormResources Include="About.dfm"/>
 			<FormResources Include="MainMenu.dfm"/>
 			<FormResources Include="MainForm.dfm"/>
@@ -151,7 +151,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">323</VersionInfo>
+						<VersionInfo Name="Build">329</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -163,7 +163,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule inc.</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">just for fun</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.0.323</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.0.329</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GPL v3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

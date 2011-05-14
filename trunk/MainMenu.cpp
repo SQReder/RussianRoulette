@@ -12,6 +12,7 @@
 #pragma resource "*.dfm"
 
 TMenuForm* MenuForm;
+const UnicodeString dir_base = "base\\";
 
 // ---------------------------------------------------------------------------
 __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) { }
@@ -44,7 +45,7 @@ void __fastcall TMenuForm::_btnBblNTuHaxepClick(TObject* Sender) { exit(0); }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
-	F->LoadQuestionFromBase(F->Settings->LastBase);
+	F->LoadQuestionFromBase(dir_base + F->Settings->LastBase);
 
 	if (!F->Settings->Fullscreen) {
 		F->Settings->FormsWidth = Width;
@@ -52,7 +53,6 @@ void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
 		F->Settings->FormsTop = Top;
 		F->Settings->FormsLeft = Left;
 	}
-	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName);
 	F->Show();
 	MenuForm->Hide();
 }
@@ -60,7 +60,6 @@ void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnShowSettingsClick(TObject* Sender) {
 	SettingsForm->ShowModal();
-	SettingsForm->FileListBox1->Directory = "\Base";
 	if (F->Settings->Fullscreen) {
 		BorderStyle = bsNone;
 		Width = Screen->Width;

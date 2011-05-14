@@ -35,7 +35,6 @@ __published: // IDE-managed Components
 	TComboBox* cmbPlayerType3;
 	TComboBox* cmbPlayerType4;
 	TCheckBox* cbMusicOnOff;
-	TFileListBox* FileListBox1;
 	TCheckBox* cbHostModeOnOff;
 	TTrackBar* tbSoundVolume;
 	TGroupBox* gbChooseQuestionBase;
@@ -50,7 +49,6 @@ __published: // IDE-managed Components
 	void __fastcall FormCreate(TObject* Sender);
 	void __fastcall btnCancelClick(TObject* Sender);
 	void __fastcall btnOKClick(TObject* Sender);
-	void __fastcall FormClose(TObject* Sender, TCloseAction& Action);
 	void __fastcall tbSoundVolumeChange(TObject* Sender);
 	void __fastcall tbMusicVolumeChange(TObject* Sender);
 	void __fastcall cbSoundOnOffClick(TObject* Sender);

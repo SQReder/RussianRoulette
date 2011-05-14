@@ -12,6 +12,8 @@
 #pragma resource "*.dfm"
 
 TMenuForm* MenuForm;
+extern void InitializeSettings();
+extern TSettings* Settings;
 
 // ---------------------------------------------------------------------------
 __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) { }
@@ -19,13 +21,10 @@ __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) { }
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::FormCreate(TObject* Sender) {
 	// MenuVisible = True;
-	F->InitializeSettings();
+	InitializeSettings();
 
-	F->Settings->FormsTop = Top;
-	F->Settings->FormsLeft = Left;
-
-	MenuForm->Constraints->MinWidth = F->Settings->MinWidth;
-	MenuForm->Constraints->MinHeight = F->Settings->MinHeight;
+	MenuForm->Constraints->MinWidth = Settings->MinWidth;
+	MenuForm->Constraints->MinHeight = Settings->MinHeight;
 
 	Color = clBlack;
 
@@ -44,15 +43,14 @@ void __fastcall TMenuForm::_btnBblNTuHaxepClick(TObject* Sender) { exit(0); }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
-	F->LoadQuestionFromBase(F->Settings->LastBase);
+	LoadQuestionFromBase(Settings->LastBase);
 
-	if (!F->Settings->Fullscreen) {
-		F->Settings->FormsWidth = Width;
-		F->Settings->FormsHeight = Height;
-		F->Settings->FormsTop = Top;
-		F->Settings->FormsLeft = Left;
+	if (!Settings->Fullscreen) {
+		Settings->FormsWidth = Width;
+		Settings->FormsHeight = Height;
+		Settings->FormsTop = Top;
+		Settings->FormsLeft = Left;
 	}
-	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName);
 	F->Show();
 	MenuForm->Hide();
 }
@@ -60,8 +58,7 @@ void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnShowSettingsClick(TObject* Sender) {
 	SettingsForm->ShowModal();
-	SettingsForm->FileListBox1->Directory = "\Base";
-	if (F->Settings->Fullscreen) {
+	if (Settings->Fullscreen) {
 		BorderStyle = bsNone;
 		Width = Screen->Width;
 		Height = Screen->Height;
@@ -70,8 +67,8 @@ void __fastcall TMenuForm::btnShowSettingsClick(TObject* Sender) {
 	}
 	else {
 		BorderStyle = bsSizeable;
-		Width = F->Settings->FormsWidth;
-		Height = F->Settings->FormsHeight;
+		Width = Settings->FormsWidth;
+		Height = Settings->FormsHeight;
 		// Left = F->Sett
 	}
 }
@@ -83,7 +80,7 @@ void __fastcall TMenuForm::btnAboutClick(TObject* Sender) { AboutForm->ShowModal
 void __fastcall TMenuForm::FormResize(TObject* Sender) {
 	const spacer = 0;
 
-	if (F->Settings->Fullscreen) {
+	if (Settings->Fullscreen) {
 		BorderStyle = bsNone;
 		Width = Screen->Width;
 		Height = Screen->Height;
@@ -92,8 +89,8 @@ void __fastcall TMenuForm::FormResize(TObject* Sender) {
 	}
 	else {
 		BorderStyle = bsSizeable;
-		Width = F->Settings->FormsWidth;
-		Height = F->Settings->FormsHeight;
+		Width = Settings->FormsWidth;
+		Height = Settings->FormsHeight;
 		// Left = F->Sett
 	}
 
@@ -121,7 +118,7 @@ void __fastcall TMenuForm::FormResize(TObject* Sender) {
 void __fastcall TMenuForm::FormShow(TObject* Sender) {
 	MenuForm->Resize();
 	// SettingsForm->FileListBox1->Directory = "\Base";
-	if (F->Settings->Fullscreen) {
+	if (Settings->Fullscreen) {
 		BorderStyle = bsNone;
 		Width = Screen->Width;
 		Height = Screen->Height;
@@ -130,20 +127,20 @@ void __fastcall TMenuForm::FormShow(TObject* Sender) {
 	}
 	else {
 		BorderStyle = bsSizeable;
-		Width = F->Settings->FormsWidth;
-		Height = F->Settings->FormsHeight;
-		Left = F->Settings->FormsLeft;
-		Top = F->Settings->FormsTop;
+		Width = Settings->FormsWidth;
+		Height = Settings->FormsHeight;
+		Left = Settings->FormsLeft;
+		Top = Settings->FormsTop;
 	}
 }
 // ---------------------------------------------------------------------------
 
 void __fastcall TMenuForm::FormHide(TObject* Sender) {
-	if (!F->Settings->Fullscreen) {
-		F->Settings->FormsWidth = Width;
-		F->Settings->FormsHeight = Height;
-		F->Settings->FormsTop = Top;
-		F->Settings->FormsLeft = Left;
+	if (!Settings->Fullscreen) {
+		Settings->FormsWidth = Width;
+		Settings->FormsHeight = Height;
+		Settings->FormsTop = Top;
+		Settings->FormsLeft = Left;
 	}
 }
 // ---------------------------------------------------------------------------

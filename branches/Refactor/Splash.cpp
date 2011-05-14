@@ -9,6 +9,7 @@
 #include "inifiles.hpp"
 #include "classes.hpp"
 #include <windows.h>
+#include "uSettings.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -181,6 +182,12 @@ void __fastcall TSplashForm::FormClick(TObject* Sender) {
 int CountDown = 2;
 
 void __fastcall TSplashForm::tmrSplashTimer(TObject* Sender) {
+	extern TSettings* Settings;
+	if (!Settings) {
+		extern void InitializeSettings();
+		InitializeSettings();
+	}
+
 	if (CountDown-- || FatalError)
 		SplashForm->Click();
 }

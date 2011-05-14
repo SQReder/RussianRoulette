@@ -9,18 +9,23 @@
 
 #include "uSettings.h"
 #include "MainForm.h"
+TSettings* Settings;
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TSettingsForm* SettingsForm;
-void ListFiles(String path, TStrings* List);
 std::vector <std::pair <UnicodeString, UnicodeString> > BaseFiles;
 
 // ---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSettingsForm::FormShow(TObject* Sender) { F->InitializeSettings(); }
+void __fastcall TSettingsForm::FormShow(TObject* Sender) {
+	cbWin7Features->Checked = Settings->Win7Features;
+	tbSoundVolume->Position = Settings->SoundVolume;
+	tbMusicVolume->Position = Settings->MusicVolume;
+
+}
 // ---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
@@ -44,43 +49,33 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
 	ini->Free();
 	// ->
 
-	FileListBox1->Directory = "\Base";
-	cmbListOfBases->Items->Assign(F->Settings->BaseNames);
-	for (int i = 0; i < FileListBox1->Items->Count; i++) {
-		if (BaseFiles[i].second == F->Settings->LastBase) {
-			cmbListOfBases->ItemIndex = i;
-			break;
-		}
-	}
+	cmbListOfBases->Items->Assign(Settings->BaseNames);
 
-	edPlayer0->Text = F->Settings->PlayerNames[0];
-	edPlayer1->Text = F->Settings->PlayerNames[1];
-	edPlayer2->Text = F->Settings->PlayerNames[2];
-	edPlayer3->Text = F->Settings->PlayerNames[3];
-	edPlayer4->Text = F->Settings->PlayerNames[4];
+	edPlayer0->Text = Settings->PlayerNames[0];
+	edPlayer1->Text = Settings->PlayerNames[1];
+	edPlayer2->Text = Settings->PlayerNames[2];
+	edPlayer3->Text = Settings->PlayerNames[3];
+	edPlayer4->Text = Settings->PlayerNames[4];
 
-	cmbPlayerType0->ItemIndex = (int)F->Settings->PlayerType[0];
-	cmbPlayerType1->ItemIndex = (int)F->Settings->PlayerType[1];
-	cmbPlayerType2->ItemIndex = (int)F->Settings->PlayerType[2];
-	cmbPlayerType3->ItemIndex = (int)F->Settings->PlayerType[3];
-	cmbPlayerType4->ItemIndex = (int)F->Settings->PlayerType[4];
+	cmbPlayerType0->ItemIndex = (int)Settings->PlayerType[0];
+	cmbPlayerType1->ItemIndex = (int)Settings->PlayerType[1];
+	cmbPlayerType2->ItemIndex = (int)Settings->PlayerType[2];
+	cmbPlayerType3->ItemIndex = (int)Settings->PlayerType[3];
+	cmbPlayerType4->ItemIndex = (int)Settings->PlayerType[4];
 
-	cbSoundOnOff->Checked = F->Settings->SoundEnabled;
-	cbMusicOnOff->Checked = F->Settings->MusicEnabled;
-	cbFullscreen->Checked = F->Settings->Fullscreen;
+	cbSoundOnOff->Checked = Settings->SoundEnabled;
+	cbMusicOnOff->Checked = Settings->MusicEnabled;
+	cbFullscreen->Checked = Settings->Fullscreen;
 	// «режим ведущего» отныне и навеки работает ТОЛЬКО при наличии
 	// 2-х и более подключенных мониторов к ПК
 	if (Screen->MonitorCount > 1) {
-		cbHostModeOnOff->Checked = F->Settings->HostMode;
+		cbHostModeOnOff->Checked = Settings->HostMode;
 		cbHostModeOnOff->Enabled = 1;
 	}
 	else {
 		cbHostModeOnOff->Checked = 0;
 		cbHostModeOnOff->Enabled = 0;
 	}
-	cbWin7Features->Checked = F->Settings->Win7Features;
-	tbSoundVolume->Position = F->Settings->SoundVolume;
-	tbMusicVolume->Position = F->Settings->MusicVolume;
 
 	btnCancel->Caption = "Cancel";
 	btnOK->Caption = "OK";
@@ -91,35 +86,34 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
 	cbMusicOnOff->Caption = "Включить музыку";
 	cbFullscreen->Caption = "Полный экран";
 	cbHostModeOnOff->Caption = "Режим ведущего";
-	tbSoundVolumeChange(tbSoundVolume);
-	tbMusicVolumeChange(tbMusicVolume);
-	cbSoundOnOffClick(cbSoundOnOff);
-	cbMusicOnOffClick(cbMusicOnOff);
+	tbSoundVolumeChange(NULL);
+	tbMusicVolumeChange(NULL);
+	cbSoundOnOffClick(NULL);
+	cbMusicOnOffClick(NULL);
 }
 // ---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::btnCancelClick(TObject* Sender) {
 	SettingsForm->Hide();
 	SettingsForm->Close();
-	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName);
 }
 
 // ---------------------------------------------------------------------------
 void SaveSettings() {
 	TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
-	ini->WriteBool("Global", "FullScreen", F->Settings->Fullscreen);
-	ini->WriteInteger("Global", "Width", F->Settings->FormsWidth);
-	ini->WriteInteger("Global", "Height", F->Settings->FormsHeight);
-	ini->WriteBool("Global", "Sound", F->Settings->SoundEnabled);
-	ini->WriteInteger("Global", "SoundVolume", F->Settings->SoundVolume);
-	ini->WriteBool("Global", "Music", F->Settings->MusicEnabled);
-	ini->WriteInteger("Global", "MusicVolume", F->Settings->MusicVolume);
-	ini->WriteBool("Global", "HostMode", F->Settings->HostMode);
-	ini->WriteString("Global", "LastBase", F->Settings->LastBase);
+	ini->WriteBool("Global", "FullScreen", Settings->Fullscreen);
+	ini->WriteInteger("Global", "Width", Settings->FormsWidth);
+	ini->WriteInteger("Global", "Height", Settings->FormsHeight);
+	ini->WriteBool("Global", "Sound", Settings->SoundEnabled);
+	ini->WriteInteger("Global", "SoundVolume", Settings->SoundVolume);
+	ini->WriteBool("Global", "Music", Settings->MusicEnabled);
+	ini->WriteInteger("Global", "MusicVolume", Settings->MusicVolume);
+	ini->WriteBool("Global", "HostMode", Settings->HostMode);
+	ini->WriteString("Global", "LastBase", Settings->LastBase);
 
 	for (int i = 1; i <= 5; i++) {
-		ini->WriteString("Players", "Player" + IntToStr(i), F->Settings->PlayerNames[i - 1]);
-		ini->WriteInteger("Players", "PlayerType" + IntToStr(i), (int) F->Settings->PlayerType[i - 1]);
+		ini->WriteString("Players", "Player" + IntToStr(i), Settings->PlayerNames[i - 1]);
+		ini->WriteInteger("Players", "PlayerType" + IntToStr(i), (int) Settings->PlayerType[i - 1]);
 	}
 
 	// SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName) + "\\base\\";
@@ -134,39 +128,34 @@ void SaveSettings() {
 
 // -----------------------------------------------------------------------------
 void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
-	F->Settings->PlayerNames[0] = edPlayer0->Text;
-	F->Settings->PlayerNames[1] = edPlayer1->Text;
-	F->Settings->PlayerNames[2] = edPlayer2->Text;
-	F->Settings->PlayerNames[3] = edPlayer3->Text;
-	F->Settings->PlayerNames[4] = edPlayer4->Text;
+	Settings->PlayerNames[0] = edPlayer0->Text;
+	Settings->PlayerNames[1] = edPlayer1->Text;
+	Settings->PlayerNames[2] = edPlayer2->Text;
+	Settings->PlayerNames[3] = edPlayer3->Text;
+	Settings->PlayerNames[4] = edPlayer4->Text;
 
-	F->Settings->PlayerType[0] = (TBotType)cmbPlayerType0->ItemIndex;
-	F->Settings->PlayerType[1] = (TBotType)cmbPlayerType1->ItemIndex;
-	F->Settings->PlayerType[2] = (TBotType)cmbPlayerType2->ItemIndex;
-	F->Settings->PlayerType[3] = (TBotType)cmbPlayerType3->ItemIndex;
-	F->Settings->PlayerType[4] = (TBotType)cmbPlayerType4->ItemIndex;
+	Settings->PlayerType[0] = (TBotType)cmbPlayerType0->ItemIndex;
+	Settings->PlayerType[1] = (TBotType)cmbPlayerType1->ItemIndex;
+	Settings->PlayerType[2] = (TBotType)cmbPlayerType2->ItemIndex;
+	Settings->PlayerType[3] = (TBotType)cmbPlayerType3->ItemIndex;
+	Settings->PlayerType[4] = (TBotType)cmbPlayerType4->ItemIndex;
 
-	F->Settings->SoundEnabled = cbSoundOnOff->Checked;
-	F->Settings->SoundVolume = tbSoundVolume->Position;
-	F->Settings->MusicEnabled = cbMusicOnOff->Checked;
-	F->Settings->MusicVolume = tbMusicVolume->Position;
-	F->Settings->Fullscreen = cbFullscreen->Checked;
-	F->Settings->Win7Features = cbWin7Features->Checked;
-	F->Settings->HostMode = cbHostModeOnOff->Checked;
-	FileListBox1->Update();
+	Settings->SoundEnabled = cbSoundOnOff->Checked;
+	Settings->SoundVolume = tbSoundVolume->Position;
+	Settings->MusicEnabled = cbMusicOnOff->Checked;
+	Settings->MusicVolume = tbMusicVolume->Position;
+	Settings->Fullscreen = cbFullscreen->Checked;
+	Settings->Win7Features = cbWin7Features->Checked;
+	Settings->HostMode = cbHostModeOnOff->Checked;
 
 	for (unsigned int i = 0; i < 10; i++) {
-		F->Settings->LastBase = BaseFiles[cmbListOfBases->ItemIndex].second;
+		Settings->LastBase = BaseFiles[cmbListOfBases->ItemIndex].second;
 	}
 
 	SaveSettings();
 	SettingsForm->Hide();
 	SettingsForm->Close();
 }
-// ---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::FormClose(TObject* Sender, TCloseAction& Action) {
-	SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName); }
 // ---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::tbSoundVolumeChange(TObject* Sender) {

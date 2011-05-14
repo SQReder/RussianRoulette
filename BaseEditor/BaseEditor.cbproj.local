@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.003,C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.h=E:\Projects\Roulette\BaseEditor\main.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.003,C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.dfm=E:\Projects\Roulette\BaseEditor\main.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.733,C:\Users\endAurum\Documents\RAD Studio\Projects\Project1.cbproj=E:\Projects\Roulette\BaseEditor\BaseEditor.cbproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.297,E:\Projects\Roulette\BaseEditor\Unit1.h=E:\Projects\Roulette\BaseEditor\base.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.329,E:\Projects\Roulette\BaseEditor\Unit1.h=E:\Projects\Roulette\BaseEditor\question.h</Transaction>
-    <Transaction>2011.05.12 01:13:43.814,E:\Projects\Roulette\BaseEditor\sQuestionSpecific.txt=E:\Projects\Roulette\BaseEditor\New1.txt</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.733,E:\Projects\Roulette\BaseEditor\BaseEditor.cbproj=C:\Users\endAurum\Documents\RAD Studio\Projects\Project1.cbproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.814,E:\Projects\Roulette\BaseEditor\New1.txt=E:\Projects\Roulette\BaseEditor\sQuestionSpecific.txt</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.003,E:\Projects\Roulette\BaseEditor\main.dfm=C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.003,E:\Projects\Roulette\BaseEditor\main.h=C:\Users\endAurum\Documents\RAD Studio\Projects\Unit1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.297,E:\Projects\Roulette\BaseEditor\base.h=E:\Projects\Roulette\BaseEditor\Unit1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.329,E:\Projects\Roulette\BaseEditor\question.h=E:\Projects\Roulette\BaseEditor\Unit1.h</Transaction>
   </Transactions>
 </BorlandProject>

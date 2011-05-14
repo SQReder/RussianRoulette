@@ -262,8 +262,10 @@ void ReadCfgFile() {
 		i++ ;
 	}
 
-	if (F->Settings->LastBase == "")
+	if (F->Settings->LastBase == "") {
 		ShowError(1);
+		F->Settings->LastBase = "main.dat";
+	}
 
 	ini->Free();
 }
@@ -2105,7 +2107,6 @@ void __fastcall TF::FormClose(TObject* Sender, TCloseAction& Action) {
 	MediaPlayer1->Close();
 	MediaPlayer2->Close();
 
-	SettingsForm->FileListBox1->Directory = "\Base";
 	// F->Free();
 }
 // ---------------------------------------------------------------------------
@@ -2485,7 +2486,8 @@ String TF::GetStr(String str, int begin, int size) {
 void ShowError(int errcode) {
 	switch (errcode) {
 	case 1:
-		ShowMessage("Ошибка загрузки базы вопросов: имя базы не указано!");
+		ShowMessage(
+			"Ошибка загрузки базы вопросов: имя базы не указано!\nБудет загружена база по-умолчанию 'main.dat'");
 		exit(1);
 	case 2:
 		F->FatalError = 1;

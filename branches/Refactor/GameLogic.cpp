@@ -5,6 +5,9 @@
 #include "GameLogic.h"
 #include "MainForm.h"
 #include "Hatches.h"
+#include "base.h"
+extern QA* base;
+extern qcount;
 // ---------------------------------------------------------------------------
 
 #pragma package(smart_init)
@@ -60,11 +63,11 @@ void showquestion() {
 	do {
 		rndq = random(F->qcount);
 	}
-	while (!(StrToInt(F->base[rndq].Round) == Round));
+	while (!(StrToInt(base[rndq].Round) == Round));
 
 	F->LabelQuestion->AutoSize = true;
 	F->NumberOfQuestion = rndq;
-	F->LabelQuestion->Caption = F->base[F->NumberOfQuestion].Question;
+	F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
 	F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
 	if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
 		F->LabelQuestion->WordWrap = true;
@@ -77,7 +80,7 @@ void showquestion() {
 	F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
 	F->LabelQuestion->Visible = True;
 	F->tmrWaiting->Enabled = True;
-	F->base[F->NumberOfQuestion].Round = '0';
+	base[F->NumberOfQuestion].Round = '0';
 	F->PlayMusic("rr_question.wav");
 	// считать вопрос из файла; для начала заранее с помощью отдельной программы
 }
@@ -184,10 +187,10 @@ void load_final_question() {
 	do {
 		rndq = random(F->qcount);
 	}
-	while (!(StrToInt(F->base[rndq].Round) == Round));
+	while (!(StrToInt(base[rndq].Round) == Round));
 	F->LabelQuestion->AutoSize = true;
 	F->NumberOfQuestion = rndq;
-	F->LabelQuestion->Caption = F->base[F->NumberOfQuestion].Question;
+	F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
 	if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
 		F->LabelQuestion->WordWrap = true;
 	}
@@ -200,7 +203,7 @@ void load_final_question() {
 	F->imgTotalPrize->Visible = true;
 	F->imgPulseBar->Visible = true;
 	F->imgTicker->Visible = true;
-	F->base[F->NumberOfQuestion].Round = '0';
+	base[F->NumberOfQuestion].Round = '0';
 }
 
 // -----------------------------------------------------------------------------
@@ -321,7 +324,7 @@ bool TF::_Parse(UnicodeString ans) {
 	ans = myLowerCase(ans);
 	UnicodeString trueans[5];
 	for (int i = 0; i < 5; i++) {
-		trueans[i] = F->base[F->NumberOfQuestion].Answers[i];
+		trueans[i] = base[F->NumberOfQuestion].Answers[i];
 		trueans[i] = myLowerCase(trueans[i]);
 	}
 	// удаление двойных пробелов
