@@ -5989,7 +5989,7 @@ object F: TF
     Top = 248
   end
   object tmrPulseAnimation: TTimer
-    Interval = 70
+    Interval = 110
     OnTimer = tmrPulseAnimationTimer
     Left = 200
     Top = 184

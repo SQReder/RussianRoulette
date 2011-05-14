@@ -21,7 +21,7 @@
 #pragma link "TeeFilters"
 #pragma link "SHDocVw_OCX"
 #pragma resource "*.dfm"
-#define _StartRotaingSpeed 50
+#define _StartRotaingSpeed 100
 extern int key;
 
 TF* F;
@@ -309,7 +309,7 @@ void __fastcall TF::btnMechStartClick(TObject* Sender) {
 	}
 	tmrRotator->Interval = SpeedOfRotation;
 	MechanizmOn = -1;
-	imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
+	F->imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
 	tmrRotator->Enabled = True;
 	PlayMusic("rr_mexopen.wav");
 	btnMechStart->Enabled = 0;

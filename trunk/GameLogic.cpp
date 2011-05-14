@@ -62,16 +62,17 @@ void showquestion() {
 	}
 	while (!(StrToInt(F->base[rndq].Round) == Round));
 
+	F->LabelQuestion->WordWrap = false;
 	F->LabelQuestion->AutoSize = true;
 	F->NumberOfQuestion = rndq;
 	F->LabelQuestion->Caption = F->base[F->NumberOfQuestion].Question;
 	F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
 	if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
 		F->LabelQuestion->WordWrap = true;
+		F->LabelQuestion->AutoSize = false;
 		F->LabelQuestion->Width = 573;
-		F->LabelQuestion->Height = 65;
-	}
-	else {
+		F->LabelQuestion->AutoSize = true;
+	} else {
 		F->LabelQuestion->WordWrap = false;
 	}
 	F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
@@ -185,13 +186,16 @@ void load_final_question() {
 		rndq = random(F->qcount);
 	}
 	while (!(StrToInt(F->base[rndq].Round) == Round));
+	F->LabelQuestion->WordWrap = false;
 	F->LabelQuestion->AutoSize = true;
 	F->NumberOfQuestion = rndq;
 	F->LabelQuestion->Caption = F->base[F->NumberOfQuestion].Question;
 	if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
 		F->LabelQuestion->WordWrap = true;
-	}
-	else {
+		F->LabelQuestion->AutoSize = false;
+		F->LabelQuestion->Width = 573;
+		F->LabelQuestion->AutoSize = true;
+	} else {
 		F->LabelQuestion->WordWrap = false;
 	}
 	F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
