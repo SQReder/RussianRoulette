@@ -6,8 +6,6 @@
 #include "MainForm.h"
 #include "Hatches.h"
 #include "base.h"
-extern QA* base;
-extern int qcount;
 // ---------------------------------------------------------------------------
 
 #pragma package(smart_init)
@@ -60,29 +58,29 @@ void showquestion() {
     int Round = F->RoundOfGame;
     unsigned int rndq; // random question
 
-    do {
-        rndq = random(qcount);
-    }
-    while (!(StrToInt(base[rndq].Round) == Round));
+	do {
+		rndq = random(qcount);
+	}
+	while (!(StrToInt(base[rndq].Round) == Round));
 
-    F->LabelQuestion->AutoSize = true;
-    F->NumberOfQuestion = rndq;
-    F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
-    F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
-    if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
-        F->LabelQuestion->WordWrap = true;
-        F->LabelQuestion->Width = 573;
-        F->LabelQuestion->Height = 65;
-    }
-    else {
-        F->LabelQuestion->WordWrap = false;
-    }
-    F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
-    F->LabelQuestion->Visible = True;
-    F->tmrWaiting->Enabled = True;
-    base[F->NumberOfQuestion].Round = '0';
-    F->PlayMusic("rr_question.wav");
-    // считать вопрос из файла; для начала заранее с помощью отдельной программы
+	F->LabelQuestion->AutoSize = true;
+	F->NumberOfQuestion = rndq;
+	F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
+	F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
+	if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
+		F->LabelQuestion->WordWrap = true;
+		F->LabelQuestion->Width = 573;
+		F->LabelQuestion->Height = 65;
+	}
+	else {
+		F->LabelQuestion->WordWrap = false;
+	}
+	F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
+	F->LabelQuestion->Visible = True;
+	F->tmrWaiting->Enabled = True;
+	base[F->NumberOfQuestion].Round = '0';
+	F->PlayMusic("rr_question.wav");
+	// считать вопрос из файла; для начала заранее с помощью отдельной программы
 }
 
 // -----------------------------------------------------------------------------
@@ -184,26 +182,26 @@ void load_final_question() {
     int Round = F->RoundOfGame;
     unsigned int rndq; // random question
 
-    do {
-        rndq = random(qcount);
-    }
-    while (!(StrToInt(base[rndq].Round) == Round));
-    F->LabelQuestion->AutoSize = true;
-    F->NumberOfQuestion = rndq;
-    F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
-    if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
-        F->LabelQuestion->WordWrap = true;
-    }
-    else {
-        F->LabelQuestion->WordWrap = false;
-    }
-    F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
-    F->LabelQuestion->Visible = True;
-    F->LabelMoney->Visible = true;
-    F->imgTotalPrize->Visible = true;
-    F->imgPulseBar->Visible = true;
-    F->imgTicker->Visible = true;
-    base[F->NumberOfQuestion].Round = '0';
+	do {
+		rndq = random(qcount);
+	}
+	while (!(StrToInt(base[rndq].Round) == Round));
+	F->LabelQuestion->AutoSize = true;
+	F->NumberOfQuestion = rndq;
+	F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
+	if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
+		F->LabelQuestion->WordWrap = true;
+	}
+	else {
+		F->LabelQuestion->WordWrap = false;
+	}
+	F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
+	F->LabelQuestion->Visible = True;
+	F->LabelMoney->Visible = true;
+	F->imgTotalPrize->Visible = true;
+	F->imgPulseBar->Visible = true;
+	F->imgTicker->Visible = true;
+	base[F->NumberOfQuestion].Round = '0';
 }
 
 // -----------------------------------------------------------------------------
@@ -320,18 +318,18 @@ UnicodeString myLowerCase(UnicodeString str) {
 
 // -----------------------------------------------------------------------------
 bool TF::_Parse(UnicodeString ans) {
-    ans = Trim(ans);
-    ans = myLowerCase(ans);
-    UnicodeString trueans[5];
-    for (int i = 0; i < 5; i++) {
-        trueans[i] = base[F->NumberOfQuestion].Answers[i];
-        trueans[i] = myLowerCase(trueans[i]);
-    }
-    // удаление двойных пробелов
-    for (int i = 0; i < 5; i++) {
-        if (ans == trueans[i])
-            return (1);
-    }
-    return (0);
+	ans = Trim(ans);
+	ans = myLowerCase(ans);
+	UnicodeString trueans[5];
+	for (int i = 0; i < 5; i++) {
+		trueans[i] = base[F->NumberOfQuestion].Answers[i];
+		trueans[i] = myLowerCase(trueans[i]);
+	}
+	// удаление двойных пробелов
+	for (int i = 0; i < 5; i++) {
+		if (ans == trueans[i])
+			return (1);
+	}
+	return (0);
 }
 // ------------------------------------------

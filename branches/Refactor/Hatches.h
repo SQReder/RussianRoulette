@@ -29,4 +29,6 @@ void before_spin_lights();
 void after_spin_lights();
 // void ZeroRoundSpin();
 void OpenRndHatches();
+
+extern int AnimationFrame;
 #endif

@@ -136,7 +136,7 @@ public: // User declarations
 	int answer;
 	int Reward;
 
-	void TransferMoney();
+	void TF::TransferMoney();
 
 	int money[5]; // деньги игроков
 	int pulse[5]; // Пульсации кровяного давления

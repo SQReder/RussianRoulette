@@ -19,7 +19,7 @@ using Graphics::TPicture;
 TPicture* hatch[6]; // указатели на изображения люков на форме
 TPicture* h_state_img[6]; // изображения состояний люков
 unsigned char h_state[6]; // текущее состояние люков
-int key; // определяет порядок анимации
+int AnimationFrame; // определяет порядок анимации
 
 // ---------------------------------------------------------------------------
 void ShiftHatches() {
@@ -131,7 +131,7 @@ void FirstRoundRotating() {
 	for (int i = 0; i < 6; i++)
 		h_state[i] = 2;
 
-	switch (key++ % 2) {
+	switch (AnimationFrame++ % 2) {
 	case 0:
 		h_state[F->CurrentHatch] = 4;
 		break;
@@ -140,7 +140,7 @@ void FirstRoundRotating() {
 		F->CurrentHatch++ ;
 		break;
 	default:
-		key = 0;
+		AnimationFrame = 0;
 		break;
 	}
 	F->CurrentHatch = F->CurrentHatch % 6;
@@ -165,7 +165,7 @@ void ZeroRoundSpin() {
 	for (int i = 0; i < 6; i++)
 		h_state[i] = 1;
 
-	switch (key) {
+	switch (AnimationFrame) {
 	case 1:
 		h_state[1] = 4;
 		F->CurrentHatch = 1;
@@ -245,11 +245,11 @@ void ZeroRoundSpin() {
 		break;
 	case 15:
 		F->CurrentHatch = 5;
-		key = 0;
+		AnimationFrame = 0;
 		break;
 	}
 
-	key++ ;
+	AnimationFrame++ ;
 }
 
 // ---------------------------------------------------------------------------
@@ -258,7 +258,7 @@ void SecondRoundRotating() {
 	for (int i = 0; i < 6; i++)
 		h_state[i] = 2;
 
-	switch (key++ % 2) {
+	switch (AnimationFrame++ % 2) {
 	case 0:
 		h_state[F->CurrentHatch] = 4;
 		h_state[(F->CurrentHatch + 3) % 6] = 4;
@@ -269,7 +269,7 @@ void SecondRoundRotating() {
 		F->CurrentHatch++ ;
 		break;
 	default:
-		key = 0;
+		AnimationFrame = 0;
 		break;
 	}
 	F->CurrentHatch = F->CurrentHatch % 6;
@@ -281,7 +281,7 @@ void ThirdRoundRotating() {
 	for (int i = 0; i < 6; i++)
 		h_state[i] = 2;
 
-	switch (key++ % 2) {
+	switch (AnimationFrame++ % 2) {
 	case 0:
 		h_state[F->CurrentHatch] = 4;
 		h_state[(F->CurrentHatch + 2) % 6] = 4;
@@ -294,7 +294,7 @@ void ThirdRoundRotating() {
 		F->CurrentHatch++ ;
 		break;
 	default:
-		key = 0;
+		AnimationFrame = 0;
 		break;
 	}
 	F->CurrentHatch = F->CurrentHatch % 6;
@@ -306,7 +306,7 @@ void FourthRoundRotating() {
 	for (int i = 0; i < 6; i++)
 		h_state[i] = 2;
 
-	switch (key++ % 2) {
+	switch (AnimationFrame++ % 2) {
 	case 0:
 		h_state[F->CurrentHatch] = 4;
 		h_state[(F->CurrentHatch + 1) % 6] = 4;
@@ -321,7 +321,7 @@ void FourthRoundRotating() {
 		F->CurrentHatch++ ;
 		break;
 	default:
-		key = 0;
+		AnimationFrame = 0;
 		break;
 	}
 	F->CurrentHatch = F->CurrentHatch % 6;
@@ -333,7 +333,7 @@ void FifthRoundRotating() {
 	for (int i = 0; i < 6; i++)
 		h_state[i] = 2;
 
-	switch (key++ % 2) {
+	switch (AnimationFrame++ % 2) {
 	case 0:
 		h_state[F->CurrentHatch] = 4;
 		h_state[(F->CurrentHatch + 1) % 6] = 4;
@@ -350,7 +350,7 @@ void FifthRoundRotating() {
 		F->CurrentHatch++ ;
 		break;
 	default:
-		key = 0;
+		AnimationFrame = 0;
 		break;
 	}
 	F->CurrentHatch = F->CurrentHatch % 6;
@@ -429,7 +429,7 @@ void SwitchesLights() {
 	for (int i = 0; i < 6; i++)
 		h_state[i] = 5;
 	F->Wait = 0;
-	switch (key++) {
+	switch (AnimationFrame++) {
 	case 0: {
 			for (int i = 0; i < 5; i++)
 				if ((F->ingame[i]) && (F->CantFall != i))
@@ -441,7 +441,7 @@ void SwitchesLights() {
 					h_state[i + 1] = 5;
 		} break;
 	default:
-		key = 0;
+		AnimationFrame = 0;
 	}
 }
 

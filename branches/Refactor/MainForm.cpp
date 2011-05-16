@@ -23,10 +23,6 @@
 #pragma link "SHDocVw_OCX"
 #pragma resource "*.dfm"
 #define _StartRotaingSpeed 50
-extern int key;
-extern TSettings* Settings;
-extern QA* base;
-extern qcount;
 
 TF* F;
 extern Graphics::TPicture* pulse_pic;
@@ -86,12 +82,14 @@ void __fastcall TF::LoadGraphic() {
 
     btnMechStart->Enabled = True;
 
-    CreateLabel(3, 0, 0, 0, 0, 0, "");
-    CreateLabel(3, 1, 0, 0, 0, 0, "");
-    CreateLabel(3, 2, 0, 0, 0, 0, "");
-    CreateLabel(3, 3, 0, 0, 0, 0, "");
-    CreateLabel(3, 4, 0, 0, 0, 0, "");
-
+//    CreateLabel(3, 0, 0, 0, 0, 0, "");
+//    CreateLabel(3, 1, 0, 0, 0, 0, "");
+//    CreateLabel(3, 2, 0, 0, 0, 0, "");
+//    CreateLabel(3, 3, 0, 0, 0, 0, "");
+//    CreateLabel(3, 4, 0, 0, 0, 0, "");
+	for (unsigned i = 0; i < 5; ++i)
+	  CreateLabel(3, i, 0, 0, 0, 0, "");
+	  
     edFinalAnswer->Visible = False;
 
     imgNumber1->Visible = false;
@@ -106,7 +104,7 @@ void __fastcall TF::LoadGraphic() {
 
     btnMechStop->Enabled = 0;
     CantFall = -1;
-    key = 1;
+	AnimationFrame = 1;
 }
 
 // ---------------------------------------------------------------------------
@@ -232,25 +230,65 @@ void __fastcall TF::FormCreate(TObject* Sender) { ; }
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrPulseAnimationTimer(TObject* Sender) { NextFrame(); }
 
-// ---------------------------------------------------------------------------
-void SetPlayers() {
-    for (int i = 0; i < 5; i++)
-        bot[i] = new TBot(Settings->PlayerType[i]);
+void ReadCfgFile() {
+	TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
+	Settings->Fullscreen = ini->ReadBool("Global", "FullScreen", False);
+	Settings->FormsWidth = ini->ReadInteger("Global", "Width", 1024);
+	Settings->FormsHeight = ini->ReadInteger("Global", "Height", 1024);
+	Settings->SoundEnabled = ini->ReadBool("Global", "Sound", False);
+	Settings->SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
+	Settings->MusicEnabled = ini->ReadBool("Global", "Music", False);
+	Settings->MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
+	Settings->HostMode = ini->ReadBool("Global", "HostMode", False);
+
+	for (int i = 1; i <= 5; i++) {
+		Settings->PlayerNames[i - 1] = ini->ReadString("Players", "Player" + IntToStr(i), "FUUUUuuuuu...");
+		Settings->PlayerType[i - 1] = (TBotType)ini->ReadInteger("Players", "PlayerType" + IntToStr(i), 0);
+	}
+
+	Settings->LastBase = ini->ReadString("Global", "LastBase", "");
+
+	int i = 0;
+	while (1) {
+		String str = ini->ReadString("Bases", "basename" + IntToStr(i), "");
+		if (str != "") {
+			Settings->BaseNames->Add(str);
+		}
+		else
+			break;
+		i++ ;
+	}
+
+	if (Settings->LastBase == "")
+		ShowError(1);
+
+	ini->Free();
 }
 
 // ---------------------------------------------------------------------------
+void SetPlayers() {
+	for (int i = 0; i < 5; i++)
+		bot[i] = new TBot(Settings->PlayerType[i]);
+}
+
+// ---------------------------------------------------------------------------
+void InitializeSettings() {
+	Settings = new TSettings();
+	ReadCfgFile();
+	SetPlayers();
+}
 
 void __fastcall TF::Button2Click(TObject* Sender) {
     /* ShiftHatches();
      MechanizmSetHatchesStates(); */
 
-    // TWindowsMediaPlayer *mp1 = new TWindowsMediaPlayer(this);
-    // mp1->settings->set_volume(Settings->SoundVolume * 2.55);
-    // mp1->launchURL(String("sounds\\rr_fall.wav").w_str());
-    // mp1->URL = String("sounds\\rr_fall.wav").w_str();
-    // mp1->Error;
-    // mp1->status;
-    // mp1->controls->play();
+	// TWindowsMediaPlayer *mp1 = new TWindowsMediaPlayer(this);
+	// mp1->settings->set_volume(Settings->SoundVolume * 2.55);
+	// mp1->launchURL(String("sounds\\rr_fall.wav").w_str());
+	// mp1->URL = String("sounds\\rr_fall.wav").w_str();
+	// mp1->Error;
+	// mp1->status;
+	// mp1->controls->play();
 }
 
 // ---------------------------------------------------------------------------
@@ -392,36 +430,36 @@ void __fastcall TF::tmrRotatorTimer(TObject* Sender) {
     if (MechanizmOn == 1) // если механизм в стадии отключения
     {
 
-        SpeedOfRotation += 30; // замедляем вращение
-        tmrRotator->Interval = SpeedOfRotation;
-        if ((SpeedOfRotation > 450) && (CurrentHatch != 0) && (ingame[CurrentHatch - 1]))
-            // и если вращение очень уж медленное
-        {
-            tmrRotator->Enabled = 0; // вырубаем таймер
-            switch (RoundOfGame) {
-            case 0: {
-                    LightHatchesW(2, 4);
-                    if (TempRoundOfGame != 0)
-                        RoundOfGame = TempRoundOfGame;
-                    else {
-                        QuestionsLeft = colquestions[0];
-                        RoundOfGame = 1;
-                    }
-                } break;
-            default:
-                LightHatchesW(255, 4);
-                break;
-            }
-            PlayMusic("rr_endround.wav");
-            switchonquestion();
-            ModeOfGame = 0;
-            if (Settings->HostMode == false) {
-                tmrWaiting->Enabled = True;
-                Wait = 0;
-            }
-        }
-    }
-    MechanizmSetHatchesStates();
+		SpeedOfRotation += 30; // замедляем вращение
+		tmrRotator->Interval = SpeedOfRotation;
+		if ((SpeedOfRotation > 450) && (CurrentHatch != 0) && (ingame[CurrentHatch - 1]))
+			// и если вращение очень уж медленное
+		{
+			tmrRotator->Enabled = 0; // вырубаем таймер
+			switch (RoundOfGame) {
+			case 0: {
+					LightHatchesW(2, 4);
+					if (TempRoundOfGame != 0)
+						RoundOfGame = TempRoundOfGame;
+					else {
+						QuestionsLeft = colquestions[0];
+						RoundOfGame = 1;
+					}
+				} break;
+			default:
+				LightHatchesW(255, 4);
+				break;
+			}
+			PlayMusic("rr_endround.wav");
+			switchonquestion();
+			ModeOfGame = 0;
+			if (Settings->HostMode == false) {
+				tmrWaiting->Enabled = True;
+				Wait = 0;
+			}
+		}
+	}
+	MechanizmSetHatchesStates();
 }
 
 // ---------------------------------------------------------------------------
@@ -430,133 +468,133 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
     switch (ModeOfGame) {
         // if (RoundOfGame != 5)
 
-    case 0: // показ вопроса
-        if (Wait == 5) {
-            if (QuestionsLeft > 0) {
-                for (int i = 0; i < 5; i++) {
-                    indexes[i] = -1;
-                    variants[i] = -1;
-                }
-                PlaySound("rr_nextq.wav");
-                tmrWaiting->Enabled = False;
-                showquestion();
-                CanChoose = 0;
-                DeactivateHatches();
-                btnMechStart->Enabled = 0;
-                TimeOfQuestion = 20;
-                lblTimer->Caption = IntToStr(TimeOfQuestion);
-                Wait = 0;
-                if (TransferAll == 1) {
-                    F->ModeOfGame = 1;
-                    RoundOfGame = 1;
-                }
-                else {
-                    ModeOfGame = 1;
-                }
-            }
-            else {
-                imgQuestion->Visible = False;
-                imgBorder->Visible = False;
-                LabelMoney->Visible = False;
-                imgPulse->Visible = False;
-                ModeOfGame = 8;
-            }
-        }
-        break;
-    case 1: // начисление стартовой суммы денег игрокам
-        if (Wait == 3) {
-            tmrWaiting->Enabled = False;
-            Wait = 2;
-            if (TransferAll == 1) {
-                F->Reward = 1000;
-                tmrMoney->Enabled = True;
-                MoneyTransferMode = 'a';
-            }
-            else
-                CanChoose = 1;
-            if (RoundOfGame != 4) {
-                if (Settings->PlayerType[CurrentHatch - 1] == bbHuman) {
-                    activatedplayers();
-                }
-                else {
-                    chooseplayer = bot[CurrentHatch - 1]->ChooseAnyPlayer(ingame, CurrentHatch);
-                    choosingplayer();
-                    MechanizmSetHatchesStates();
-                    ModeOfGame = 2;
-                    if (!Settings->HostMode)
-                        tmrWaiting->Enabled = True;
-                }
-            }
-            else {
-                DeactivateHatches();
-                CanChoose = 0;
-                for (int i = 0; i < 5; i++)
-                    if ((ingame[i]) && (CurrentHatch != i + 1))
-                        chooseplayer = i + 1;
-                choosingplayer();
-                ModeOfGame = 2;
-                if (!Settings->HostMode)
-                    tmrWaiting->Enabled = True;
-            }
-        }
-        break;
-    case 2: // выбор игрока
-        if (Wait == 3) {
-            // tmrWaiting->Enabled = False;
-            if (RoundOfGame != 4) {
-                spin_round_mode = 1;
-                PlayMusic("rr_choosen.wav");
-            }
-            MoneyTransferMode = 'c';
-            choosenplayer();
-            if (Settings->PlayerType[chooseplayer - 1] != bbHuman) {
-                switch (Settings->PlayerType[chooseplayer - 1]) {
-                case bbFoooool:
-                    TimeToDecide = 2 + random(20);
-                    break;
-                case bbFooly:
-                    TimeToDecide = 7 + random(13);
-                    break;
-                case bbNormal:
-                    TimeToDecide = 7 + random(9);
-                    break;
-                case bbHard:
-                    TimeToDecide = 5 + random(6);
-                    break;
-                case bbVeryHard:
-                    TimeToDecide = 1 + random(4);
-                    break;
-                }
-            }
-        }
-        if (Wait == 4) {
-            tmrWaiting->Enabled = false;
-            if (RoundOfGame != 4) {
-                before_spin_lights();
-                tmrLightAnimation->Enabled = true;
-            }
-            ModeOfGame = 3;
-            Wait = 0;
-            tmrWaiting->Enabled = True;
-        }
-        break;
-    case 3: // показ ответов и таймера
-        if (Wait == 7) {
-            // -=[Случайное распределение вариантов ответа]=-
-            // --[ 1. Наполнение массива индексами ]--
-            for (int i = 0; i < RoundOfGame + 1; i++)
-                indexes[i] = i;
-            // --[ 2. Случайное распределение индексов ]--
-            int step = 0, ind;
-            do {
-                ind = random(RoundOfGame + 1);
-                if (indexes[ind] != -1) {
-                    variants[step] = indexes[ind];
-                    indexes[ind] = -1;
-                    step++ ;
-                }
-            }
-            while (indexes[0] + indexes[1] + indexes[2] + indexes[3] + indexes[4] != -5);
+	case 0: // показ вопроса
+		if (Wait == 5) {
+			if (QuestionsLeft > 0) {
+				for (int i = 0; i < 5; i++) {
+					indexes[i] = -1;
+					variants[i] = -1;
+					PlaySound("rr_nextq.wav");
+				}
+				tmrWaiting->Enabled = False;
+				showquestion();
+				CanChoose = 0;
+				DeactivateHatches();
+				btnMechStart->Enabled = 0;
+				TimeOfQuestion = 20;
+				lblTimer->Caption = IntToStr(TimeOfQuestion);
+				Wait = 0;
+				if (TransferAll == 1) {
+					F->ModeOfGame = 1;
+					RoundOfGame = 1;
+				}
+				else {
+					ModeOfGame = 1;
+				}
+			}
+			else {
+				imgQuestion->Visible = False;
+				imgBorder->Visible = False;
+				LabelMoney->Visible = False;
+				imgPulse->Visible = False;
+				ModeOfGame = 8;
+			}
+		}
+		break;
+	case 1: // начисление стартовой суммы денег игрокам
+		if (Wait == 3) {
+			tmrWaiting->Enabled = False;
+			Wait = 2;
+			if (TransferAll == 1) {
+				F->Reward = 1000;
+				tmrMoney->Enabled = True;
+				MoneyTransferMode = 'a';
+			}
+			else
+				CanChoose = 1;
+			if (RoundOfGame != 4) {
+				if (Settings->PlayerType[CurrentHatch - 1] == bbHuman) {
+					activatedplayers();
+				}
+				else {
+					chooseplayer = bot[CurrentHatch - 1]->ChooseAnyPlayer(ingame, CurrentHatch);
+					choosingplayer();
+					MechanizmSetHatchesStates();
+					ModeOfGame = 2;
+					if (!Settings->HostMode)
+						tmrWaiting->Enabled = True;
+				}
+			}
+			else {
+				DeactivateHatches();
+				CanChoose = 0;
+				for (int i = 0; i < 5; i++)
+					if ((ingame[i]) && (CurrentHatch != i + 1))
+						chooseplayer = i + 1;
+				choosingplayer();
+				ModeOfGame = 2;
+				if (!Settings->HostMode)
+					tmrWaiting->Enabled = True;
+			}
+		}
+		break;
+	case 2: // выбор игрока
+		if (Wait == 3) {
+			// tmrWaiting->Enabled = False;
+			if (RoundOfGame != 4) {
+				spin_round_mode = 1;
+				PlayMusic("rr_choosen.wav");
+			}
+			MoneyTransferMode = 'c';
+			choosenplayer();
+			if (Settings->PlayerType[chooseplayer - 1] != bbHuman) {
+				switch (Settings->PlayerType[chooseplayer - 1]) {
+				case bbFoooool:
+					TimeToDecide = 2 + random(20);
+					break;
+				case bbFooly:
+					TimeToDecide = 7 + random(13);
+					break;
+				case bbNormal:
+					TimeToDecide = 7 + random(9);
+					break;
+				case bbHard:
+					TimeToDecide = 5 + random(6);
+					break;
+				case bbVeryHard:
+					TimeToDecide = 1 + random(4);
+					break;
+				}
+			}
+		}
+		if (Wait == 4) {
+			tmrWaiting->Enabled = false;
+			if (RoundOfGame != 4) {
+				before_spin_lights();
+				tmrLightAnimation->Enabled = true;
+			}
+			ModeOfGame = 3;
+			Wait = 0;
+			tmrWaiting->Enabled = True;
+		}
+		break;
+	case 3: // показ ответов и таймера
+		if (Wait == 7) {
+			// -=[Случайное распределение вариантов ответа]=-
+			// --[ 1. Наполнение массива индексами ]--
+			for (int i = 0; i < RoundOfGame + 1; i++)
+				indexes[i] = i;
+			// --[ 2. Случайное распределение индексов ]--
+			int step = 0, ind;
+			do {
+				ind = random(RoundOfGame + 1);
+				if (indexes[ind] != -1) {
+					variants[step] = indexes[ind];
+					indexes[ind] = -1;
+					step++ ;
+				}
+			}
+			while (indexes[0] + indexes[1] + indexes[2] + indexes[3] + indexes[4] != -5);
 
             // --[ 3. Запись вариантов ответа, согласно индексам]--
             TimeOfQuestion = 20;
@@ -592,365 +630,365 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
         }
         // Wait=0;
 
-        if (Wait == 12) {
-            tmrWaiting->Enabled = False;
-            if (!Settings->HostMode) {
-                CanAnswer = 1;
-                PlayMusic("rr_20sec.wav");
-                tmrTime->Enabled = True;
-            }
-            Wait = 0;
-        }
-        break;
-    case 4: // проверка ответа
-        if (Wait == 2) {
-            CanAnswer = 0;
-            if (answer == RandomPlace) {
-                imgQuestion->Picture->LoadFromFile("Data\\quest_correct.png");
-                if (!Settings->HostMode)
-                    tmrWaiting->Enabled = True;
-                imgChoosenAnswer->Visible = True;
-                imgChAnsLeft->Visible = true;
-                imgChAnsRight->Visible = true;
-                imgChoosenAnswer->AutoSize = False;
-                imgChoosenAnswer->Stretch = True;
-                imgChoosenAnswer->Height = imgNumber1->Height + 20;
-                imgChoosenAnswer->Width = 20 + lblAnswers[answer]->Width - 5;
-                Choosen_Answer_Change_Position();
-                CurrentHatch = chooseplayer;
-                chooseplayer = 255;
-                QuestionsLeft-- ;
-            }
-            else {
-                imgQuestion->Picture->LoadFromFile("Data\\quest_incorrect.png");
-                if (answer != -1) {
-                    imgChoosenAnswer->Visible = True;
-                    imgChAnsLeft->Visible = true;
-                    imgChAnsRight->Visible = true;
-                }
-                imgChoosenAnswer->AutoSize = False;
-                imgChoosenAnswer->Stretch = True;
-                imgChoosenAnswer->Height = imgNumber1->Height + 20;
-                imgChoosenAnswer->Width = 20 + lblAnswers[answer]->Width - 5;
-                Choosen_Answer_Change_Position();
-                Proverka2();
-                Reward = money[chooseplayer - 1];
-                QuestionsLeft-- ;
-            }
-        }
-        if (Wait == 8) {
-            if (answer != RandomPlace)
-                PlayMusic("rr_bg1.mp3");
-            else
-                PlayMusic("rr_bg" + IntToStr(2 + random(4)) + ".mp3");
-            if (!Settings->HostMode)
-                tmrWaiting->Enabled = True;
-            else
-                tmrWaiting->Enabled = False;
-            ModeOfGame = 5;
-            Wait = 0;
-        }
-        TransferAll = 0;
-        break;
-    case 5: // начисление денег и отображение правильного ответа
-        if (Wait == 2) {
-            imgChoosenAnswer->Visible = True;
-            imgChAnsLeft->Visible = true;
-            imgChAnsRight->Visible = true;
-            imgChoosenAnswer->Width = 20 + lblAnswers[RandomPlace]->Width - 5;
-            Choosen_Answer_Change_Position();
-            MoneyTransferMode = chooseplayer;
-            tmrMoney->Enabled = True;
-            PlaySound("rr_money.wav");
-        }
-        if (Wait == 7) {
-            tmrWaiting->Enabled = False;
-            if (Settings->PlayerType[chooseplayer - 1] == bbHuman) {
-                btnMechStart->Enabled = 1;
-                imgMechanizm->Enabled = 1;
-            }
-            else {
-                switch (Settings->PlayerType[chooseplayer - 1]) {
-                case bbFoooool:
-                    TimeToDecide = 10 + random(31);
-                    break;
-                case bbFooly:
-                    TimeToDecide = 10 + random(21);
-                    break;
-                case bbNormal:
-                    TimeToDecide = 5 + random(16);
-                    break;
-                case bbHard:
-                    TimeToDecide = 5 + random(11);
-                    break;
-                case bbVeryHard:
-                    TimeToDecide = 1 + random(11);
-                    break;
-                }
-                imgMechanizmClick(imgMechanizm);
-                tmrDecided->Enabled = true;
-            }
-            Wait = 0;
-        }
-        break;
-    case 7: // проверка подлинности провала ошибившегося игрока
-        {
-            if (Wait == waitinger) {
-                if (opened_now[chooseplayer] == 1) {
-                    OpenHatches();
-                    PlayMusic("rr_fall.wav");
-                    ingame[chooseplayer - 1] = 0;
-                    imgPulse->Visible = False;
-                    LabelMoney->Visible = False;
-                    lblPlayer[chooseplayer - 1]->Visible = False;
-                    lblMoney[chooseplayer - 1]->Visible = False;
-                    F->money[chooseplayer - 1] = 0;
-                    imgQuestion->Visible = False;
-                    imgBorder->Visible = False;
-                    imgTicker->Visible = False;
-                    imgPulseBar->Visible = False;
-                    imgTotalPrize->Visible = False;
-                    for (int i = 0; i < 5; i++) {
-                        if (F->lblAnswers[i] != NULL)
-                            F->lblAnswers[i]->Visible = False;
-                    }
-                    switch (chooseplayer) {
-                    case 1:
-                        imgPlayer1->Visible = False;
-                        break;
-                    case 2:
-                        imgPlayer2->Visible = False;
-                        break;
-                    case 3:
-                        imgPlayer3->Visible = False;
-                        break;
-                    case 4:
-                        imgPlayer4->Visible = False;
-                        break;
-                    case 5:
-                        imgPlayer5->Visible = False;
-                        break;
-                    }
-                    F->imgNumber1->Visible = False;
-                    F->imgNumber2->Visible = False;
-                    F->imgNumber3->Visible = False;
-                    F->imgNumber4->Visible = False;
-                    F->imgNumber5->Visible = False;
-                    F->imgChoosenAnswer->Visible = False;
-                    F->imgChAnsLeft->Visible = false;
-                    F->imgChAnsRight->Visible = false;
-                    F->imgTimer->Visible = False;
-                    F->lblTimer->Visible = False;
-                    F->imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
-                    F->LabelQuestion->Visible = False;
-                    if (!Settings->HostMode) {
-                        tmrWaiting->Enabled = true;
-                        Wait = 0;
-                    }
-                    else {
-                        tmrWaiting->Enabled = false;
-                        Wait = 9;
-                    }
-                    ModeOfGame = 10;
-                }
-                else {
-                    PlayMusic("rr_save.wav");
-                    CurrentHatch = chooseplayer;
-                    chooseplayer = 255;
-                    imgPlace->Picture->LoadFromFile("Data\\Place.png");
-                    blabla();
-                }
-            }
-            if (Wait == (waitinger + 3)) {
-                if (!Settings->HostMode) {
-                    F->tmrWaiting->Enabled = True;
-                    Wait = 0;
-                }
-                else {
-                    F->tmrWaiting->Enabled = false;
-                    Wait = 4;
-                }
-                ModeOfGame = 0;
-                PlayMusic("rr_bg" + IntToStr(4 + random(2)) + ".mp3");
-            }
-            break;
-        }
-    case 8: // определение лидера в случае окончания вопросов
-        {
-            if (Wait == 8) {
-                MaximalSumm = 0;
-                MaximalSummCount = 0;
-                for (int i = 0; i < 5; i++) {
-                    if (money[i] > MaximalSumm)
-                        MaximalSumm = money[i];
-                }
-                for (int i = 0; i < 5; i++) {
-                    if (money[i] == MaximalSumm) {
-                        MaximalSummCount++ ;
-                        CantFall = i;
-                    }
-                }
-                if (MaximalSummCount > 1 || RoundOfGame == 4) {
-                    CantFall = -1;
-                }
-                tmrWaiting->Enabled = False;
-                btnMechStart->Enabled = 1;
-                imgMechanizm->Enabled = 1;
-                // btnMechStart->SetFocus();
-            }
-        } break;
-    case 9: // ситуация, когда один из игроков неминуемо должен покинуть игру
-        {
-            if (Wait == waitinger) {
-                int NumberOfPlayers = 0;
-                OpenRndHatches();
-                PlayMusic("rr_fall.wav");
-                ingame[chooseplayer - 1] = 0;
-                MoneyTransferMode = 'a';
-                for (int i = 0; i < 5; i++)
-                    if (ingame[i])
-                        NumberOfPlayers++ ;
-                Reward = money[chooseplayer - 1] / NumberOfPlayers / 1.;
-                tmrMoney->Enabled = True;
-                money[chooseplayer - 1] = 0;
-                lblPlayer[chooseplayer - 1]->Visible = False;
-                lblMoney[chooseplayer - 1]->Visible = False;
-                switch (chooseplayer) {
-                case 1:
-                    imgPlayer1->Visible = False;
-                    break;
-                case 2:
-                    imgPlayer2->Visible = False;
-                    break;
-                case 3:
-                    imgPlayer3->Visible = False;
-                    break;
-                case 4:
-                    imgPlayer4->Visible = False;
-                    break;
-                case 5:
-                    imgPlayer5->Visible = False;
-                    break;
-                }
-            }
-            if (Wait == (waitinger + 7)) {
-                PlayMusic("rr_bg1.mp3");
-                if (!Settings->HostMode) {
-                    tmrWaiting->Enabled = True;
-                    Wait = 0;
-                }
-                else {
-                    Wait = 5;
-                    tmrWaiting->Enabled = false;
-                }
-                ModeOfGame = 10;
-            }
-        } break;
-    case 10: {
-            if (Wait == 10) {
-                PlayMusic("rr_endround.wav");
-                LightHatchesW(2, 0);
-                MechanizmSetHatchesStates();
-                Wait = 0;
-                switch (RoundOfGame) {
-                case 1:
-                    RoundOfGame = 2;
-                    QuestionsLeft = colquestions[1];
-                    break;
-                case 2:
-                    RoundOfGame = 3;
-                    QuestionsLeft = colquestions[2];
-                    break;
-                case 3:
-                    RoundOfGame = 4;
-                    QuestionsLeft = colquestions[3];
-                    break;
-                case 4:
-                    RoundOfGame = 5;
-                    break;
-                }
-                if (RoundOfGame != 5) {
-                    ModeOfGame = 11;
-                    imgSplash->Picture->LoadFromFile("Data\\Splash-" + IntToStr(RoundOfGame) + ".png");
-                }
-                else {
-                    ModeOfGame = 0;
-                    tmrWaiting->Enabled = False;
-                    tmrWaitingFinal->Enabled = True;
-                }
-            }
-        } break;
-    case 11: {
-            if (Wait == 5) {
-                PlayMusic("rr_round.wav");
-                imgSplash->Visible = True;
-                LightHatchesW(255, 2);
-                MechanizmSetHatchesStates();
-                imgPlace->Picture->LoadFromFile("Data\\Place.png");
-            }
-            if (Wait == 12) {
-                imgSplash->Visible = False;
-                PlayMusic("rr_openround.wav");
-                Wait = 0;
-                ModeOfGame = 12;
-            }
-        } break;
-    case 12: {
-            MaximalSumm = 0;
-            MaximalSummCount = 0;
-            switch (RoundOfGame) {
-            case 2:
-                QuestionsLeft = colquestions[1];
-                break;
-            case 3:
-                QuestionsLeft = colquestions[2];
-                break;
-            case 4:
-                QuestionsLeft = colquestions[3];
-                break;
-            }
-            if (Wait == 5) {
-                for (int i = 0; i < 5; i++) {
-                    if (money[i] > MaximalSumm) {
-                        MaximalSumm = money[i];
-                        CurrentHatch = i + 1;
-                        chooseplayer = 255;
-                    }
-                }
-                for (int i = 0; i < 5; i++) {
-                    if (money[i] == MaximalSumm) {
-                        MaximalSummCount++ ;
-                        CurrentHatch = i + 1;
-                    }
-                }
-                if (MaximalSummCount > 1) {
-                    CurrentHatch = 0;
-                    TempRoundOfGame = RoundOfGame;
-                    RoundOfGame = -1;
-                    btnMechStart->Enabled = 1;
-                    imgMechanizm->Enabled = 1;
-                    // btnMechStart->SetFocus();
-                    tmrWaiting->Enabled = False;
-                }
-                else {
-                    UpdateHatches();
-                }
-                switchonquestion();
-            }
-            if (Wait == 12) {
-                PlayMusic("rr_bg4.mp3");
-                if (!Settings->HostMode) {
-                    Wait = 0;
-                    tmrWaiting->Enabled = true;
-                }
-                else {
-                    Wait = 4;
-                    tmrWaiting->Enabled = false;
-                }
-                ModeOfGame = 0;
-            }
-        } break;
-    }
+		if (Wait == 12) {
+			tmrWaiting->Enabled = False;
+			if (!Settings->HostMode) {
+				CanAnswer = 1;
+				PlayMusic("rr_20sec.wav");
+				tmrTime->Enabled = True;
+			}
+			Wait = 0;
+		}
+		break;
+	case 4: // проверка ответа
+		if (Wait == 2) {
+			CanAnswer = 0;
+			if (answer == RandomPlace) {
+				imgQuestion->Picture->LoadFromFile("Data\\quest_correct.png");
+				if (!Settings->HostMode)
+					tmrWaiting->Enabled = True;
+				imgChoosenAnswer->Visible = True;
+				imgChAnsLeft->Visible = true;
+				imgChAnsRight->Visible = true;
+				imgChoosenAnswer->AutoSize = False;
+				imgChoosenAnswer->Stretch = True;
+				imgChoosenAnswer->Height = imgNumber1->Height + 20;
+				imgChoosenAnswer->Width = 20 + lblAnswers[answer]->Width - 5;
+				Choosen_Answer_Change_Position();
+				CurrentHatch = chooseplayer;
+				chooseplayer = 255;
+				QuestionsLeft-- ;
+			}
+			else {
+				imgQuestion->Picture->LoadFromFile("Data\\quest_incorrect.png");
+				if (answer != -1) {
+					imgChoosenAnswer->Visible = True;
+					imgChAnsLeft->Visible = true;
+					imgChAnsRight->Visible = true;
+				}
+				imgChoosenAnswer->AutoSize = False;
+				imgChoosenAnswer->Stretch = True;
+				imgChoosenAnswer->Height = imgNumber1->Height + 20;
+				imgChoosenAnswer->Width = 20 + lblAnswers[answer]->Width - 5;
+				Choosen_Answer_Change_Position();
+				Proverka2();
+				Reward = money[chooseplayer - 1];
+				QuestionsLeft-- ;
+			}
+		}
+		if (Wait == 8) {
+			if (answer != RandomPlace)
+				PlayMusic("rr_bg1.mp3");
+			else
+				PlayMusic("rr_bg" + IntToStr(2 + random(4)) + ".mp3");
+			if (!Settings->HostMode)
+				tmrWaiting->Enabled = True;
+			else
+				tmrWaiting->Enabled = False;
+			ModeOfGame = 5;
+			Wait = 0;
+		}
+		TransferAll = 0;
+		break;
+	case 5: // начисление денег и отображение правильного ответа
+		if (Wait == 2) {
+			imgChoosenAnswer->Visible = True;
+			imgChAnsLeft->Visible = true;
+			imgChAnsRight->Visible = true;
+			imgChoosenAnswer->Width = 20 + lblAnswers[RandomPlace]->Width - 5;
+			Choosen_Answer_Change_Position();
+			MoneyTransferMode = chooseplayer;
+			tmrMoney->Enabled = True;
+			PlaySound("rr_money.wav");
+		}
+		if (Wait == 7) {
+			tmrWaiting->Enabled = False;
+			if (Settings->PlayerType[chooseplayer - 1] == bbHuman) {
+				btnMechStart->Enabled = 1;
+				imgMechanizm->Enabled = 1;
+			}
+			else {
+				switch (Settings->PlayerType[chooseplayer - 1]) {
+				case bbFoooool:
+					TimeToDecide = 10 + random(31);
+					break;
+				case bbFooly:
+					TimeToDecide = 10 + random(21);
+					break;
+				case bbNormal:
+					TimeToDecide = 5 + random(16);
+					break;
+				case bbHard:
+					TimeToDecide = 5 + random(11);
+					break;
+				case bbVeryHard:
+					TimeToDecide = 1 + random(11);
+					break;
+				}
+				imgMechanizmClick(imgMechanizm);
+				tmrDecided->Enabled = true;
+			}
+			Wait = 0;
+		}
+		break;
+	case 7: // проверка подлинности провала ошибившегося игрока
+		{
+			if (Wait == waitinger) {
+				if (opened_now[chooseplayer] == 1) {
+					OpenHatches();
+					PlayMusic("rr_fall.wav");
+					ingame[chooseplayer - 1] = 0;
+					imgPulse->Visible = False;
+					LabelMoney->Visible = False;
+					lblPlayer[chooseplayer - 1]->Visible = False;
+					lblMoney[chooseplayer - 1]->Visible = False;
+					F->money[chooseplayer - 1] = 0;
+					imgQuestion->Visible = False;
+					imgBorder->Visible = False;
+					imgTicker->Visible = False;
+					imgPulseBar->Visible = False;
+					imgTotalPrize->Visible = False;
+					for (int i = 0; i < 5; i++) {
+						if (F->lblAnswers[i] != NULL)
+							F->lblAnswers[i]->Visible = False;
+					}
+					switch (chooseplayer) {
+					case 1:
+						imgPlayer1->Visible = False;
+						break;
+					case 2:
+						imgPlayer2->Visible = False;
+						break;
+					case 3:
+						imgPlayer3->Visible = False;
+						break;
+					case 4:
+						imgPlayer4->Visible = False;
+						break;
+					case 5:
+						imgPlayer5->Visible = False;
+						break;
+					}
+					F->imgNumber1->Visible = False;
+					F->imgNumber2->Visible = False;
+					F->imgNumber3->Visible = False;
+					F->imgNumber4->Visible = False;
+					F->imgNumber5->Visible = False;
+					F->imgChoosenAnswer->Visible = False;
+					F->imgChAnsLeft->Visible = false;
+					F->imgChAnsRight->Visible = false;
+					F->imgTimer->Visible = False;
+					F->lblTimer->Visible = False;
+					F->imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+					F->LabelQuestion->Visible = False;
+					if (!Settings->HostMode) {
+						tmrWaiting->Enabled = true;
+						Wait = 0;
+					}
+					else {
+						tmrWaiting->Enabled = false;
+						Wait = 9;
+					}
+					ModeOfGame = 10;
+				}
+				else {
+					PlayMusic("rr_save.wav");
+					CurrentHatch = chooseplayer;
+					chooseplayer = 255;
+					imgPlace->Picture->LoadFromFile("Data\\Place.png");
+					blabla();
+				}
+			}
+			if (Wait == (waitinger + 3)) {
+				if (!Settings->HostMode) {
+					F->tmrWaiting->Enabled = True;
+					Wait = 0;
+				}
+				else {
+					F->tmrWaiting->Enabled = false;
+					Wait = 4;
+				}
+				ModeOfGame = 0;
+				PlayMusic("rr_bg" + IntToStr(4 + random(2)) + ".mp3");
+			}
+			break;
+		}
+	case 8: // определение лидера в случае окончания вопросов
+		{
+			if (Wait == 8) {
+				MaximalSumm = 0;
+				MaximalSummCount = 0;
+				for (int i = 0; i < 5; i++) {
+					if (money[i] > MaximalSumm)
+						MaximalSumm = money[i];
+				}
+				for (int i = 0; i < 5; i++) {
+					if (money[i] == MaximalSumm) {
+						MaximalSummCount++ ;
+						CantFall = i;
+					}
+				}
+				if (MaximalSummCount > 1 || RoundOfGame == 4) {
+					CantFall = -1;
+				}
+				tmrWaiting->Enabled = False;
+				btnMechStart->Enabled = 1;
+				imgMechanizm->Enabled = 1;
+				// btnMechStart->SetFocus();
+			}
+		} break;
+	case 9: // ситуация, когда один из игроков неминуемо должен покинуть игру
+		{
+			if (Wait == waitinger) {
+				int NumberOfPlayers = 0;
+				OpenRndHatches();
+				PlayMusic("rr_fall.wav");
+				ingame[chooseplayer - 1] = 0;
+				MoneyTransferMode = 'a';
+				for (int i = 0; i < 5; i++)
+					if (ingame[i])
+						NumberOfPlayers++ ;
+				Reward = money[chooseplayer - 1] / NumberOfPlayers / 1.;
+				tmrMoney->Enabled = True;
+				money[chooseplayer - 1] = 0;
+				lblPlayer[chooseplayer - 1]->Visible = False;
+				lblMoney[chooseplayer - 1]->Visible = False;
+				switch (chooseplayer) {
+				case 1:
+					imgPlayer1->Visible = False;
+					break;
+				case 2:
+					imgPlayer2->Visible = False;
+					break;
+				case 3:
+					imgPlayer3->Visible = False;
+					break;
+				case 4:
+					imgPlayer4->Visible = False;
+					break;
+				case 5:
+					imgPlayer5->Visible = False;
+					break;
+				}
+			}
+			if (Wait == (waitinger + 7)) {
+				PlayMusic("rr_bg1.mp3");
+				if (!Settings->HostMode) {
+					tmrWaiting->Enabled = True;
+					Wait = 0;
+				}
+				else {
+					Wait = 5;
+					tmrWaiting->Enabled = false;
+				}
+				ModeOfGame = 10;
+			}
+		} break;
+	case 10: {
+			if (Wait == 10) {
+				PlayMusic("rr_endround.wav");
+				LightHatchesW(2, 0);
+				MechanizmSetHatchesStates();
+				Wait = 0;
+				switch (RoundOfGame) {
+				case 1:
+					RoundOfGame = 2;
+					QuestionsLeft = colquestions[1];
+					break;
+				case 2:
+					RoundOfGame = 3;
+					QuestionsLeft = colquestions[2];
+					break;
+				case 3:
+					RoundOfGame = 4;
+					QuestionsLeft = colquestions[3];
+					break;
+				case 4:
+					RoundOfGame = 5;
+					break;
+				}
+				if (RoundOfGame != 5) {
+					ModeOfGame = 11;
+					imgSplash->Picture->LoadFromFile("Data\\Splash-" + IntToStr(RoundOfGame) + ".png");
+				}
+				else {
+					ModeOfGame = 0;
+					tmrWaiting->Enabled = False;
+					tmrWaitingFinal->Enabled = True;
+				}
+			}
+		} break;
+	case 11: {
+			if (Wait == 5) {
+				PlayMusic("rr_round.wav");
+				imgSplash->Visible = True;
+				LightHatchesW(255, 2);
+				MechanizmSetHatchesStates();
+				imgPlace->Picture->LoadFromFile("Data\\Place.png");
+			}
+			if (Wait == 12) {
+				imgSplash->Visible = False;
+				PlayMusic("rr_openround.wav");
+				Wait = 0;
+				ModeOfGame = 12;
+			}
+		} break;
+	case 12: {
+			MaximalSumm = 0;
+			MaximalSummCount = 0;
+			switch (RoundOfGame) {
+			case 2:
+				QuestionsLeft = colquestions[1];
+				break;
+			case 3:
+				QuestionsLeft = colquestions[2];
+				break;
+			case 4:
+				QuestionsLeft = colquestions[3];
+				break;
+			}
+			if (Wait == 5) {
+				for (int i = 0; i < 5; i++) {
+					if (money[i] > MaximalSumm) {
+						MaximalSumm = money[i];
+						CurrentHatch = i + 1;
+						chooseplayer = 255;
+					}
+				}
+				for (int i = 0; i < 5; i++) {
+					if (money[i] == MaximalSumm) {
+						MaximalSummCount++ ;
+						CurrentHatch = i + 1;
+					}
+				}
+				if (MaximalSummCount > 1) {
+					CurrentHatch = 0;
+					TempRoundOfGame = RoundOfGame;
+					RoundOfGame = -1;
+					btnMechStart->Enabled = 1;
+					imgMechanizm->Enabled = 1;
+					// btnMechStart->SetFocus();
+					tmrWaiting->Enabled = False;
+				}
+				else {
+					UpdateHatches();
+				}
+				switchonquestion();
+			}
+			if (Wait == 12) {
+				PlayMusic("rr_bg4.mp3");
+				if (!Settings->HostMode) {
+					Wait = 0;
+					tmrWaiting->Enabled = true;
+				}
+				else {
+					Wait = 4;
+					tmrWaiting->Enabled = false;
+				}
+				ModeOfGame = 0;
+			}
+		} break;
+	}
 }
 // ---------------------------------------------------------------------------
 
@@ -1225,139 +1263,139 @@ void __fastcall TF::imgHatch2Click(TObject* Sender) {
 }
 
 void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
-    if (Screen->MonitorCount > 1 && Key == 'H') {
-        initialize_host_mode();
-    }
-    if (Key == VK_RIGHT && Settings->HostMode == true) {
-        if (RoundOfGame >= 1 && RoundOfGame <= 4) {
-            if (ModeOfGame == 3) {
-                CanAnswer = 1;
-                PlayMusic("rr_20sec.wav");
-                tmrTime->Enabled = true;
-            }
-            else
-                tmrWaiting->Enabled = true;
-        }
-        if (FinalRoundOfGame > 0)
-            tmrWaitingFinal->Enabled = true;
-    }
-    if ((imgMechanizm->Enabled) && (Key == 32))
-        imgMechanizmClick(imgMechanizm);
-    // выбор игрового места в финале
-    if (FinalRoundOfGame > 0 && ModeOfGame == 0 && (((Key >= '1') && (Key <= '6')) || ((Key >= VK_NUMPAD1) && (Key <=
-                    VK_NUMPAD6))) && Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
-        switch (Key) {
-        case '1':
-        case VK_NUMPAD1:
-            if (imgHatch1->Enabled)
-                imgHatch1Click(imgHatch1);
-            break;
-        case '2':
-        case VK_NUMPAD2:
-            if (imgHatch2->Enabled)
-                imgHatch2Click(imgHatch2);
-            break;
-        case '3':
-        case VK_NUMPAD3:
-            if (imgHatch3->Enabled)
-                imgHatch3Click(imgHatch3);
-            break;
-        case '4':
-        case VK_NUMPAD4:
-            if (imgHatch4->Enabled)
-                imgHatch4Click(imgHatch4);
-            break;
-        case '5':
-        case VK_NUMPAD5:
-            if (imgHatch5->Enabled)
-                imgHatch5Click(imgHatch5);
-            break;
-        case '6':
-        case VK_NUMPAD6:
-            if (imgHatch0->Enabled)
-                imgHatch0Click(imgHatch0);
-            break;
-        }
-    }
-    if (ModeOfGame == 1 && (((Key >= '1') && (Key <= '5')) || ((Key >= VK_NUMPAD1) && (Key <= VK_NUMPAD5)))
-        && Settings->PlayerType[F->CurrentHatch - 1] == bbHuman && CanChoose == 1) {
-        switch (Key) {
-        case '1':
-        case VK_NUMPAD1:
-            if (ingame[0] == true && CurrentHatch != 1)
-                imgHatch1Click(imgHatch1);
-            break;
-        case '2':
-        case VK_NUMPAD2:
-            if (ingame[1] == true && CurrentHatch != 2)
-                imgHatch2Click(imgHatch2);
-            break;
-        case '3':
-        case VK_NUMPAD3:
-            if (ingame[2] == true && CurrentHatch != 3)
-                imgHatch3Click(imgHatch3);
-            break;
-        case '4':
-        case VK_NUMPAD4:
-            if (ingame[3] == true && CurrentHatch != 4)
-                imgHatch4Click(imgHatch4);
-            break;
-        case '5':
-        case VK_NUMPAD5:
-            if (ingame[4] == true && CurrentHatch != 5)
-                imgHatch5Click(imgHatch5);
-            break;
-        }
-    }
-    if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[F->chooseplayer - 1] == bbHuman &&
-        (((Key >= '1') && (Key <= '5')) || ((Key >= VK_NUMPAD1) && (Key <= VK_NUMPAD5)))) {
-        switch (Key) {
-        case '1':
-        case VK_NUMPAD1:
-            answer = 0;
-            break;
-        case '2':
-        case VK_NUMPAD2:
-            answer = 1;
-            break;
-        case '3':
-        case VK_NUMPAD3:
-            if (RoundOfGame >= 2)
-                answer = 2;
-            break;
-        case '4':
-        case VK_NUMPAD4:
-            if (RoundOfGame >= 3)
-                answer = 3;
-            break;
-        case '5':
-        case VK_NUMPAD5:
-            if (RoundOfGame >= 4)
-                answer = 4;
-            break;
-        }
+	if (Screen->MonitorCount > 1 && Key == 'H') {
+		initialize_host_mode();
+	}
+	if (Key == VK_RIGHT && Settings->HostMode == true) {
+		if (RoundOfGame >= 1 && RoundOfGame <= 4) {
+			if (ModeOfGame == 3) {
+				CanAnswer = 1;
+				PlayMusic("rr_20sec.wav");
+				tmrTime->Enabled = true;
+			}
+			else
+				tmrWaiting->Enabled = true;
+		}
+		if (FinalRoundOfGame > 0)
+			tmrWaitingFinal->Enabled = true;
+	}
+	if ((imgMechanizm->Enabled) && (Key == 32))
+		imgMechanizmClick(imgMechanizm);
+	// выбор игрового места в финале
+	if (FinalRoundOfGame > 0 && ModeOfGame == 0 && (((Key >= '1') && (Key <= '6')) || ((Key >= VK_NUMPAD1) && (Key <=
+					VK_NUMPAD6))) && Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
+		switch (Key) {
+		case '1':
+		case VK_NUMPAD1:
+			if (imgHatch1->Enabled)
+				imgHatch1Click(imgHatch1);
+			break;
+		case '2':
+		case VK_NUMPAD2:
+			if (imgHatch2->Enabled)
+				imgHatch2Click(imgHatch2);
+			break;
+		case '3':
+		case VK_NUMPAD3:
+			if (imgHatch3->Enabled)
+				imgHatch3Click(imgHatch3);
+			break;
+		case '4':
+		case VK_NUMPAD4:
+			if (imgHatch4->Enabled)
+				imgHatch4Click(imgHatch4);
+			break;
+		case '5':
+		case VK_NUMPAD5:
+			if (imgHatch5->Enabled)
+				imgHatch5Click(imgHatch5);
+			break;
+		case '6':
+		case VK_NUMPAD6:
+			if (imgHatch0->Enabled)
+				imgHatch0Click(imgHatch0);
+			break;
+		}
+	}
+	if (ModeOfGame == 1 && (((Key >= '1') && (Key <= '5')) || ((Key >= VK_NUMPAD1) && (Key <= VK_NUMPAD5)))
+		&& Settings->PlayerType[F->CurrentHatch - 1] == bbHuman && CanChoose == 1) {
+		switch (Key) {
+		case '1':
+		case VK_NUMPAD1:
+			if (ingame[0] == true && CurrentHatch != 1)
+				imgHatch1Click(imgHatch1);
+			break;
+		case '2':
+		case VK_NUMPAD2:
+			if (ingame[1] == true && CurrentHatch != 2)
+				imgHatch2Click(imgHatch2);
+			break;
+		case '3':
+		case VK_NUMPAD3:
+			if (ingame[2] == true && CurrentHatch != 3)
+				imgHatch3Click(imgHatch3);
+			break;
+		case '4':
+		case VK_NUMPAD4:
+			if (ingame[3] == true && CurrentHatch != 4)
+				imgHatch4Click(imgHatch4);
+			break;
+		case '5':
+		case VK_NUMPAD5:
+			if (ingame[4] == true && CurrentHatch != 5)
+				imgHatch5Click(imgHatch5);
+			break;
+		}
+	}
+	if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[F->chooseplayer - 1] == bbHuman &&
+		(((Key >= '1') && (Key <= '5')) || ((Key >= VK_NUMPAD1) && (Key <= VK_NUMPAD5)))) {
+		switch (Key) {
+		case '1':
+		case VK_NUMPAD1:
+			answer = 0;
+			break;
+		case '2':
+		case VK_NUMPAD2:
+			answer = 1;
+			break;
+		case '3':
+		case VK_NUMPAD3:
+			if (RoundOfGame >= 2)
+				answer = 2;
+			break;
+		case '4':
+		case VK_NUMPAD4:
+			if (RoundOfGame >= 3)
+				answer = 3;
+			break;
+		case '5':
+		case VK_NUMPAD5:
+			if (RoundOfGame >= 4)
+				answer = 4;
+			break;
+		}
 
         if (answer <= RoundOfGame) {
             Proverka();
             tmrTime->Enabled = False;
         }
 
-        // switch (RoundOfGame) {
-        // case 1:
-        // F->Reward = 1000;
-        // break;
-        // case 2:
-        // F->Reward = 2000;
-        // break;
-        // case 3:
-        // F->Reward = 3000;
-        // break;
-        // case 4:
-        // F->Reward = 4000;
-        // break;
-        // }
-        F->Reward = RoundOfGame * 1000;
-    }
+		// switch (RoundOfGame) {
+		// case 1:
+		// F->Reward = 1000;
+		// break;
+		// case 2:
+		// F->Reward = 2000;
+		// break;
+		// case 3:
+		// F->Reward = 3000;
+		// break;
+		// case 4:
+		// F->Reward = 4000;
+		// break;
+		// }
+		F->Reward = RoundOfGame * 1000;
+	}
 }
 // ---------------------------------------------------------------------------
 
@@ -1460,23 +1498,23 @@ void TF::TransferMoney() {
         tmrMoney->Enabled = False;
     }
 
-    if (Reward >= 100)
-        Reward -= 100;
-    else {
-        Reward = 0;
-        if (answer == RandomPlace) {
-            ModeOfGame = 0;
-            if (!Settings->HostMode) {
-                Wait = 0;
-                tmrWaiting->Enabled = true;
-            }
-            else {
-                Wait = 4;
-                tmrWaiting->Enabled = false;
-            }
-            blabla();
-        }
-    }
+	if (Reward >= 100)
+		Reward -= 100;
+	else {
+		Reward = 0;
+		if (answer == RandomPlace) {
+			ModeOfGame = 0;
+			if (!Settings->HostMode) {
+				Wait = 0;
+				tmrWaiting->Enabled = true;
+			}
+			else {
+				Wait = 4;
+				tmrWaiting->Enabled = false;
+			}
+			blabla();
+		}
+	}
 }
 
 // ---------------------------------------------------------------------------
@@ -1496,54 +1534,54 @@ void __fastcall TF::tmrLogTimer(TObject* Sender) {
 // ---------------------------------------------------------------------------
 void TF::blabla() // возвращает форму в исходное положение
 {
-    // switch (RoundOfGame) {
-    // case 1: {
-    // F->lblAnswers[0]->Visible = False;
-    // F->lblAnswers[1]->Visible = False;
-    // } break;
-    // case 2: {
-    // F->lblAnswers[0]->Visible = False;
-    // F->lblAnswers[1]->Visible = False;
-    // F->lblAnswers[2]->Visible = False;
-    // } break;
-    // case 3: {
-    // F->lblAnswers[0]->Visible = False;
-    // F->lblAnswers[1]->Visible = False;
-    // F->lblAnswers[2]->Visible = False;
-    // F->lblAnswers[3]->Visible = False;
-    // } break;
-    // case 4: {
-    // F->lblAnswers[0]->Visible = False;
-    // F->lblAnswers[1]->Visible = False;
-    // F->lblAnswers[2]->Visible = False;
-    // F->lblAnswers[3]->Visible = False;
-    // F->lblAnswers[4]->Visible = False;
-    // } break;
-    // }
+	// switch (RoundOfGame) {
+	// case 1: {
+	// F->lblAnswers[0]->Visible = False;
+	// F->lblAnswers[1]->Visible = False;
+	// } break;
+	// case 2: {
+	// F->lblAnswers[0]->Visible = False;
+	// F->lblAnswers[1]->Visible = False;
+	// F->lblAnswers[2]->Visible = False;
+	// } break;
+	// case 3: {
+	// F->lblAnswers[0]->Visible = False;
+	// F->lblAnswers[1]->Visible = False;
+	// F->lblAnswers[2]->Visible = False;
+	// F->lblAnswers[3]->Visible = False;
+	// } break;
+	// case 4: {
+	// F->lblAnswers[0]->Visible = False;
+	// F->lblAnswers[1]->Visible = False;
+	// F->lblAnswers[2]->Visible = False;
+	// F->lblAnswers[3]->Visible = False;
+	// F->lblAnswers[4]->Visible = False;
+	// } break;
+	// }
 
-    for (int i = 0; i < RoundOfGame; ++i)
-        F->lblAnswers[i]->Visible = false;
+	for (int i = 0; i < RoundOfGame; ++i)
+		F->lblAnswers[i]->Visible = false;
 
-    F->imgNumber1->Visible = False;
-    F->imgNumber2->Visible = False;
-    F->imgNumber3->Visible = False;
-    F->imgNumber4->Visible = False;
-    F->imgNumber5->Visible = False;
-    F->imgChoosenAnswer->Visible = False;
-    F->imgChAnsLeft->Visible = false;
-    F->imgChAnsRight->Visible = false;
-    F->imgTimer->Visible = False;
-    F->lblTimer->Visible = False;
-    F->imgTicker->Visible = False;
-    F->imgPulse->Visible = False;
-    F->imgTotalPrize->Visible = False;
-    F->imgPulseBar->Visible = False;
-    F->imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
-    F->LabelQuestion->Visible = False;
-    F->LabelMoney->Visible = False;
-    DeactivateHatches();
-    UpdateHatches();
-    // tmrWaiting->Enabled = False;
+	F->imgNumber1->Visible = False;
+	F->imgNumber2->Visible = False;
+	F->imgNumber3->Visible = False;
+	F->imgNumber4->Visible = False;
+	F->imgNumber5->Visible = False;
+	F->imgChoosenAnswer->Visible = False;
+	F->imgChAnsLeft->Visible = false;
+	F->imgChAnsRight->Visible = false;
+	F->imgTimer->Visible = False;
+	F->lblTimer->Visible = False;
+	F->imgTicker->Visible = False;
+	F->imgPulse->Visible = False;
+	F->imgTotalPrize->Visible = False;
+	F->imgPulseBar->Visible = False;
+	F->imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+	F->LabelQuestion->Visible = False;
+	F->LabelMoney->Visible = False;
+	DeactivateHatches();
+	UpdateHatches();
+	// tmrWaiting->Enabled = False;
 }
 
 void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
@@ -1599,316 +1637,316 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                                 imgPlayer4->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer1->Width) / 2);
                             } break;
 
-                        case 4: {
-                                imgPlayer5->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer1->Height) / 2);
-                                imgPlayer5->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer1->Width) / 2);
-                            } break;
-                        }
-                    }
-                }
-            }
-            if (Wait == 18) {
-                imgChoosenAnswer->Visible = False;
-                imgTimer->Visible = False;
-                lblTimer->Visible = False;
-                LabelMoney->Visible = False;
-                imgPulse->Visible = False;
-                imgPulseBar->Visible = false;
-                imgTotalPrize->Visible = false;
-                imgTicker->Visible = false;
-                imgChAnsLeft->Visible = false;
-                imgChAnsRight->Visible = false;
-                imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
-                imgQuestion->Visible = False;
-                LabelQuestion->Visible = False;
-                lblRightAnswer->Visible = False;
-                if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
-                    btnMechStart->Enabled = True;
-                    imgMechanizm->Enabled = True;
-                }
-                else {
-                    switch (Settings->PlayerType[LeaderPlayerAtFinal]) {
-                    case bbFoooool:
-                        TimeToDecide = 5 + random(41);
-                        break;
-                    case bbFooly:
-                        TimeToDecide = 5 + random(31);
-                        break;
-                    case bbNormal:
-                        TimeToDecide = 5 + random(21);
-                        break;
-                    case bbHard:
-                        TimeToDecide = 1 + random(16);
-                        break;
-                    case bbVeryHard:
-                        TimeToDecide = 1 + random(11);
-                        break;
-                    }
-                    imgMechanizmClick(imgMechanizm);
-                    Wait = 0;
-                    tmrDecided->Enabled = true;
-                }
-                RoundOfGame = -1;
-                chooseplayer = 255;
-                activate_final_hatches();
-                tmrWaitingFinal->Enabled = False;
-            }
-            if (Wait == 19) {
-                ModeOfGame = 1;
-                Wait = 0;
-                deactivate_final_hatches();
-            }
-        } break;
-    case 1: {
-            if (Wait == 5) {
-                RoundOfGame = 5;
-                imgQuestion->Visible = True;
-                imgBorder->Visible = true;
-                imgPulseBar->Visible = true;
-                imgTicker->Visible = true;
-                imgPulse->Visible = True;
-                imgTotalPrize->Visible = True;
-                if (FinalRoundOfGame == 1)
-                    LabelMoney->Caption = "50000";
-                if (FinalRoundOfGame == 2)
-                    LabelMoney->Caption = "100000";
-                if (FinalRoundOfGame == 3)
-                    LabelMoney->Caption = "1000000";
-                LabelMoney->Visible = True;
-            }
-            if (Wait == 8) {
-                PlayMusic("rr_question.wav");
-                TimeOfQuestion = 10;
-                load_final_question();
-                lblTimer->Caption = IntToStr(TimeOfQuestion);
-                lblTimer->Visible = True;
-                imgTimer->Picture->LoadFromFile("Data\\" + IntToStr(TimeOfQuestion) + "sec.png");
-                imgTimer->Visible = True;
-                edFinalAnswer->Top = imgQuestion->Top + imgQuestion->Height - 30 - edFinalAnswer->Height;
-                edFinalAnswer->Left = (int)(imgQuestion->Left + (imgQuestion->Width - edFinalAnswer->Width) / 2.);
-                edFinalAnswer->Visible = True;
-                if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman)
-                    edFinalAnswer->Enabled = true;
-                else
-                    edFinalAnswer->Enabled = false;
-                edFinalAnswer->Text = "";
-            }
-            if (Wait == 13) {
-                tmrTime->Enabled = True;
-                PlayMusic("rr_20sec.wav");
-                ModeOfGame = 2;
-                tmrWaitingFinal->Enabled = False;
-            }
-        } break;
-    case 3: { // игрок даёт ответ
-            edFinalAnswer->Visible = false;
-            if (_Parse(edFinalAnswer->Text)) {
-                PlayMusic("rr_true.wav");
-                lblRightAnswer->Top = imgQuestion->Top + 160;
-                lblRightAnswer->Height = 19;
-                lblRightAnswer->AutoSize = true;
-                lblRightAnswer->Caption = base[NumberOfQuestion].Answers[0];
-                lblRightAnswer->Left =
-                    (int)(imgQuestion->Left + (imgQuestion->Width / 2.) - (lblRightAnswer->Width / 2.));
-                lblRightAnswer->Visible = True;
-                imgChoosenAnswer->Width = lblRightAnswer->Width;
-                imgChoosenAnswer->Top = lblRightAnswer->Top - 10;
-                imgChoosenAnswer->Left = lblRightAnswer->Left;
-                imgChAnsLeft->Top = imgChoosenAnswer->Top;
-                imgChAnsLeft->Left = imgChoosenAnswer->Left - imgChAnsLeft->Width;
-                imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
-                imgChAnsRight->Top = imgChoosenAnswer->Top;
-                imgChoosenAnswer->Visible = True;
-                imgChAnsLeft->Visible = true;
-                imgChAnsRight->Visible = true;
-                Reward = StrToInt(LabelMoney->Caption);
-                imgQuestion->Picture->LoadFromFile("Data\\quest_correct.png");
-                LightHatchesW(255, 4);
-                MechanizmSetHatchesStates();
-                ModeOfGame = 4;
-            }
-            else {
-                PlayMusic("rr_false.wav");
-                lblRightAnswer->Top = imgQuestion->Top + 160;
-                lblRightAnswer->Height = 19;
-                lblRightAnswer->AutoSize = true;
-                lblRightAnswer->Caption = base[NumberOfQuestion].Answers[0];
-                lblRightAnswer->Left =
-                    (int)(imgQuestion->Left + (imgQuestion->Width / 2.) - (lblRightAnswer->Width / 2.));
-                lblRightAnswer->Visible = True;
-                imgChoosenAnswer->Width = lblRightAnswer->Width;
-                imgChoosenAnswer->Top = lblRightAnswer->Top - 10;
-                imgChoosenAnswer->Left = lblRightAnswer->Left;
-                imgChAnsLeft->Top = imgChoosenAnswer->Top;
-                imgChAnsLeft->Left = imgChoosenAnswer->Left - imgChAnsLeft->Width;
-                imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
-                imgChAnsRight->Top = imgChoosenAnswer->Top;
-                imgChoosenAnswer->Visible = True;
-                imgChAnsLeft->Visible = true;
-                imgChAnsRight->Visible = true;
-                LightHatchesW(3, 4);
-                ModeOfGame = 5;
-                waitinger = 10 + random(11);
-                MechanizmSetHatchesStates();
-                imgQuestion->Picture->LoadFromFile("Data\\quest_incorrect.png");
-                imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
-            }
-            Wait = 0;
-        } break;
-    case 4: {
-            if (Wait == 8) {
-                MoneyTransferMode = 0;
-                tmrMoney->Enabled = True;
-            }
-            if (Wait == 18) {
-                if (FinalRoundOfGame < 3) {
-                    btnGetMoney->Visible = True;
-                    btnContinueGame->Visible = True;
-                }
-                tmrWaitingFinal->Enabled = False;
-                imgChoosenAnswer->Visible = False;
-                imgBorder->Visible = false;
-                imgChAnsLeft->Visible = false;
-                imgChAnsRight->Visible = false;
-                imgTimer->Visible = False;
-                lblTimer->Visible = False;
-                LabelMoney->Visible = False;
-                imgPulse->Visible = False;
-                imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
-                imgQuestion->Visible = False;
-                LabelQuestion->Visible = False;
-                lblRightAnswer->Visible = False;
-                imgTicker->Visible = false;
-                imgPulseBar->Visible = false;
-                imgTotalPrize->Visible = false;
-                if (FinalRoundOfGame == 3) {
-                    Wait = 0;
-                    ModeOfGame = 8;
-                    tmrWaitingFinal->Enabled = True;
-                }
-            }
-        } break;
-    case 5: { // игрок дал неверный ответ, но остался в игре
-            if (Wait == waitinger) {
-                OpenRndHatches();
-                if (opened_now[CurrentHatch] == 1) {
-                    PlayMusic("rr_fall.wav");
-                    for (int i = 0; i < 5; i++)
-                        if (ingame[i]) {
-                            lblPlayer[i]->Visible = False;
-                            lblMoney[i]->Visible = False;
-                            LabelMoney->Caption = IntToStr(money[i]);
-                            switch (i) {
-                            case 0:
-                                imgPlayer1->Visible = False;
-                                break;
-                            case 1:
-                                imgPlayer2->Visible = False;
-                                break;
-                            case 2:
-                                imgPlayer3->Visible = False;
-                                break;
-                            case 3:
-                                imgPlayer4->Visible = False;
-                                break;
-                            case 4:
-                                imgPlayer5->Visible = False;
-                                break;
-                            }
-                        }
-                    imgChoosenAnswer->Visible = False;
-                    imgChAnsLeft->Visible = false;
-                    imgChAnsRight->Visible = false;
-                    imgBorder->Visible = false;
-                    imgTimer->Visible = False;
-                    lblTimer->Visible = False;
-                    LabelMoney->Visible = False;
-                    imgPulse->Visible = False;
-                    imgTicker->Visible = false;
-                    imgPulseBar->Visible = false;
-                    imgTotalPrize->Visible = false;
-                    imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
-                    imgQuestion->Visible = False;
-                    LabelQuestion->Visible = False;
-                    lblRightAnswer->Visible = False;
-                    ModeOfGame = 7;
-                    Wait = 23;
-                }
-                else {
-                    PlaySound("rr_notfall.wav");
-                    ModeOfGame = 6;
-                    Wait = 30;
-                }
-            }
-        } break;
-    case 6: {
-            if (Wait == 32) {
-                imgPlace->Picture->LoadFromFile("Data\\Place.png");
-                // PlaySound("rr_save.wav");
-                LightHatchesW(1, 0);
-                MechanizmSetHatchesStates();
-                if (FinalRoundOfGame == 3) {
-                    for (int i = 0; i < 5; i++)
-                        if (ingame[i]) {
-                            lblPlayer[i]->Visible = False;
-                            lblMoney[i]->Visible = False;
-                            LabelMoney->Caption = IntToStr(money[i] + 1000000);
-                            imgChoosenAnswer->Visible = False;
-                            imgTimer->Visible = False;
-                            lblTimer->Visible = False;
-                            LabelMoney->Visible = False;
-                            imgTicker->Visible = false;
-                            imgPulseBar->Visible = false;
-                            imgTotalPrize->Visible = false;
-                            imgBorder->Visible = false;
-                            imgChAnsLeft->Visible = false;
-                            imgChAnsRight->Visible = false;
-                            imgPulse->Visible = False;
-                            imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
-                            imgQuestion->Visible = False;
-                            LabelQuestion->Visible = False;
-                            lblRightAnswer->Visible = False;
-                        }
-                    Wait = 0;
-                    ModeOfGame = 8;
-                }
-            }
-            if (Wait == 35) {
-                LightHatchesW(255, 1);
-                MechanizmSetHatchesStates();
-                Wait = 10;
-                ModeOfGame = 0;
-            }
-        } break;
-    case 7: {
-            if (Wait == 30) {
-                LightHatchesW(3, 0);
-                imgTotalPrize->Top = imgBorder->Top + 30;
-                LabelMoney->Top = imgTotalPrize->Top + 10;
-                LabelMoney->Visible = True;
-                LabelMoney->Left = imgTotalPrize->Left + 9;
-                imgTotalPrize->Visible = True;
-                imgBorder->Visible = true;
-                MechanizmSetHatchesStates();
-                PlayMusic("rr_closing.wav");
-                tmrWaitingFinal->Enabled = False;
-            }
-        } break;
-    case 8: {
-            if (Wait == 8) {
-                LightHatchesW(2, 3);
-                imgTotalPrize->Top = imgBorder->Top + 30;
-                LabelMoney->Top = imgTotalPrize->Top + 10;
-                LabelMoney->Visible = True;
-                LabelMoney->Left = imgTotalPrize->Left + 9;
-                imgTotalPrize->Visible = True;
-                imgBorder->Visible = true;
-                MechanizmSetHatchesStates();
-                PlayMusic("rr_closing.wav");
-                tmrWaitingFinal->Enabled = False;
-            }
-        } break;
-    }
+						case 4: {
+								imgPlayer5->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer1->Height) / 2);
+								imgPlayer5->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer1->Width) / 2);
+							} break;
+						}
+					}
+				}
+			}
+			if (Wait == 18) {
+				imgChoosenAnswer->Visible = False;
+				imgTimer->Visible = False;
+				lblTimer->Visible = False;
+				LabelMoney->Visible = False;
+				imgPulse->Visible = False;
+				imgPulseBar->Visible = false;
+				imgTotalPrize->Visible = false;
+				imgTicker->Visible = false;
+				imgChAnsLeft->Visible = false;
+				imgChAnsRight->Visible = false;
+				imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+				imgQuestion->Visible = False;
+				LabelQuestion->Visible = False;
+				lblRightAnswer->Visible = False;
+				if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
+					btnMechStart->Enabled = True;
+					imgMechanizm->Enabled = True;
+				}
+				else {
+					switch (Settings->PlayerType[LeaderPlayerAtFinal]) {
+					case bbFoooool:
+						TimeToDecide = 5 + random(41);
+						break;
+					case bbFooly:
+						TimeToDecide = 5 + random(31);
+						break;
+					case bbNormal:
+						TimeToDecide = 5 + random(21);
+						break;
+					case bbHard:
+						TimeToDecide = 1 + random(16);
+						break;
+					case bbVeryHard:
+						TimeToDecide = 1 + random(11);
+						break;
+					}
+					imgMechanizmClick(imgMechanizm);
+					Wait = 0;
+					tmrDecided->Enabled = true;
+				}
+				RoundOfGame = -1;
+				chooseplayer = 255;
+				activate_final_hatches();
+				tmrWaitingFinal->Enabled = False;
+			}
+			if (Wait == 19) {
+				ModeOfGame = 1;
+				Wait = 0;
+				deactivate_final_hatches();
+			}
+		} break;
+	case 1: {
+			if (Wait == 5) {
+				RoundOfGame = 5;
+				imgQuestion->Visible = True;
+				imgBorder->Visible = true;
+				imgPulseBar->Visible = true;
+				imgTicker->Visible = true;
+				imgPulse->Visible = True;
+				imgTotalPrize->Visible = True;
+				if (FinalRoundOfGame == 1)
+					LabelMoney->Caption = "50000";
+				if (FinalRoundOfGame == 2)
+					LabelMoney->Caption = "100000";
+				if (FinalRoundOfGame == 3)
+					LabelMoney->Caption = "1000000";
+				LabelMoney->Visible = True;
+			}
+			if (Wait == 8) {
+				PlayMusic("rr_question.wav");
+				TimeOfQuestion = 10;
+				load_final_question();
+				lblTimer->Caption = IntToStr(TimeOfQuestion);
+				lblTimer->Visible = True;
+				imgTimer->Picture->LoadFromFile("Data\\" + IntToStr(TimeOfQuestion) + "sec.png");
+				imgTimer->Visible = True;
+				edFinalAnswer->Top = imgQuestion->Top + imgQuestion->Height - 30 - edFinalAnswer->Height;
+				edFinalAnswer->Left = (int)(imgQuestion->Left + (imgQuestion->Width - edFinalAnswer->Width) / 2.);
+				edFinalAnswer->Visible = True;
+				if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman)
+					edFinalAnswer->Enabled = true;
+				else
+					edFinalAnswer->Enabled = false;
+				edFinalAnswer->Text = "";
+			}
+			if (Wait == 13) {
+				tmrTime->Enabled = True;
+				PlayMusic("rr_20sec.wav");
+				ModeOfGame = 2;
+				tmrWaitingFinal->Enabled = False;
+			}
+		} break;
+	case 3: { // игрок даёт ответ
+			edFinalAnswer->Visible = false;
+			if (_Parse(edFinalAnswer->Text)) {
+				PlayMusic("rr_true.wav");
+				lblRightAnswer->Top = imgQuestion->Top + 160;
+				lblRightAnswer->Height = 19;
+				lblRightAnswer->AutoSize = true;
+				lblRightAnswer->Caption = base[NumberOfQuestion].Answers[0];
+				lblRightAnswer->Left =
+					(int)(imgQuestion->Left + (imgQuestion->Width / 2.) - (lblRightAnswer->Width / 2.));
+				lblRightAnswer->Visible = True;
+				imgChoosenAnswer->Width = lblRightAnswer->Width;
+				imgChoosenAnswer->Top = lblRightAnswer->Top - 10;
+				imgChoosenAnswer->Left = lblRightAnswer->Left;
+				imgChAnsLeft->Top = imgChoosenAnswer->Top;
+				imgChAnsLeft->Left = imgChoosenAnswer->Left - imgChAnsLeft->Width;
+				imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
+				imgChAnsRight->Top = imgChoosenAnswer->Top;
+				imgChoosenAnswer->Visible = True;
+				imgChAnsLeft->Visible = true;
+				imgChAnsRight->Visible = true;
+				Reward = StrToInt(LabelMoney->Caption);
+				imgQuestion->Picture->LoadFromFile("Data\\quest_correct.png");
+				LightHatchesW(255, 4);
+				MechanizmSetHatchesStates();
+				ModeOfGame = 4;
+			}
+			else {
+				PlayMusic("rr_false.wav");
+				lblRightAnswer->Top = imgQuestion->Top + 160;
+				lblRightAnswer->Height = 19;
+				lblRightAnswer->AutoSize = true;
+				lblRightAnswer->Caption = base[NumberOfQuestion].Answers[0];
+				lblRightAnswer->Left =
+					(int)(imgQuestion->Left + (imgQuestion->Width / 2.) - (lblRightAnswer->Width / 2.));
+				lblRightAnswer->Visible = True;
+				imgChoosenAnswer->Width = lblRightAnswer->Width;
+				imgChoosenAnswer->Top = lblRightAnswer->Top - 10;
+				imgChoosenAnswer->Left = lblRightAnswer->Left;
+				imgChAnsLeft->Top = imgChoosenAnswer->Top;
+				imgChAnsLeft->Left = imgChoosenAnswer->Left - imgChAnsLeft->Width;
+				imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
+				imgChAnsRight->Top = imgChoosenAnswer->Top;
+				imgChoosenAnswer->Visible = True;
+				imgChAnsLeft->Visible = true;
+				imgChAnsRight->Visible = true;
+				LightHatchesW(3, 4);
+				ModeOfGame = 5;
+				waitinger = 10 + random(11);
+				MechanizmSetHatchesStates();
+				imgQuestion->Picture->LoadFromFile("Data\\quest_incorrect.png");
+				imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
+			}
+			Wait = 0;
+		} break;
+	case 4: {
+			if (Wait == 8) {
+				MoneyTransferMode = 0;
+				tmrMoney->Enabled = True;
+			}
+			if (Wait == 18) {
+				if (FinalRoundOfGame < 3) {
+					btnGetMoney->Visible = True;
+					btnContinueGame->Visible = True;
+				}
+				tmrWaitingFinal->Enabled = False;
+				imgChoosenAnswer->Visible = False;
+				imgBorder->Visible = false;
+				imgChAnsLeft->Visible = false;
+				imgChAnsRight->Visible = false;
+				imgTimer->Visible = False;
+				lblTimer->Visible = False;
+				LabelMoney->Visible = False;
+				imgPulse->Visible = False;
+				imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+				imgQuestion->Visible = False;
+				LabelQuestion->Visible = False;
+				lblRightAnswer->Visible = False;
+				imgTicker->Visible = false;
+				imgPulseBar->Visible = false;
+				imgTotalPrize->Visible = false;
+				if (FinalRoundOfGame == 3) {
+					Wait = 0;
+					ModeOfGame = 8;
+					tmrWaitingFinal->Enabled = True;
+				}
+			}
+		} break;
+	case 5: { // игрок дал неверный ответ, но остался в игре
+			if (Wait == waitinger) {
+				OpenRndHatches();
+				if (opened_now[CurrentHatch] == 1) {
+					PlayMusic("rr_fall.wav");
+					for (int i = 0; i < 5; i++)
+						if (ingame[i]) {
+							lblPlayer[i]->Visible = False;
+							lblMoney[i]->Visible = False;
+							LabelMoney->Caption = IntToStr(money[i]);
+							switch (i) {
+							case 0:
+								imgPlayer1->Visible = False;
+								break;
+							case 1:
+								imgPlayer2->Visible = False;
+								break;
+							case 2:
+								imgPlayer3->Visible = False;
+								break;
+							case 3:
+								imgPlayer4->Visible = False;
+								break;
+							case 4:
+								imgPlayer5->Visible = False;
+								break;
+							}
+						}
+					imgChoosenAnswer->Visible = False;
+					imgChAnsLeft->Visible = false;
+					imgChAnsRight->Visible = false;
+					imgBorder->Visible = false;
+					imgTimer->Visible = False;
+					lblTimer->Visible = False;
+					LabelMoney->Visible = False;
+					imgPulse->Visible = False;
+					imgTicker->Visible = false;
+					imgPulseBar->Visible = false;
+					imgTotalPrize->Visible = false;
+					imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+					imgQuestion->Visible = False;
+					LabelQuestion->Visible = False;
+					lblRightAnswer->Visible = False;
+					ModeOfGame = 7;
+					Wait = 23;
+				}
+				else {
+					PlaySound("rr_notfall.wav");
+					ModeOfGame = 6;
+					Wait = 30;
+				}
+			}
+		} break;
+	case 6: {
+			if (Wait == 32) {
+				imgPlace->Picture->LoadFromFile("Data\\Place.png");
+				// PlaySound("rr_save.wav");
+				LightHatchesW(1, 0);
+				MechanizmSetHatchesStates();
+				if (FinalRoundOfGame == 3) {
+					for (int i = 0; i < 5; i++)
+						if (ingame[i]) {
+							lblPlayer[i]->Visible = False;
+							lblMoney[i]->Visible = False;
+							LabelMoney->Caption = IntToStr(money[i] + 1000000);
+							imgChoosenAnswer->Visible = False;
+							imgTimer->Visible = False;
+							lblTimer->Visible = False;
+							LabelMoney->Visible = False;
+							imgTicker->Visible = false;
+							imgPulseBar->Visible = false;
+							imgTotalPrize->Visible = false;
+							imgBorder->Visible = false;
+							imgChAnsLeft->Visible = false;
+							imgChAnsRight->Visible = false;
+							imgPulse->Visible = False;
+							imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+							imgQuestion->Visible = False;
+							LabelQuestion->Visible = False;
+							lblRightAnswer->Visible = False;
+						}
+					Wait = 0;
+					ModeOfGame = 8;
+				}
+			}
+			if (Wait == 35) {
+				LightHatchesW(255, 1);
+				MechanizmSetHatchesStates();
+				Wait = 10;
+				ModeOfGame = 0;
+			}
+		} break;
+	case 7: {
+			if (Wait == 30) {
+				LightHatchesW(3, 0);
+				imgTotalPrize->Top = imgBorder->Top + 30;
+				LabelMoney->Top = imgTotalPrize->Top + 10;
+				LabelMoney->Visible = True;
+				LabelMoney->Left = imgTotalPrize->Left + 9;
+				imgTotalPrize->Visible = True;
+				imgBorder->Visible = true;
+				MechanizmSetHatchesStates();
+				PlayMusic("rr_closing.wav");
+				tmrWaitingFinal->Enabled = False;
+			}
+		} break;
+	case 8: {
+			if (Wait == 8) {
+				LightHatchesW(2, 3);
+				imgTotalPrize->Top = imgBorder->Top + 30;
+				LabelMoney->Top = imgTotalPrize->Top + 10;
+				LabelMoney->Visible = True;
+				LabelMoney->Left = imgTotalPrize->Left + 9;
+				imgTotalPrize->Visible = True;
+				imgBorder->Visible = true;
+				MechanizmSetHatchesStates();
+				PlayMusic("rr_closing.wav");
+				tmrWaitingFinal->Enabled = False;
+			}
+		} break;
+	}
 }
 
 // ---------------------------------------------------------------------------
@@ -2351,15 +2389,15 @@ void __fastcall TF::lblExitClick(TObject* Sender) { btnExitClick(btnExit); }
 
 // ---------------------------------------------------------------------------
 void ShowError(int errcode) {
-    switch (errcode) {
-    case 1:
-        ShowMessage("Ошибка загрузки базы вопросов: имя базы не указано!");
-        exit(1);
-    case 2:
-        F->FatalError = 1;
-        ShowMessage("Ошибка загрузки базы вопросов: база с именем '" + Settings->LastBase + "' не существует!");
-        exit(1);
-    }
+	switch (errcode) {
+	case 1:
+		ShowMessage("Ошибка загрузки базы вопросов: имя базы не указано!");
+		exit(1);
+	case 2:
+		F->FatalError = 1;
+		ShowMessage("Ошибка загрузки базы вопросов: база с именем '" + Settings->LastBase + "' не существует!");
+		exit(1);
+	}
 }
 
 // ---------------------------------------------------------------------------
@@ -2368,16 +2406,16 @@ void DumpMemory(int errcode) {
 
     AnsiString str = "";
 
-    str = "LastBase = " + Settings->LastBase + "\n\r";
-    stream->Write(& str[1], str.Length());
+	str = "LastBase = " + Settings->LastBase + "\n\r";
+	stream->Write(& str[1], str.Length());
 
     int n = F->NumberOfQuestion;
 
     str = "Number of question = " + IntToStr(n) + "\n\r";
     stream->Write(& str[1], str.Length());
 
-    str = "Question = " + IntToStr(base[n].Round) + ". " + base[n].Question + "\n\r";
-    stream->Write(& str[1], str.Length());
+	str = "Question = " + IntToStr(base[n].Round) + ". " + base[n].Question + "\n\r";
+	stream->Write(& str[1], str.Length());
 
     str = "Ingame = [";
     for (int i = 0; i < 5; i++) {
@@ -2521,21 +2559,21 @@ void __fastcall TF::tmrLightAnimationTimer(TObject* Sender) {
 // ----------------------------------------------------------------------------
 
 void __fastcall TF::ControlLabelClick(TObject* Sender) {
-    if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[F->chooseplayer - 1] == bbHuman) {
-        switch (RoundOfGame) {
-        case 1:
-            F->Reward = 1000;
-            break;
-        case 2:
-            F->Reward = 2000;
-            break;
-        case 3:
-            F->Reward = 3000;
-            break;
-        case 4:
-            F->Reward = 4000;
-            break;
-        }
+	if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[F->chooseplayer - 1] == bbHuman) {
+		switch (RoundOfGame) {
+		case 1:
+			F->Reward = 1000;
+			break;
+		case 2:
+			F->Reward = 2000;
+			break;
+		case 3:
+			F->Reward = 3000;
+			break;
+		case 4:
+			F->Reward = 4000;
+			break;
+		}
 
         // проверяем, какой именно ответ был выбран
         if (Sender == lblAnswers[0])
@@ -2549,23 +2587,23 @@ void __fastcall TF::ControlLabelClick(TObject* Sender) {
         if (Sender == lblAnswers[4])
             answer = 4;
 
-        // включаем функцию проверки ответа и отключаем таймер
-        Proverka();
-        tmrTime->Enabled = False;
-    }
-    if (ModeOfGame == 1 && CanChoose == 1 && Settings->PlayerType[F->CurrentHatch - 1] == bbHuman) {
-        if (Sender == lblPlayer[0] && F->CurrentHatch != 1)
-            F->imgHatch1Click(imgHatch1);
-        if (Sender == lblPlayer[1] && F->CurrentHatch != 2)
-            F->imgHatch2Click(imgHatch2);
-        if (Sender == lblPlayer[2] && F->CurrentHatch != 3)
-            F->imgHatch3Click(imgHatch3);
-        if (Sender == lblPlayer[3] && F->CurrentHatch != 4)
-            F->imgHatch4Click(imgHatch4);
-        if (Sender == lblPlayer[4] && F->CurrentHatch != 5)
-            F->imgHatch5Click(imgHatch5);
-        CanChoose == 0;
-    }
+		// включаем функцию проверки ответа и отключаем таймер
+		Proverka();
+		tmrTime->Enabled = False;
+	}
+	if (ModeOfGame == 1 && CanChoose == 1 && Settings->PlayerType[F->CurrentHatch - 1] == bbHuman) {
+		if (Sender == lblPlayer[0] && F->CurrentHatch != 1)
+			F->imgHatch1Click(imgHatch1);
+		if (Sender == lblPlayer[1] && F->CurrentHatch != 2)
+			F->imgHatch2Click(imgHatch2);
+		if (Sender == lblPlayer[2] && F->CurrentHatch != 3)
+			F->imgHatch3Click(imgHatch3);
+		if (Sender == lblPlayer[3] && F->CurrentHatch != 4)
+			F->imgHatch4Click(imgHatch4);
+		if (Sender == lblPlayer[4] && F->CurrentHatch != 5)
+			F->imgHatch5Click(imgHatch5);
+		CanChoose == 0;
+	}
 }
 
 // ---------------------------------------------------------------------------

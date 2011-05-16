@@ -13,13 +13,13 @@
 
 TMenuForm* MenuForm;
 extern void InitializeSettings();
-extern TSettings* Settings;
 
 // ---------------------------------------------------------------------------
 __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::FormCreate(TObject* Sender) {
+	// MenuVisible = True;
 	InitializeSettings();
 
 	MenuForm->Constraints->MinWidth = Settings->MinWidth;

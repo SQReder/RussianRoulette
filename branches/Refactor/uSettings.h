@@ -65,8 +65,9 @@ public:
 		BaseNames = new TStringList();
 		HostMode = false;
 	};
-
 };
+
+extern TSettings* Settings;
 
 // ---------------------------------------------------------------------------
 class TSettingsForm : public TForm {

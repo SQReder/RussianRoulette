@@ -13,4 +13,8 @@ public:
 	UnicodeString Answers[5];
 
 };
+
+extern QA* base;
+extern int qcount;
+
 #endif
