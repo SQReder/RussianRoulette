@@ -1,0 +1,27 @@
+sQuestion specifications
+  MaxLen
+    question:     255
+    comment:      255
+    answer:       40
+
+  Max answers count is 32
+
+sBase file structure
+  4 bytes       sygnature       rrb1
+  4 bytes       password CRC32 4 edit
+  4 bytes       count of questions
+  question fields
+
+sQuestion inbase structure
+  1 byte        round
+  2 byte        lengths
+    1 byte        question length
+    1 byte        comment length
+  1-256 bytes   question text
+  1-256 bytes   comment text
+  ------
+  1 byte        answers count
+  1-1312 bytes  answers
+    1 byte        answer length
+    1-40 bytes    answer text
+  1 byte        true answer
