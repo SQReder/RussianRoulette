@@ -9,7 +9,7 @@
 #include <FileCtrl.hpp>
 #include <ComCtrls.hpp>
 #include <Dialogs.hpp>
-#include "AI.cpp"
+#include "AI.h"
 
 class TSettings {
 public:
@@ -32,16 +32,11 @@ public:
 	TStringList* BaseNames;
 
 	TSettings() {
-		PlayerNames[0] = "Игрок №1";
-		PlayerType[0] = bbHuman;
-		PlayerNames[1] = "Игрок №2";
-		PlayerType[1] = bbHuman;
-		PlayerNames[2] = "Игрок №3";
-		PlayerType[2] = bbHuman;
-		PlayerNames[3] = "Игрок №4";
-		PlayerType[3] = bbHuman;
-		PlayerNames[4] = "Игрок №5";
-		PlayerType[4] = bbHuman;
+		for (int i = 0; i < 5; ++i) {
+			PlayerNames[i] = "Игрок № ";
+			PlayerNames[i][8] = 49 + i; // generate number 1..5. char 49 is '1'
+			PlayerType[i] = bbHuman;
+		}
 
 		Fullscreen = True;
 

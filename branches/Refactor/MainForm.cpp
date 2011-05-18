@@ -13,7 +13,7 @@
 #include "uAnimate.h"
 #include "Splash.h"
 #include "inifiles.hpp"
-#include "AI.cpp"
+#include "AI.h"
 #include "uSettings.h"
 #include "uHostMode.h"
 #include "base.h"
