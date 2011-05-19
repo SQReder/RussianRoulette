@@ -12,7 +12,7 @@ void Proverka();
 void activate_final_hatches();
 void deactivate_final_hatches();
 void load_final_question();
-
-// void blabla();
 // ---------------------------------------------------------------------------
+extern int CurrentHatch;
+
 #endif

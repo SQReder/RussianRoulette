@@ -74,7 +74,6 @@
 			<CppCompile Include="AI.cpp">
 				<DependentOn>AI.h</DependentOn>
 				<BuildOrder>11</BuildOrder>
-				<OptionOverrides>true</OptionOverrides>
 			</CppCompile>
 			<CppCompile Include="base.cpp">
 				<DependentOn>base.h</DependentOn>
@@ -153,7 +152,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">332</VersionInfo>
+						<VersionInfo Name="Build">335</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -165,7 +164,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule inc.</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">just for fun</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.0.332</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.0.335</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GPL v3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

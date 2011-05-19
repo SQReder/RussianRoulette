@@ -9,8 +9,8 @@ enum TBotType {
 class TBot { // класс ботов
 
 private:
-	float bBrain;
-	float bIdentity;
+	int bBrain;
+	int bIdentity;
 
 public:
 	bool Get_Answer();

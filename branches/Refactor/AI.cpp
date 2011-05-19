@@ -1,8 +1,8 @@
 #include "AI.h"
 #include "stdlib.h"
 
-const double BotBrain[6] = { 0, .3, 1 / 3., .7, .85, 1 };
-const double BotIdent[6] = { 0, .1, .2, .3, .25, .05 };
+const int BotBrain[6] = { 0, 30, 33, 70, 8, 100 };
+const int BotIdent[6] = { 0, 10, 20, 30, 25, 5 };
 
 // -----------------------------------------------------------------------------
 TBot::TBot(TBotType BotType) {
@@ -13,11 +13,11 @@ TBot::TBot(TBotType BotType) {
 // -----------------------------------------------------------------------------
 bool TBot::Get_Answer() {
 	// если бот не знает ответ на вопрос, ...
-	if ((random(100) / 100.) <= bBrain) {
+	if (random(100) <= bBrain) {
 		return true;
 	}
 	// ...то он пытается выбрать ответ интуитивно.
-	if ((random(100) / 100.) <= bIdentity) {
+	if (random(100) <= bIdentity) {
 		return true;
 	}
 	return false;

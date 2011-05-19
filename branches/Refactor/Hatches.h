@@ -11,7 +11,7 @@
 void Hatches();
 void MechanizmSetHatchesStates();
 void ShiftHatches();
-void LightHatchesW(unsigned char, unsigned char);
+void LightHatchesW(int, int);
 void ZeroRoundRotating();
 void FirstRoundRotating();
 void ZeroRoundSpin();
@@ -27,7 +27,6 @@ void OpenHatches();
 void SwitchesLights();
 void before_spin_lights();
 void after_spin_lights();
-// void ZeroRoundSpin();
 void OpenRndHatches();
 
 extern int AnimationFrame;

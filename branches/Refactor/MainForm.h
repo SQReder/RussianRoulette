@@ -122,7 +122,6 @@ public: // User declarations
 	__fastcall TF(TComponent* Owner);
 
 	int opened_now[6]; // указывает какие люки будут открыты после остановки механизма
-	int CurrentHatch;
 	char TempRoundOfGame;
 	char MoneyTransferMode;
 	int ModeOfGame;

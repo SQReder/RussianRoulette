@@ -425,7 +425,7 @@ void __fastcall TF::tmrRotatorTimer(TObject* Sender) {
     }
 
     if (RoundOfGame < 1)
-        F->CurrentHatch = ++F->CurrentHatch % 6;
+        CurrentHatch = ++CurrentHatch % 6;
 
     if (MechanizmOn == 1) // если механизм в стадии отключения
     {
@@ -1318,7 +1318,7 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
 		}
 	}
 	if (ModeOfGame == 1 && (((Key >= '1') && (Key <= '5')) || ((Key >= VK_NUMPAD1) && (Key <= VK_NUMPAD5)))
-		&& Settings->PlayerType[F->CurrentHatch - 1] == bbHuman && CanChoose == 1) {
+		&& Settings->PlayerType[CurrentHatch - 1] == bbHuman && CanChoose == 1) {
 		switch (Key) {
 		case '1':
 		case VK_NUMPAD1:
@@ -1534,32 +1534,7 @@ void __fastcall TF::tmrLogTimer(TObject* Sender) {
 // ---------------------------------------------------------------------------
 void TF::blabla() // возвращает форму в исходное положение
 {
-	// switch (RoundOfGame) {
-	// case 1: {
-	// F->lblAnswers[0]->Visible = False;
-	// F->lblAnswers[1]->Visible = False;
-	// } break;
-	// case 2: {
-	// F->lblAnswers[0]->Visible = False;
-	// F->lblAnswers[1]->Visible = False;
-	// F->lblAnswers[2]->Visible = False;
-	// } break;
-	// case 3: {
-	// F->lblAnswers[0]->Visible = False;
-	// F->lblAnswers[1]->Visible = False;
-	// F->lblAnswers[2]->Visible = False;
-	// F->lblAnswers[3]->Visible = False;
-	// } break;
-	// case 4: {
-	// F->lblAnswers[0]->Visible = False;
-	// F->lblAnswers[1]->Visible = False;
-	// F->lblAnswers[2]->Visible = False;
-	// F->lblAnswers[3]->Visible = False;
-	// F->lblAnswers[4]->Visible = False;
-	// } break;
-	// }
-
-	for (int i = 0; i < RoundOfGame; ++i)
+	for (int i = 0; i <=RoundOfGame; ++i)
 		F->lblAnswers[i]->Visible = false;
 
 	F->imgNumber1->Visible = False;
@@ -1581,7 +1556,6 @@ void TF::blabla() // возвращает форму в исходное положение
 	F->LabelMoney->Visible = False;
 	DeactivateHatches();
 	UpdateHatches();
-	// tmrWaiting->Enabled = False;
 }
 
 void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
@@ -2591,16 +2565,16 @@ void __fastcall TF::ControlLabelClick(TObject* Sender) {
 		Proverka();
 		tmrTime->Enabled = False;
 	}
-	if (ModeOfGame == 1 && CanChoose == 1 && Settings->PlayerType[F->CurrentHatch - 1] == bbHuman) {
-		if (Sender == lblPlayer[0] && F->CurrentHatch != 1)
+	if (ModeOfGame == 1 && CanChoose == 1 && Settings->PlayerType[CurrentHatch - 1] == bbHuman) {
+		if (Sender == lblPlayer[0] && CurrentHatch != 1)
 			F->imgHatch1Click(imgHatch1);
-		if (Sender == lblPlayer[1] && F->CurrentHatch != 2)
+		if (Sender == lblPlayer[1] && CurrentHatch != 2)
 			F->imgHatch2Click(imgHatch2);
-		if (Sender == lblPlayer[2] && F->CurrentHatch != 3)
+		if (Sender == lblPlayer[2] && CurrentHatch != 3)
 			F->imgHatch3Click(imgHatch3);
-		if (Sender == lblPlayer[3] && F->CurrentHatch != 4)
+		if (Sender == lblPlayer[3] && CurrentHatch != 4)
 			F->imgHatch4Click(imgHatch4);
-		if (Sender == lblPlayer[4] && F->CurrentHatch != 5)
+		if (Sender == lblPlayer[4] && CurrentHatch != 5)
 			F->imgHatch5Click(imgHatch5);
 		CanChoose == 0;
 	}

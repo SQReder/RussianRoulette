@@ -1,6 +1,5 @@
 // ---------------------------------------------------------------------------
 #include <vcl.h>
-#pragma hdrstop
 #include <winbase.h>
 #pragma hdrstop
 
@@ -11,14 +10,13 @@
 #define imgWhiteHatch	"Data\\White.png"	//state index 4
 #define imgGreyHatch	"Data\\Base.png"	//state index 5
 
-// #include "Globals.cpp"
 #include "Hatches.h"
-
+#include "GameLogic.h"
 #pragma package(smart_init)
 using Graphics::TPicture;
 TPicture* hatch[6]; // указатели на изображени€ люков на форме
 TPicture* h_state_img[6]; // изображени€ состо€ний люков
-unsigned char h_state[6]; // текущее состо€ние люков
+int h_state[6]; // текущее состо€ние люков
 int AnimationFrame; // определ€ет пор€док анимации
 
 // ---------------------------------------------------------------------------
@@ -68,35 +66,41 @@ inline void LoadHatchImage(int index, int state) { // банальное копирование изоб
 
 // ---------------------------------------------------------------------------
 void MechanizmSetHatchesStates() { // приведение изображений на форме в соответствие с состо€ни€ми люков
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++) {
 		LoadHatchImage(i, h_state[i]);
+	}
 }
 
 // ---------------------------------------------------------------------------
 void OpenRandomHatches(const unsigned char OpenHatches) {
 	if (OpenHatches > 6) {
-		ShowMessage("ј хули так много люков открываем?!");
+		ShowMessage("ј фигли так много люков открываем?!");
 		exit(1);
 	}
 
 	F->RndHatch = 0;
-	for (int i = 0; i < 6; i++)
-		F->opened_now[i] = 0; // закрываем открытые люки,
+	for (int i = 0; i < 6; i++) {
+		F->opened_now[i] = 0;
+	} // закрываем открытые люки,
 
 	do {
 		F->opened_now[random(6)] = 1; // и открываем случайный пока не откроем
 
-		if (F->CantFall != -1)
-			F->opened_now[F->CantFall + 1] = 0; // и спасаем игрока же! ^_^"
+		if (F->CantFall != -1) {
+			F->opened_now[F->CantFall + 1] = 0;
+		} // и спасаем игрока же! ^_^"
 
 		// закрываем люки, которые не могут открыватьс€
-		for (int i = 0; i < 5; i++) // те, что уже не в игре
-			if (!F->ingame[i] && F->ModeOfGame == 8)
+		for (int i = 0; i < 5; i++) { // те, что уже не в игре
+			if (!F->ingame[i] && F->ModeOfGame == 8) {
 				F->opened_now[i + 1] = 0;
+			}
+		}
 
 		// закрываем люк ведущего, если не финал еще или миниигра.
-		if (F->FinalRoundOfGame < 1) /* && (F->GameMode != minigame) */
-				F->opened_now[0] = 0;
+		if (F->FinalRoundOfGame < 1) { /* && (F->GameMode != minigame) */
+			F->opened_now[0] = 0;
+		}
 
 	}
 	while // нужное нам количество
@@ -115,6 +119,8 @@ void Hatches() { // инициализаци€ механизма
 };
 
 // ---------------------------------------------------------------------------
+// на самом эта процедура выбирает случайного игрока в начале раунда
+// кто-бы мог подумать?!
 void ZeroRoundRotating() // установки дл€ нулевого раунда
 { // один люк подсвечен белым
 	for (int i = 0; i < 6; i++) {
@@ -122,238 +128,171 @@ void ZeroRoundRotating() // установки дл€ нулевого раунда
 	}
 	int blah = random(6);
 	h_state[blah] = 4;
-	F->CurrentHatch = blah;
+	CurrentHatch = blah;
 }
 
 // ---------------------------------------------------------------------------
 void FirstRoundRotating() {
-
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++) {
 		h_state[i] = 2;
+	}
 
 	switch (AnimationFrame++ % 2) {
 	case 0:
-		h_state[F->CurrentHatch] = 4;
+		h_state[CurrentHatch] = 4;
 		break;
 	case 1:
-		h_state[F->CurrentHatch] = 3;
-		F->CurrentHatch++ ;
+		h_state[CurrentHatch] = 3;
+		CurrentHatch++ ;
 		break;
 	default:
 		AnimationFrame = 0;
 		break;
 	}
-	F->CurrentHatch = F->CurrentHatch % 6;
+	CurrentHatch = CurrentHatch % 6;
 }
 
 // ---------------------------------------------------------------------------
-void LightHatchesW(unsigned char bright, unsigned char light) {
-	if (bright == 255) {
-		for (int i = 0; i < 6; i++)
+void LightHatchesW(int bright, int light) {
+	// если 255 то заливаем все вторым цветом
+	if (bright == 255)
+		for (int i = 0; i < 6; i++) {
 			h_state[i] = light;
-
-	}
+		}
 	else
 		for (int i = 0; i < 6; i++) {
-			if (h_state[i] != light)
+			if (h_state[i] != light) {
 				h_state[i] = bright;
+			}
 		}
 }
 
 // ---------------------------------------------------------------------------
 void ZeroRoundSpin() {
-	for (int i = 0; i < 6; i++)
-		h_state[i] = 1;
+	static const int frames[15][6] = {
+		{ 1, 4, 1, 1, 1, 1 },
+		{ 1, 4, 1, 1, 1, 1 },
+		{ 1, 4, 4, 1, 1, 1 },
+		{ 4, 4, 4, 1, 1, 1 },
+		{ 4, 4, 4, 4, 1, 1 },
+		{ 4, 4, 4, 4, 1, 1 },
+		{ 4, 1, 4, 4, 4, 1 },
+		{ 4, 1, 4, 4, 4, 1 },
+		{ 1, 1, 1, 4, 4, 4 },
+		{ 1, 1, 1, 4, 4, 4 },
+		{ 1, 1, 1, 1, 4, 4 },
+		{ 1, 1, 1, 1, 4, 4 },
+		{ 1, 1, 1, 1, 1, 4 },
+		{ 1, 1, 1, 1, 1, 4 },
+		{ 1, 1, 1, 1, 1, 4 }
+	};
 
-	switch (AnimationFrame) {
-	case 1:
-		h_state[1] = 4;
-		F->CurrentHatch = 1;
-		break;
-	case 2:
-		h_state[1] = 4;
-		F->CurrentHatch = 2;
-		break;
-	case 3:
-		h_state[1] = 4;
-		h_state[2] = 4;
-		F->CurrentHatch = 3;
-		break;
-	case 4:
-		h_state[1] = 4;
-		h_state[2] = 4;
-		h_state[0] = 4;
-		F->CurrentHatch = 4;
-		break;
-	case 5:
-		h_state[1] = 4;
-		h_state[2] = 4;
-		h_state[3] = 4;
-		h_state[0] = 4;
-		F->CurrentHatch = 5;
-		break;
-	case 6:
-		h_state[1] = 4;
-		h_state[2] = 4;
-		h_state[3] = 4;
-		h_state[0] = 4;
-		F->CurrentHatch = 1;
-		break;
-	case 7:
-		h_state[2] = 4;
-		h_state[0] = 4;
-		h_state[4] = 4;
-		h_state[3] = 4;
-		F->CurrentHatch = 2;
-		break;
-	case 8:
-		h_state[2] = 4;
-		h_state[0] = 4;
-		h_state[4] = 4;
-		h_state[3] = 4;
-		F->CurrentHatch = 3;
-		break;
-	case 9:
-		h_state[4] = 4;
-		h_state[5] = 4;
-		h_state[3] = 4;
-		F->CurrentHatch = 4;
-		break;
-	case 10:
-		h_state[4] = 4;
-		h_state[5] = 4;
-		h_state[3] = 4;
-		F->CurrentHatch = 5;
-		break;
-	case 11:
-		h_state[4] = 4;
-		h_state[5] = 4;
-		F->CurrentHatch = 1;
-		break;
-	case 12:
-		h_state[4] = 4;
-		h_state[5] = 4;
-		F->CurrentHatch = 2;
-		break;
-	case 13:
-		h_state[5] = 4;
-		F->CurrentHatch = 3;
-		break;
-	case 14:
-		h_state[5] = 4;
-		F->CurrentHatch = 4;
-		break;
-	case 15:
-		F->CurrentHatch = 5;
-		AnimationFrame = 0;
-		break;
-	}
+	// copy one line of frames array to hatch states
+	memcpy(h_state, frames[AnimationFrame], sizeof(frames[AnimationFrame]));
 
-	AnimationFrame++ ;
+	AnimationFrame = ++AnimationFrame % 15;
+	CurrentHatch = 1 + AnimationFrame % 5;
 }
 
 // ---------------------------------------------------------------------------
 void SecondRoundRotating() {
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++) {
 		h_state[i] = 2;
+	}
 
 	switch (AnimationFrame++ % 2) {
 	case 0:
-		h_state[F->CurrentHatch] = 4;
-		h_state[(F->CurrentHatch + 3) % 6] = 4;
+		h_state[CurrentHatch] = 4;
+		h_state[(CurrentHatch + 3) % 6] = 4;
 		break;
 	case 1:
-		h_state[F->CurrentHatch] = 3;
-		h_state[(F->CurrentHatch + 3) % 6] = 3;
-		F->CurrentHatch++ ;
+		h_state[CurrentHatch] = 3;
+		h_state[(CurrentHatch + 3) % 6] = 3;
+		CurrentHatch++ ;
 		break;
 	default:
 		AnimationFrame = 0;
 		break;
 	}
-	F->CurrentHatch = F->CurrentHatch % 6;
+	CurrentHatch = CurrentHatch % 6;
 }
 
 // ---------------------------------------------------------------------------
 void ThirdRoundRotating() {
-
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++) {
 		h_state[i] = 2;
+	}
 
 	switch (AnimationFrame++ % 2) {
 	case 0:
-		h_state[F->CurrentHatch] = 4;
-		h_state[(F->CurrentHatch + 2) % 6] = 4;
-		h_state[(F->CurrentHatch + 4) % 6] = 4;
+		h_state[CurrentHatch] = 4;
+		h_state[(CurrentHatch + 2) % 6] = 4;
+		h_state[(CurrentHatch + 4) % 6] = 4;
 		break;
 	case 1:
-		h_state[F->CurrentHatch] = 3;
-		h_state[(F->CurrentHatch + 2) % 6] = 3;
-		h_state[(F->CurrentHatch + 4) % 6] = 3;
-		F->CurrentHatch++ ;
-		break;
-	default:
-		AnimationFrame = 0;
+		h_state[CurrentHatch] = 3;
+		h_state[(CurrentHatch + 2) % 6] = 3;
+		h_state[(CurrentHatch + 4) % 6] = 3;
+		CurrentHatch++ ;
 		break;
 	}
-	F->CurrentHatch = F->CurrentHatch % 6;
+	CurrentHatch = CurrentHatch % 6;
 }
 
 // ---------------------------------------------------------------------------
 void FourthRoundRotating() {
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++) {
 		h_state[i] = 2;
+	}
 
 	switch (AnimationFrame++ % 2) {
 	case 0:
-		h_state[F->CurrentHatch] = 4;
-		h_state[(F->CurrentHatch + 1) % 6] = 4;
-		h_state[(F->CurrentHatch + 3) % 6] = 4;
-		h_state[(F->CurrentHatch + 4) % 6] = 4;
+		h_state[CurrentHatch] = 4;
+		h_state[(CurrentHatch + 1) % 6] = 4;
+		h_state[(CurrentHatch + 3) % 6] = 4;
+		h_state[(CurrentHatch + 4) % 6] = 4;
 		break;
 	case 1:
-		h_state[F->CurrentHatch] = 3;
-		h_state[(F->CurrentHatch + 1) % 6] = 3;
-		h_state[(F->CurrentHatch + 3) % 6] = 3;
-		h_state[(F->CurrentHatch + 4) % 6] = 3;
-		F->CurrentHatch++ ;
-		break;
-	default:
-		AnimationFrame = 0;
+		h_state[CurrentHatch] = 3;
+		h_state[(CurrentHatch + 1) % 6] = 3;
+		h_state[(CurrentHatch + 3) % 6] = 3;
+		h_state[(CurrentHatch + 4) % 6] = 3;
+		CurrentHatch++ ;
 		break;
 	}
-	F->CurrentHatch = F->CurrentHatch % 6;
+	CurrentHatch = CurrentHatch % 6;
 }
 
 // ---------------------------------------------------------------------------
 void FifthRoundRotating() {
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++) {
 		h_state[i] = 2;
+	}
 
 	switch (AnimationFrame++ % 2) {
 	case 0:
-		h_state[F->CurrentHatch] = 4;
-		h_state[(F->CurrentHatch + 1) % 6] = 4;
-		h_state[(F->CurrentHatch + 2) % 6] = 4;
-		h_state[(F->CurrentHatch + 3) % 6] = 4;
-		h_state[(F->CurrentHatch + 4) % 6] = 4;
+		h_state[CurrentHatch] = 4;
+		h_state[(CurrentHatch + 1) % 6] = 4;
+		h_state[(CurrentHatch + 2) % 6] = 4;
+		h_state[(CurrentHatch + 3) % 6] = 4;
+		h_state[(CurrentHatch + 4) % 6] = 4;
 		break;
 	case 1:
-		h_state[F->CurrentHatch] = 3;
-		h_state[(F->CurrentHatch + 1) % 6] = 3;
-		h_state[(F->CurrentHatch + 2) % 6] = 3;
-		h_state[(F->CurrentHatch + 3) % 6] = 3;
-		h_state[(F->CurrentHatch + 4) % 6] = 3;
-		F->CurrentHatch++ ;
+		h_state[CurrentHatch] = 3;
+		h_state[(CurrentHatch + 1) % 6] = 3;
+		h_state[(CurrentHatch + 2) % 6] = 3;
+		h_state[(CurrentHatch + 3) % 6] = 3;
+		h_state[(CurrentHatch + 4) % 6] = 3;
+		CurrentHatch++ ;
 		break;
 	default:
 		AnimationFrame = 0;
 		break;
 	}
-	F->CurrentHatch = F->CurrentHatch % 6;
+	CurrentHatch = CurrentHatch % 6;
 }
 
 // ---------------------------------------------------------------------------
@@ -375,74 +314,72 @@ void after_spin_lights() {
 	for (int i = 0; i < 6; i++) {
 		h_state[i] = 2;
 	}
-	h_state[F->CurrentHatch] = 4;
+	h_state[CurrentHatch] = 4;
 	h_state[F->chooseplayer] = 4;
 	MechanizmSetHatchesStates();
 }
 
 // ---------------------------------------------------------------------------
 void Proverka2() {
-	switch (F->chooseplayer) {
-	case 1:
-		h_state[1] = 3;
-		break;
-	case 2:
-		h_state[2] = 3;
-		break;
-	case 3:
-		h_state[3] = 3;
-		break;
-	case 4:
-		h_state[4] = 3;
-		break;
-	case 5:
-		h_state[5] = 3;
-		break;
-	}
+	h_state[F->chooseplayer] = 3;
 	MechanizmSetHatchesStates();
 	F->imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
 }
 
 // ---------------------------------------------------------------------------
 void UpdateHatches() {
-	if (F->FinalRoundOfGame > 0)
-		for (int i = 0; i < 6; i++)
+	if (F->FinalRoundOfGame > 0) {
+		for (int i = 0; i < 6; i++) {
 			h_state[i] = 1;
-	else
-		for (int i = 0; i < 6; i++)
+		}
+	}
+	else {
+		for (int i = 0; i < 6; i++) {
 			h_state[i] = 2;
-	h_state[F->CurrentHatch] = 4;
+		}
+	}
+	h_state[CurrentHatch] = 4;
 	MechanizmSetHatchesStates();
 }
 
 // ---------------------------------------------------------------------------
 void OpenHatches() {
 	h_state[F->chooseplayer] = 0;
-	// else
-	// for (int i = 0; i < 6; i++)
-	// if (F->opened_now[i] == 1) { h_state[i] = 0; F->chooseplayer = i; }
 	MechanizmSetHatchesStates();
 }
 
 // ---------------------------------------------------------------------------
 void SwitchesLights() {
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++) {
 		h_state[i] = 5;
+	}
 	F->Wait = 0;
-	switch (AnimationFrame++) {
+
+	// for (int i = 0; i < 5; i++) {
+	// if ((F->ingame[i]) && (F->CantFall != i)) {
+	// h_state[i + 1] = 4 + AnimationFrame;
+	// }
+	// }
+
+	switch (AnimationFrame) {
 	case 0: {
-			for (int i = 0; i < 5; i++)
-				if ((F->ingame[i]) && (F->CantFall != i))
+			for (int i = 0; i < 5; i++) {
+				if ((F->ingame[i]) && (F->CantFall != i)) {
 					h_state[i + 1] = 4;
+				}
+			}
 		} break;
 	case 1: {
-			for (int i = 0; i < 5; i++)
-				if ((F->ingame[i]) && (F->CantFall != i))
+			for (int i = 0; i < 5; i++) {
+				if ((F->ingame[i]) && (F->CantFall != i)) {
 					h_state[i + 1] = 5;
+				}
+			}
 		} break;
 	default:
-		AnimationFrame = 0;
+		AnimationFrame = 3;
 	}
+	// AnimationFrame = ++AnimationFrame % 2;
 }
 
 void OpenRndHatches() // открытие люков
