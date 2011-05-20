@@ -6,13 +6,11 @@ void switchoffquestion();
 void switchonquestion();
 void showquestion();
 void activatedplayers();
-void DeactivateHatches();
 void choosenplayer();
 void Proverka();
-void activate_final_hatches();
-void deactivate_final_hatches();
 void load_final_question();
 // ---------------------------------------------------------------------------
 extern int CurrentHatch;
+extern void hatches_enable_state(bool state);
 
 #endif

@@ -115,4 +115,6 @@ private: // User declarations
 // ---------------------------------------------------------------------------
 extern PACKAGE TSettingsForm* SettingsForm;
 // ---------------------------------------------------------------------------
+extern void ReadCfgFile();
+
 #endif

@@ -47,7 +47,6 @@ bool spin_round_mode; // определяет анимацию (1 - по часовой, 0 - против часовой
 int TimeToDecide; // время, необходимое боту для принятия решения
 int LeaderPlayerAtFinal; // порядковый индекс игрока, прошедшего в финал (необходимо для принятия решений)
 TBot* bot[5];
-extern void ReadCfgFile();
 void SetQuestionsMaximum(int FirstRound, int SecondRound, int ThirdRound, int FouthRound);
 // -----------------------------------------------------------------------------
 
@@ -59,7 +58,7 @@ void __fastcall TF::LoadGraphic() {
     imgPlace->Picture->LoadFromFile("Data\\Place.png");
     Wait = 0;
 
-    DeactivateHatches();
+    hatches_enable_state(false);
     tmrWaiting->Enabled = False;
     imgTotalPrize->Visible = False;
     MechState = 1;
@@ -82,11 +81,6 @@ void __fastcall TF::LoadGraphic() {
 
     btnMechStart->Enabled = True;
 
-    // CreateLabel(3, 0, 0, 0, 0, 0, "");
-    // CreateLabel(3, 1, 0, 0, 0, 0, "");
-    // CreateLabel(3, 2, 0, 0, 0, 0, "");
-    // CreateLabel(3, 3, 0, 0, 0, 0, "");
-    // CreateLabel(3, 4, 0, 0, 0, 0, "");
     for (unsigned i = 0; i < 5; ++i) {
         CreateLabel(3, i, 0, 0, 0, 0, "");
     }
@@ -494,7 +488,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                 tmrWaiting->Enabled = False;
                 showquestion();
                 CanChoose = 0;
-                DeactivateHatches();
+                hatches_enable_state(false);
                 btnMechStart->Enabled = 0;
                 TimeOfQuestion = 20;
                 lblTimer->Caption = IntToStr(TimeOfQuestion);
@@ -543,7 +537,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                 }
             }
             else {
-                DeactivateHatches();
+                hatches_enable_state(false);
                 CanChoose = 0;
                 for (int i = 0; i < 5; i++) {
                     if ((ingame[i]) && (CurrentHatch != i + 1)) {
@@ -1614,7 +1608,7 @@ void TF::blabla() // возвращает форму в исходное положение
     F->imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
     F->LabelQuestion->Visible = False;
     F->LabelMoney->Visible = False;
-    DeactivateHatches();
+    hatches_enable_state(false);
     UpdateHatches();
 }
 
@@ -1636,7 +1630,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                     }
                 }
                 PlaySound("rr_final.wav");
-                deactivate_final_hatches();
+                hatches_enable_state(false);
                 imgSplash->Picture->LoadFromFile("Data\\Final.png");
                 imgSplash->Visible = True;
                 CantFall = -1;
@@ -1647,7 +1641,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
             }
             if (Wait == 11) {
                 imgSplash->Visible = False;
-                deactivate_final_hatches();
+                hatches_enable_state(false);
                 for (int i = 0; i < 5; i++) {
                     if (ingame[i]) {
                         switch (i) {
@@ -1722,13 +1716,13 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                 }
                 RoundOfGame = -1;
                 chooseplayer = 255;
-                activate_final_hatches();
+                hatches_enable_state(true);
                 tmrWaitingFinal->Enabled = False;
             }
             if (Wait == 19) {
                 ModeOfGame = 1;
                 Wait = 0;
-                deactivate_final_hatches();
+                hatches_enable_state(false);
             }
         } break;
     case 1: {

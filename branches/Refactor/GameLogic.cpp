@@ -11,27 +11,12 @@
 #pragma package(smart_init)
 int CurrentHatch;
 
-/* 0. Временно отключаем возможность выбрать люк... */
-void DeactivateHatches() {
-    F->imgHatch0->Enabled = False;
-    F->imgHatch1->Enabled = False;
-    F->imgHatch2->Enabled = False;
-    F->imgHatch3->Enabled = False;
-    F->imgHatch4->Enabled = False;
-    F->imgHatch5->Enabled = False;
-    F->imgNumber1->Enabled = False;
-    F->imgNumber2->Enabled = False;
-    F->imgNumber3->Enabled = False;
-    F->imgNumber4->Enabled = False;
-    F->imgNumber5->Enabled = False;
-}
-
 // -----------------------------------------------------------------------------
 /* 1. Здесь нужно временно отключить форму вопроса и labels... */
 void switchoffquestion() {
+    F->imgQuestion->Visible = False;
     F->LabelMoney->Visible = False;
     F->LabelQuestion->Visible = False;
-    F->imgQuestion->Visible = False;
 }
 
 // -----------------------------------------------------------------------------
@@ -58,6 +43,7 @@ void showquestion() {
     F->NumberOfQuestion = rndq;
     F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
     F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
+
     if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
         F->LabelQuestion->WordWrap = true;
         F->LabelQuestion->AutoSize = false;
@@ -67,6 +53,7 @@ void showquestion() {
     else {
         F->LabelQuestion->WordWrap = false;
     }
+
     F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
     F->LabelQuestion->Visible = True;
     F->tmrWaiting->Enabled = True;
@@ -111,46 +98,27 @@ void choosenplayer() {
 // -----------------------------------------------------------------------------
 /* 2.2. Затем игрок должен дать ответ (обработка клавиши) */
 void Proverka() {
-    if (F->answer == F->RandomPlace) {
-        F->ModeOfGame = 4; // ответ правильный
-        F->tmrWaiting->Enabled = True;
-        F->PlayMusic("rr_true.wav");
-    }
-    else {
-        F->ModeOfGame = 4; // ответ неправильный
-        F->tmrWaiting->Enabled = True;
-        F->LabelMoney->Visible = False;
-        F->PlayMusic("rr_false.wav");
-    }
+    F->ModeOfGame = 4; 
+    F->LabelMoney->Visible = False;
+
+    bool eq = F->answer==F->RandomPlace;
+    F->PlayMusic(eq ? "rr_true.wav" : "rr_false.wav");
+    F->tmrWaiting->Enabled = eq;
 }
 
 // -----------------------------------------------------------------------------
-void activate_final_hatches() {
-    F->imgHatch0->Enabled = True;
-    F->imgHatch1->Enabled = True;
-    F->imgHatch2->Enabled = True;
-    F->imgHatch3->Enabled = True;
-    F->imgHatch4->Enabled = True;
-    F->imgHatch5->Enabled = True;
-    F->imgNumber1->Enabled = True;
-    F->imgNumber2->Enabled = True;
-    F->imgNumber3->Enabled = True;
-    F->imgNumber4->Enabled = True;
-    F->imgNumber5->Enabled = True;
-}
-
-void deactivate_final_hatches() {
-    F->imgHatch0->Enabled = False;
-    F->imgHatch1->Enabled = False;
-    F->imgHatch2->Enabled = False;
-    F->imgHatch3->Enabled = False;
-    F->imgHatch4->Enabled = False;
-    F->imgHatch5->Enabled = False;
-    F->imgNumber1->Enabled = True;
-    F->imgNumber2->Enabled = True;
-    F->imgNumber3->Enabled = True;
-    F->imgNumber4->Enabled = True;
-    F->imgNumber5->Enabled = True;
+void hatches_enable_state(bool state) {
+    F->imgHatch0->Enabled = state;
+    F->imgHatch1->Enabled = state;
+    F->imgHatch2->Enabled = state;
+    F->imgHatch3->Enabled = state;
+    F->imgHatch4->Enabled = state;
+    F->imgHatch5->Enabled = state;
+    F->imgNumber1->Enabled = state;
+    F->imgNumber2->Enabled = state;
+    F->imgNumber3->Enabled = state;
+    F->imgNumber4->Enabled = state;
+    F->imgNumber5->Enabled = state;
 }
 
 // -----------------------------------------------------------------------------
@@ -162,10 +130,12 @@ void load_final_question() {
         rndq = random(qcount);
     }
     while (!(StrToInt(base[rndq].Round) == Round));
+
     F->LabelQuestion->WordWrap = false;
     F->LabelQuestion->AutoSize = true;
     F->NumberOfQuestion = rndq;
     F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
+
     if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
         F->LabelQuestion->WordWrap = true;
         F->LabelQuestion->AutoSize = false;
@@ -175,7 +145,8 @@ void load_final_question() {
     else {
         F->LabelQuestion->WordWrap = false;
     }
-    F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
+
+    F->LabelQuestion->Left = F->imgQuestion->Left + (int)(F->imgQuestion->Width - F->LabelQuestion->Width) / 2.;
     F->LabelQuestion->Visible = True;
     F->LabelMoney->Visible = true;
     F->imgTotalPrize->Visible = true;
@@ -308,9 +279,9 @@ bool TF::_Parse(UnicodeString ans) {
     // удаление двойных пробелов
     for (int i = 0; i < 5; i++) {
         if (ans == trueans[i]) {
-            return (1);
+            return true;
         }
     }
-    return (0);
+    return false;
 }
 // ------------------------------------------
