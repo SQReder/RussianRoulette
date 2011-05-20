@@ -14,7 +14,6 @@
 #include <GIFImg.hpp>
 #include "uSettings.h"
 
-
 // -----------------------------------------------------------------------------
 class TF : public TForm {
 __published: // IDE-managed Components

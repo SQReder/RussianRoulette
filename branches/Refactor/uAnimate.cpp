@@ -29,8 +29,10 @@ void Initialize() {
 // ---------------------------------------------------------------------------
 void NextFrame() {
 	F->imgPulse->Picture->Assign(nya[frame]);
-	if (frame < FramesCount - 1)
+	if (frame < FramesCount - 1) {
 		frame++ ;
-	else
+	}
+	else {
 		frame = 0;
+	}
 }

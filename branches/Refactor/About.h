@@ -12,6 +12,7 @@
 // ---------------------------------------------------------------------------
 class TAboutForm : public TForm {
 __published: // IDE-managed Components
+
 	TLabel* lblAboutText;
 	TLabel* Label1;
 	TLabel* Label2;

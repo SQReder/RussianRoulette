@@ -15,6 +15,7 @@ String GetStr(String str, int begin, int size);
 // ---------------------------------------------------------------------------
 
 const char* BaseDir = "base\\";
+
 void LoadQuestionFromBase(String BaseFile) {
 	/*
 	 5 символов - количество вопросов в базе
@@ -88,8 +89,9 @@ String ClearStr(String str) {
 
 	while (str[i] != '|') {
 		cl_str += str[i];
-		if (i++ == str.Length())
+		if (i++ == str.Length()) {
 			break;
+		}
 	}
 
 	return cl_str;
@@ -99,8 +101,9 @@ String ClearStr(String str) {
 String GetStr(String str, int begin, int size) {
 	String ret = "";
 
-	for (int i = begin; i < begin + size; i++)
+	for (int i = begin; i < begin + size; i++) {
 		ret += str[i];
+	}
 
 	return ret;
 }

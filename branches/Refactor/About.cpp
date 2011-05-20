@@ -14,10 +14,12 @@ __fastcall TAboutForm::TAboutForm(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 void __fastcall TAboutForm::tmrScrollTimer(TObject* Sender) {
-	if (lblAboutText->Top > -lblAboutText->Height)
+	if (lblAboutText->Top > -lblAboutText->Height) {
 		lblAboutText->Top-- ;
-	else
+	}
+	else {
 		lblAboutText->Top = AboutForm->ClientHeight;
+	}
 }
 
 // ---------------------------------------------------------------------------

@@ -1,8 +1,22 @@
 #include "AI.h"
 #include "stdlib.h"
 
-const int BotBrain[6] = { 0, 30, 33, 70, 8, 100 };
-const int BotIdent[6] = { 0, 10, 20, 30, 25, 5 };
+const int BotBrain[6] = {
+	0,
+	30,
+	33,
+	70,
+	8,
+	100
+};
+const int BotIdent[6] = {
+	0,
+	10,
+	20,
+	30,
+	25,
+	5
+};
 
 // -----------------------------------------------------------------------------
 TBot::TBot(TBotType BotType) {
