@@ -14,19 +14,19 @@
 class TSplashForm : public TForm {
 __published: // IDE-managed Components
 
-	TImage* imgSplash;
-	TTimer* tmrSplash;
-	TTimer* tmrOpenSplash;
+    TImage* imgSplash;
+    TTimer* tmrSplash;
+    TTimer* tmrOpenSplash;
 
-	void __fastcall FormCreate(TObject* Sender);
-	void __fastcall FormClick(TObject* Sender);
-	void __fastcall tmrSplashTimer(TObject* Sender);
-	void __fastcall imgSplashClick(TObject* Sender);
-	void __fastcall tmrOpenSplashTimer(TObject* Sender);
+    void __fastcall FormCreate(TObject* Sender);
+    void __fastcall FormClick(TObject* Sender);
+    void __fastcall tmrSplashTimer(TObject* Sender);
+    void __fastcall imgSplashClick(TObject* Sender);
+    void __fastcall tmrOpenSplashTimer(TObject* Sender);
 
 private: // User declarations
-		public : // User declarations
-	__fastcall TSplashForm(TComponent* Owner);
+        public : // User declarations
+    __fastcall TSplashForm(TComponent* Owner);
 };
 
 // ---------------------------------------------------------------------------
