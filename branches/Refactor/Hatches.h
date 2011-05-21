@@ -15,7 +15,7 @@ void LightHatchesW(int, int);
 void ZeroRoundRotating();
 void FirstRoundRotating();
 void ZeroRoundSpin();
-void OpenRandomHatches(const unsigned char);
+void OpenRandomHatches(const int OpenHatches, int ModeOfGame);
 void SecondRoundRotating();
 void ThirdRoundRotating();
 void FourthRoundRotating();

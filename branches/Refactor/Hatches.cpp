@@ -19,6 +19,11 @@ TPicture* h_state_img[6]; // изображения состояний люков
 int h_state[6]; // текущее состояние люков
 int AnimationFrame; // определяет порядок анимации
 
+// from MainForm.cpp
+extern int opened_now[6];
+extern int CantFall;
+extern int chooseplayer;
+
 // ---------------------------------------------------------------------------
 void ShiftHatches() {
     char tmp = h_state[5]; // проворот барабана осуществляется
@@ -72,40 +77,39 @@ void MechanizmSetHatchesStates() { // приведение изображений на форме в соответс
 }
 
 // ---------------------------------------------------------------------------
-void OpenRandomHatches(const unsigned char OpenHatches) {
+void OpenRandomHatches(const int OpenHatches, int ModeOfGame) {
     if (OpenHatches > 6) {
         ShowMessage("А фигли так много люков открываем?!");
         exit(1);
     }
 
-    F->RndHatch = 0;
+    // F->RndHatch = 0;
     for (int i = 0; i < 6; i++) {
-        F->opened_now[i] = 0;
+        opened_now[i] = 0;
     } // закрываем открытые люки,
 
     do {
-        F->opened_now[random(6)] = 1; // и открываем случайный пока не откроем
+        opened_now[random(6)] = 1; // и открываем случайный пока не откроем
 
-        if (F->CantFall != -1) {
-            F->opened_now[F->CantFall + 1] = 0;
+        if (CantFall != -1) {
+            opened_now[CantFall + 1] = 0;
         } // и спасаем игрока же! ^_^"
 
         // закрываем люки, которые не могут открываться
         for (int i = 0; i < 5; i++) { // те, что уже не в игре
-            if (!F->ingame[i] && F->ModeOfGame == 8) {
-                F->opened_now[i + 1] = 0;
+            if (!F->ingame[i] && ModeOfGame == 8) {
+                opened_now[i + 1] = 0;
             }
         }
 
         // закрываем люк ведущего, если не финал еще или миниигра.
         if (F->FinalRoundOfGame < 1) { /* && (F->GameMode != minigame) */
-            F->opened_now[0] = 0;
+            opened_now[0] = 0;
         }
 
     }
     while // нужное нам количество
-        (F->opened_now[0] + F->opened_now[1] + F->opened_now[2] + F->opened_now[3] + F->opened_now[4] +
-        F->opened_now[5] < OpenHatches);
+        (opened_now[0] + opened_now[1] + opened_now[2] + opened_now[3] + opened_now[4] + opened_now[5] < OpenHatches);
 
 }
 
@@ -297,7 +301,7 @@ void FifthRoundRotating() {
 
 // ---------------------------------------------------------------------------
 void choosingplayer() {
-    h_state[F->chooseplayer] = 4;
+    h_state[chooseplayer] = 4;
     MechanizmSetHatchesStates();
 }
 
@@ -315,13 +319,13 @@ void after_spin_lights() {
         h_state[i] = 2;
     }
     h_state[CurrentHatch] = 4;
-    h_state[F->chooseplayer] = 4;
+    h_state[chooseplayer] = 4;
     MechanizmSetHatchesStates();
 }
 
 // ---------------------------------------------------------------------------
 void Proverka2() {
-    h_state[F->chooseplayer] = 3;
+    h_state[chooseplayer] = 3;
     MechanizmSetHatchesStates();
     F->imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
 }
@@ -344,7 +348,7 @@ void UpdateHatches() {
 
 // ---------------------------------------------------------------------------
 void OpenHatches() {
-    h_state[F->chooseplayer] = 0;
+    h_state[chooseplayer] = 0;
     MechanizmSetHatchesStates();
 }
 
@@ -355,23 +359,17 @@ void SwitchesLights() {
     }
     F->Wait = 0;
 
-    // for (int i = 0; i < 5; i++) {
-    // if ((F->ingame[i]) && (F->CantFall != i)) {
-    // h_state[i + 1] = 4 + AnimationFrame;
-    // }
-    // }
-
     switch (AnimationFrame) {
     case 0: {
             for (int i = 0; i < 5; i++) {
-                if ((F->ingame[i]) && (F->CantFall != i)) {
+                if ((F->ingame[i]) && (CantFall != i)) {
                     h_state[i + 1] = 4;
                 }
             }
         } break;
     case 1: {
             for (int i = 0; i < 5; i++) {
-                if ((F->ingame[i]) && (F->CantFall != i)) {
+                if ((F->ingame[i]) && (CantFall != i)) {
                     h_state[i + 1] = 5;
                 }
             }
@@ -385,9 +383,9 @@ void SwitchesLights() {
 void OpenRndHatches() // открытие люков
 {
     for (int i = 0; i < 6; i++)
-        if (F->opened_now[i] == 1) {
+        if (opened_now[i] == 1) {
             h_state[i] = 0;
-            F->chooseplayer = i;
+            chooseplayer = i;
         }
     MechanizmSetHatchesStates();
 }

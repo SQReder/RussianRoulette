@@ -120,13 +120,6 @@ private: // User declarations
 public: // User declarations
     __fastcall TF(TComponent* Owner);
 
-    int opened_now[6]; // указывает какие люки будут открыты после остановки механизма
-    char TempRoundOfGame;
-    char MoneyTransferMode;
-    int ModeOfGame;
-    int chooseplayer;
-    int RndHatch;
-    int CantFall;
     TLabel* lblMoney[5]; // лейблы и конструктор для отображения денег на панели игроков.
     TLabel* lblPlayer[5];
     TLabel* lblAnswers[5];
@@ -149,7 +142,6 @@ public: // User declarations
     void TransferMoneyFinal();
 
     bool ingame[5]; // массив, определяющий наличие игрока в игре
-    char RoundOfGame; // указывается номер текущего раунда (влияет на механизм)
     char FinalRound; // указывается номер финальной части раунда
     int FinalRoundOfGame; // финальный раунд игры (определяет стоимость финального вопроса)
 

@@ -6,7 +6,7 @@ void switchoffquestion();
 void switchonquestion();
 void showquestion();
 void activatedplayers();
-void choosenplayer();
+void choosenplayer(int chooseplayer);
 void Proverka();
 void load_final_question();
 // ---------------------------------------------------------------------------

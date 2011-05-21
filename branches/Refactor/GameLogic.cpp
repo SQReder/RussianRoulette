@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------
 
 #pragma hdrstop
-
 #include "GameLogic.h"
 #include "MainForm.h"
 #include "Hatches.h"
@@ -10,6 +9,7 @@
 
 #pragma package(smart_init)
 int CurrentHatch;
+extern int RoundOfGame;
 
 // -----------------------------------------------------------------------------
 /* 1. Здесь нужно временно отключить форму вопроса и labels... */
@@ -30,13 +30,12 @@ void switchonquestion() {
 // -----------------------------------------------------------------------------
 
 void showquestion() {
-    int Round = F->RoundOfGame;
     unsigned int rndq; // random question
 
     do {
         rndq = random(qcount);
     }
-    while (!(StrToInt(base[rndq].Round) == Round));
+    while (!(StrToInt(base[rndq].Round) == RoundOfGame));
 
     F->LabelQuestion->WordWrap = false;
     F->LabelQuestion->AutoSize = true;
@@ -49,8 +48,7 @@ void showquestion() {
         F->LabelQuestion->AutoSize = false;
         F->LabelQuestion->Width = 573;
         F->LabelQuestion->AutoSize = true;
-    }
-    else {
+    } else {
         F->LabelQuestion->WordWrap = false;
     }
 
@@ -89,8 +87,8 @@ void activatedplayers() {
 }
 
 // -----------------------------------------------------------------------------
-void choosenplayer() {
-    F->LabelMoney->Caption = F->lblMoney[F->chooseplayer - 1]->Caption;
+void choosenplayer(int chooseplayer) {
+    F->LabelMoney->Caption = F->lblMoney[chooseplayer - 1]->Caption;
     F->LabelMoney->Visible = True;
     F->imgTotalPrize->Visible = True;
 }
@@ -98,10 +96,9 @@ void choosenplayer() {
 // -----------------------------------------------------------------------------
 /* 2.2. Затем игрок должен дать ответ (обработка клавиши) */
 void Proverka() {
-    F->ModeOfGame = 4; 
     F->LabelMoney->Visible = False;
 
-    bool eq = F->answer==F->RandomPlace;
+    bool eq = F->answer == F->RandomPlace;
     F->PlayMusic(eq ? "rr_true.wav" : "rr_false.wav");
     F->tmrWaiting->Enabled = eq;
 }
@@ -123,13 +120,12 @@ void hatches_enable_state(bool state) {
 
 // -----------------------------------------------------------------------------
 void load_final_question() {
-    int Round = F->RoundOfGame;
     unsigned int rndq; // random question
 
     do {
         rndq = random(qcount);
     }
-    while (!(StrToInt(base[rndq].Round) == Round));
+    while (!(StrToInt(base[rndq].Round) == RoundOfGame));
 
     F->LabelQuestion->WordWrap = false;
     F->LabelQuestion->AutoSize = true;
@@ -141,8 +137,7 @@ void load_final_question() {
         F->LabelQuestion->AutoSize = false;
         F->LabelQuestion->Width = 573;
         F->LabelQuestion->AutoSize = true;
-    }
-    else {
+    } else {
         F->LabelQuestion->WordWrap = false;
     }
 
