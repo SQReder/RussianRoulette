@@ -96,11 +96,9 @@ void choosenplayer(int chooseplayer) {
 // -----------------------------------------------------------------------------
 /* 2.2. «атем игрок должен дать ответ (обработка клавиши) */
 void Proverka() {
+    F->PlayMusic(F->answer == F->RandomPlace ? "rr_true.wav" : "rr_false.wav");
     F->LabelMoney->Visible = False;
-
-    bool eq = F->answer == F->RandomPlace;
-    F->PlayMusic(eq ? "rr_true.wav" : "rr_false.wav");
-    F->tmrWaiting->Enabled = eq;
+    F->tmrWaiting->Enabled = true;
 }
 
 // -----------------------------------------------------------------------------

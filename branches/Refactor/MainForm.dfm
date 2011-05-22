@@ -4642,7 +4642,7 @@ object F: TF
     Font.Name = 'FrizQuadrataCTT'
     Font.Style = []
     ParentFont = False
-    OnClick = lblExitClick
+    OnClick = btnExitClick
   end
   object imgTotalPrize: TImage
     Left = 101

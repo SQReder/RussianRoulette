@@ -107,7 +107,6 @@ __published: // IDE-managed Components
     void __fastcall tmrMechamizmTimer(TObject* Sender);
     void __fastcall imgMechanizmClick(TObject* Sender);
     void __fastcall tmrSplashTimer(TObject* Sender);
-    void __fastcall lblExitClick(TObject* Sender);
     void __fastcall tmrDecidedTimer(TObject* Sender);
     void __fastcall tmrLightAnimationTimer(TObject* Sender);
     void __fastcall ControlLabelClick(TObject* Sender);
@@ -152,7 +151,7 @@ public: // User declarations
 
     void ShowAnswers();
     void ResizeAnswers();
-    void Choosen_Answer_Change_Position();
+    void Choosen_Answer_Change_Position(int mode);
 };
 
 void LoadQuestionFromBase(String BaseName);
