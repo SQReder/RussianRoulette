@@ -2,15 +2,12 @@
 
 #include <vcl.h>
 #include <stdio.h>
-#include <algorithm>
 #pragma hdrstop
 
-#include <assert.h>
 #include "MainForm.h"
 #include "mainmenu.h"
 #include "Hatches.h"
 #include "GameLogic.h"
-#include "uAnimate.h"
 #include "Splash.h"
 #include "inifiles.hpp"
 #include "AI.h"
@@ -25,16 +22,15 @@
 #define _StartRotaingSpeed 50
 
 TF* F;
-extern Graphics::TPicture* pulse_pic;
-char MechanizmOn = 0;
+int MechanizmOn = 0;
 int SpeedOfRotation = _StartRotaingSpeed;
 bool SoundOn = true;
 int TimeOfQuestion; // время, данное на ответ игроку
-char MoneyTransferMode = 0; // режим начисления денег (1 - 1-ому игроку, 2 - 2-ому и т.д.; a - всем)
+int MoneyTransferMode = 0; // режим начисления денег (1 - 1-ому игроку, 2 - 2-ому и т.д.; a - всем)
 int ModeOfGame; // режим игры (определяет порядок действий в GameLogic и tmrWaiting)
 int ModeOfFinalGame; // режим финальной игры (опр. порядок действий в tmrWaitingFinal)
 bool TransferAll = 1; // режим начисления денег всем игрокам
-int waitinger; // переменная, определяющая время ожидания "решения судьбы" (провал или нет)
+int WaitForFate; // переменная, определяющая время ожидания "решения судьбы" (провал или нет)
 bool CanAnswer = 0; // переменная, определяющая, может ли отвечать игрок
 bool CanChoose = 1; // переменная, определяющая, можно ли выбирать игрока/игровое место или нет
 int QuestionsLeft; // переменная, определяющая количество оставшихся вопросов в раунде
@@ -51,8 +47,15 @@ int RoundOfGame; // указывается номер текущего раунда (влияет на механизм)
 int opened_now[6]; // указывает какие люки будут открыты после остановки механизма
 int TempRoundOfGame;
 int chooseplayer;
-// int RndHatch;
 int CantFall;
+
+const int FramesCount = 56;
+TPicture* PulseFrames[FramesCount];
+
+// Some controls pointers
+TImage* imgPlayer[5];
+TImage* imgHatch[6];
+TImage* imgNumber[5];
 
 TBot* bot[5];
 void SetQuestionsMaximum(int FirstRound, int SecondRound, int ThirdRound, int FouthRound);
@@ -60,9 +63,6 @@ void SetQuestionsMaximum(int FirstRound, int SecondRound, int ThirdRound, int Fo
 
 void __fastcall TF::LoadGraphic() {
 
-    if (Settings->Fullscreen) {
-        Top = 0;
-    }
     imgPlace->Picture->LoadFromFile("Data\\Place.png");
     Wait = 0;
 
@@ -89,20 +89,23 @@ void __fastcall TF::LoadGraphic() {
     btnMechStart->Enabled = True;
 
     for (unsigned i = 0; i < 5; ++i) {
-        CreateLabel(3, i, 0, 0, 0, 0, "");
+        CreateLabel(lblAnswers, i, 0, 0, 0, 0, "");
     }
 
     edFinalAnswer->Visible = False;
 
-    imgNumber1->Visible = false;
-    imgNumber2->Visible = false;
-    imgNumber3->Visible = false;
-    imgNumber4->Visible = false;
-    imgNumber5->Visible = false;
+    for (int i = 0; i < 5; ++i) {
+        imgNumber[0]->Visible = false;
+    }
 
     imgChoosenAnswer->Visible = false;
 
     imgQuestion->Picture->LoadFromFile("data\\rr_quest.png");
+
+    for (int i = 0; i < FramesCount; i++) {
+        PulseFrames[i] = new TPicture();
+        PulseFrames[i]->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
+    }
 
     btnMechStop->Enabled = 0;
     CantFall = -1;
@@ -110,79 +113,41 @@ void __fastcall TF::LoadGraphic() {
 }
 
 // ---------------------------------------------------------------------------
-void TF::CreateLabel(int type, int index, int top, int left, int width, int height, UnicodeString caption) {
+void TF::CreateLabel(TLabel** type, int index, int top, int left, int width, int height, UnicodeString caption) {
+    if (!type[index]) {
+        TLabel* lbl = new TLabel(F);
+        lbl->Parent = F;
+        lbl->Font->Color = clWhite;
+        lbl->Font->Size = 12;
+        lbl->Font->Name = "ARIAL";
+        lbl->Font->Charset = TFontCharset(RUSSIAN_CHARSET);
+        lbl->AutoSize = false;
+        lbl->Font->Style = (TFontStyles)1; // bold
 
-    switch (type) {
-    case 1:
-        if (lblMoney[index] == NULL) // в самом деле, зачем заново создавать то,
-        { // что итак создано? Лучше просто перезадать свойства
-            lblMoney[index] = new TLabel(F);
-            lblMoney[index]->Parent = F;
-            lblMoney[index]->AutoSize = False;
+        if (type != lblMoney) {
+            lbl->OnClick = ControlLabel->OnClick;
         }
 
-        lblMoney[index]->Top = top;
-        lblMoney[index]->Left = left;
-        lblMoney[index]->Width = width;
-        lblMoney[index]->Height = height;
-
-        lblMoney[index]->Alignment = taRightJustify;
-        lblMoney[index]->Font->Size = 12;
-        lblMoney[index]->Font->Color = clWhite;
-        lblMoney[index]->Caption = caption;
-
-        lblMoney[index]->Visible = True;
-        break;
-
-    case 2:
-        if (lblPlayer[index] == NULL) {
-            lblPlayer[index] = new TLabel(F);
-            lblPlayer[index]->Parent = F;
-            lblPlayer[index]->AutoSize = True;
+        if (type == lblAnswers) {
+            lbl->Alignment = taLeftJustify;
+            lbl->BringToFront();
+        } else if (type == lblMoney) {
+            lbl->Alignment = taRightJustify;
+        } else if (type == lblPlayer) {
+            lbl->Alignment = taCenter;
         }
 
-        lblPlayer[index]->Top = top;
-        lblPlayer[index]->Left = left;
-        lblPlayer[index]->Width = width;
-        lblPlayer[index]->Height = height;
-
-        lblPlayer[index]->Alignment = taCenter;
-        lblPlayer[index]->Font->Name = "ARIAL";
-        lblPlayer[index]->Font->Charset = TFontCharset(RUSSIAN_CHARSET);
-        lblPlayer[index]->Font->Size = 12;
-        lblPlayer[index]->Font->Color = clWhite;
-        lblPlayer[index]->Font->Style = (TFontStyles)1;
-        lblPlayer[index]->Caption = caption;
-
-        lblPlayer[index]->Visible = True;
-        lblPlayer[index]->OnClick = ControlLabel->OnClick;
-        break;
-    case 3:
-        if (lblAnswers[index] == NULL) {
-            lblAnswers[index] = new TLabel(F);
-            lblAnswers[index]->Parent = F;
-            lblAnswers[index]->AutoSize = True;
-        }
-
-        lblAnswers[index]->Top = top;
-        lblAnswers[index]->Left = left;
-        lblAnswers[index]->Width = width;
-        lblAnswers[index]->Height = height;
-
-        lblAnswers[index]->Alignment = taLeftJustify;
-        lblAnswers[index]->Font->Name = "ARIAL";
-        lblAnswers[index]->Font->Charset = TFontCharset(RUSSIAN_CHARSET);
-        lblAnswers[index]->Font->Size = 12;
-        lblAnswers[index]->Font->Color = clWhite;
-        lblAnswers[index]->Font->Style = (TFontStyles)1;
-        lblAnswers[index]->Caption = caption;
-
-        lblAnswers[index]->Visible = True;
-        lblAnswers[index]->BringToFront();
-
-        lblAnswers[index]->OnClick = ControlLabel->OnClick;
-        break;
+        type[index] = lbl;
     }
+
+    type[index]->Top = top;
+    type[index]->Left = left;
+    type[index]->Width = width;
+    type[index]->Height = height;
+
+    type[index]->Caption = caption;
+
+    type[index]->Visible = True;
 }
 
 // ---------------------------------------------------------------------------
@@ -228,10 +193,36 @@ void __fastcall TF::Button1Click(TObject* Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::FormCreate(TObject* Sender) { ; }
+void __fastcall TF::FormCreate(TObject* Sender) {
+    // initialise control pointer arrays
+    imgPlayer[0] = imgPlayer1;
+    imgPlayer[1] = imgPlayer2;
+    imgPlayer[2] = imgPlayer3;
+    imgPlayer[3] = imgPlayer4;
+    imgPlayer[4] = imgPlayer5;
+
+    imgNumber[0] = imgNumber1;
+    imgNumber[1] = imgNumber2;
+    imgNumber[2] = imgNumber3;
+    imgNumber[3] = imgNumber4;
+    imgNumber[4] = imgNumber5;
+
+    imgHatch[0] = imgHatch0;
+    imgHatch[1] = imgHatch1;
+    imgHatch[2] = imgHatch2;
+    imgHatch[3] = imgHatch3;
+    imgHatch[4] = imgHatch4;
+    imgHatch[5] = imgHatch5;
+}
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::tmrPulseAnimationTimer(TObject* Sender) { NextFrame(); }
+
+void __fastcall TF::tmrPulseAnimationTimer(TObject* Sender) {
+    static frame = 0;
+    imgPulse->Picture->Assign(PulseFrames[frame]);
+    frame = ++frame % FramesCount;
+}
+// ---------------------------------------------------------------------------
 
 void ReadCfgFile() {
     TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
@@ -283,20 +274,6 @@ void InitializeSettings() {
     SetPlayers();
 }
 
-void __fastcall TF::Button2Click(TObject* Sender) {
-    /* ShiftHatches();
-     MechanizmSetHatchesStates(); */
-
-    // TWindowsMediaPlayer *mp1 = new TWindowsMediaPlayer(this);
-    // mp1->settings->set_volume(Settings->SoundVolume * 2.55);
-    // mp1->launchURL(String("sounds\\rr_fall.wav").w_str());
-    // mp1->URL = String("sounds\\rr_fall.wav").w_str();
-    // mp1->Error;
-    // mp1->status;
-    // mp1->controls->play();
-}
-
-// ---------------------------------------------------------------------------
 void __fastcall TF::btnMechStartClick(TObject* Sender) {
     if (ModeOfGame == 8) {
         SpeedOfRotation = 75;
@@ -330,7 +307,7 @@ void __fastcall TF::btnMechStopClick(TObject* Sender) {
     }
     PlayMusic("rr_mexclose.wav");
     randomize();
-    waitinger = 5 + random(11);
+    WaitForFate = 5 + random(11);
     if (RoundOfGame < 1) {
         imgPlace->Picture->LoadFromFile("Data\\Place.png");
     }
@@ -650,7 +627,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                 imgChAnsRight->Visible = true;
                 imgChoosenAnswer->AutoSize = False;
                 imgChoosenAnswer->Stretch = True;
-                imgChoosenAnswer->Height = imgNumber1->Height + 20;
+                imgChoosenAnswer->Height = imgNumber[0]->Height + 20;
                 imgChoosenAnswer->Width = 20 + lblAnswers[answer]->Width - 5;
                 Choosen_Answer_Change_Position();
                 CurrentHatch = chooseplayer;
@@ -665,7 +642,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                 }
                 imgChoosenAnswer->AutoSize = False;
                 imgChoosenAnswer->Stretch = True;
-                imgChoosenAnswer->Height = imgNumber1->Height + 20;
+                imgChoosenAnswer->Height = imgNumber[0]->Height + 20;
                 imgChoosenAnswer->Width = 20 + lblAnswers[answer]->Width - 5;
                 Choosen_Answer_Change_Position();
                 Proverka2();
@@ -734,7 +711,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
         break;
     case 7: // проверка подлинности провала ошибившегося игрока
         {
-            if (Wait == waitinger) {
+            if (Wait == WaitForFate) {
                 if (opened_now[chooseplayer] == 1) {
                     OpenHatches();
                     PlayMusic("rr_fall.wav");
@@ -756,26 +733,26 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                     }
                     switch (chooseplayer) {
                     case 1:
-                        imgPlayer1->Visible = False;
+                        imgPlayer[0]->Visible = False;
                         break;
                     case 2:
-                        imgPlayer2->Visible = False;
+                        imgPlayer[1]->Visible = False;
                         break;
                     case 3:
-                        imgPlayer3->Visible = False;
+                        imgPlayer[2]->Visible = False;
                         break;
                     case 4:
-                        imgPlayer4->Visible = False;
+                        imgPlayer[3]->Visible = False;
                         break;
                     case 5:
-                        imgPlayer5->Visible = False;
+                        imgPlayer[4]->Visible = False;
                         break;
                     }
-                    F->imgNumber1->Visible = False;
-                    F->imgNumber2->Visible = False;
-                    F->imgNumber3->Visible = False;
-                    F->imgNumber4->Visible = False;
-                    F->imgNumber5->Visible = False;
+                    imgNumber[0]->Visible = False;
+                    imgNumber[1]->Visible = False;
+                    imgNumber[2]->Visible = False;
+                    imgNumber[3]->Visible = False;
+                    imgNumber[4]->Visible = False;
                     F->imgChoosenAnswer->Visible = False;
                     F->imgChAnsLeft->Visible = false;
                     F->imgChAnsRight->Visible = false;
@@ -796,10 +773,10 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                     CurrentHatch = chooseplayer;
                     chooseplayer = 255;
                     imgPlace->Picture->LoadFromFile("Data\\Place.png");
-                    blabla();
+                    ResetForm();
                 }
             }
-            if (Wait == (waitinger + 3)) {
+            if (Wait == (WaitForFate + 3)) {
                 if (!Settings->HostMode) {
                     F->tmrWaiting->Enabled = True;
                     Wait = 0;
@@ -839,7 +816,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
         } break;
     case 9: // ситуация, когда один из игроков неминуемо должен покинуть игру
         {
-            if (Wait == waitinger) {
+            if (Wait == WaitForFate) {
                 int NumberOfPlayers = 0;
                 OpenRndHatches();
                 PlayMusic("rr_fall.wav");
@@ -857,23 +834,23 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                 lblMoney[chooseplayer - 1]->Visible = False;
                 switch (chooseplayer) {
                 case 1:
-                    imgPlayer1->Visible = False;
+                    imgPlayer[0]->Visible = False;
                     break;
                 case 2:
-                    imgPlayer2->Visible = False;
+                    imgPlayer[1]->Visible = False;
                     break;
                 case 3:
-                    imgPlayer3->Visible = False;
+                    imgPlayer[2]->Visible = False;
                     break;
                 case 4:
-                    imgPlayer4->Visible = False;
+                    imgPlayer[3]->Visible = False;
                     break;
                 case 5:
-                    imgPlayer5->Visible = False;
+                    imgPlayer[4]->Visible = False;
                     break;
                 }
             }
-            if (Wait == (waitinger + 7)) {
+            if (Wait == (WaitForFate + 7)) {
                 PlayMusic("rr_bg1.mp3");
                 if (!Settings->HostMode) {
                     tmrWaiting->Enabled = True;
@@ -1060,24 +1037,34 @@ void __fastcall TF::imgHatch4Click(TObject* Sender) {
             if (ingame[i]) {
                 switch (i) {
                 case 0: {
-                        imgPlayer1->Top = int(imgHatch4->Top + (imgHatch4->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer1->Left = int(imgHatch4->Left + (imgHatch4->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[0]->Top =
+                            int(imgHatch[4]->Top + (imgHatch[4]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[0]->Left =
+                            int(imgHatch[4]->Left + (imgHatch[4]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 1: {
-                        imgPlayer2->Top = int(imgHatch4->Top + (imgHatch4->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer2->Left = int(imgHatch4->Left + (imgHatch4->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[1]->Top =
+                            int(imgHatch[4]->Top + (imgHatch[4]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[1]->Left =
+                            int(imgHatch[4]->Left + (imgHatch[4]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 2: {
-                        imgPlayer3->Top = int(imgHatch4->Top + (imgHatch4->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer3->Left = int(imgHatch4->Left + (imgHatch4->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[2]->Top =
+                            int(imgHatch[4]->Top + (imgHatch[4]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[2]->Left =
+                            int(imgHatch[4]->Left + (imgHatch[4]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 3: {
-                        imgPlayer4->Top = int(imgHatch4->Top + (imgHatch4->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer4->Left = int(imgHatch4->Left + (imgHatch4->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[3]->Top =
+                            int(imgHatch[4]->Top + (imgHatch[4]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[3]->Left =
+                            int(imgHatch[4]->Left + (imgHatch[4]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 4: {
-                        imgPlayer5->Top = int(imgHatch4->Top + (imgHatch4->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer5->Left = int(imgHatch4->Left + (imgHatch4->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[4]->Top =
+                            int(imgHatch[4]->Top + (imgHatch[4]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[4]->Left =
+                            int(imgHatch[4]->Left + (imgHatch[4]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 }
             }
@@ -1102,24 +1089,34 @@ void __fastcall TF::imgHatch5Click(TObject* Sender) {
             if (ingame[i]) {
                 switch (i) {
                 case 0: {
-                        imgPlayer1->Top = int(imgHatch5->Top + (imgHatch5->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer1->Left = int(imgHatch5->Left + (imgHatch5->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[0]->Top =
+                            int(imgHatch[5]->Top + (imgHatch[5]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[0]->Left =
+                            int(imgHatch[5]->Left + (imgHatch[5]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 1: {
-                        imgPlayer2->Top = int(imgHatch5->Top + (imgHatch5->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer2->Left = int(imgHatch5->Left + (imgHatch5->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[1]->Top =
+                            int(imgHatch[5]->Top + (imgHatch[5]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[1]->Left =
+                            int(imgHatch[5]->Left + (imgHatch[5]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 2: {
-                        imgPlayer3->Top = int(imgHatch5->Top + (imgHatch5->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer3->Left = int(imgHatch5->Left + (imgHatch5->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[2]->Top =
+                            int(imgHatch[5]->Top + (imgHatch[5]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[2]->Left =
+                            int(imgHatch[5]->Left + (imgHatch[5]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 3: {
-                        imgPlayer4->Top = int(imgHatch5->Top + (imgHatch5->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer4->Left = int(imgHatch5->Left + (imgHatch5->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[3]->Top =
+                            int(imgHatch[5]->Top + (imgHatch[5]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[3]->Left =
+                            int(imgHatch[5]->Left + (imgHatch[5]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 4: {
-                        imgPlayer5->Top = int(imgHatch5->Top + (imgHatch5->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer5->Left = int(imgHatch5->Left + (imgHatch5->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[4]->Top =
+                            int(imgHatch[5]->Top + (imgHatch[5]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[4]->Left =
+                            int(imgHatch[5]->Left + (imgHatch[5]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 }
             }
@@ -1143,24 +1140,34 @@ void __fastcall TF::imgHatch3Click(TObject* Sender) {
             if (ingame[i]) {
                 switch (i) {
                 case 0: {
-                        imgPlayer1->Top = int(imgHatch3->Top + (imgHatch3->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer1->Left = int(imgHatch3->Left + (imgHatch3->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[0]->Top =
+                            int(imgHatch[3]->Top + (imgHatch[3]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[0]->Left =
+                            int(imgHatch[3]->Left + (imgHatch[3]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 1: {
-                        imgPlayer2->Top = int(imgHatch3->Top + (imgHatch3->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer2->Left = int(imgHatch3->Left + (imgHatch3->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[1]->Top =
+                            int(imgHatch[3]->Top + (imgHatch[3]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[1]->Left =
+                            int(imgHatch[3]->Left + (imgHatch[3]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 2: {
-                        imgPlayer3->Top = int(imgHatch3->Top + (imgHatch3->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer3->Left = int(imgHatch3->Left + (imgHatch3->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[2]->Top =
+                            int(imgHatch[3]->Top + (imgHatch[3]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[2]->Left =
+                            int(imgHatch[3]->Left + (imgHatch[3]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 3: {
-                        imgPlayer4->Top = int(imgHatch3->Top + (imgHatch3->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer4->Left = int(imgHatch3->Left + (imgHatch3->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[3]->Top =
+                            int(imgHatch[3]->Top + (imgHatch[3]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[3]->Left =
+                            int(imgHatch[3]->Left + (imgHatch[3]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 4: {
-                        imgPlayer5->Top = int(imgHatch3->Top + (imgHatch3->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer5->Left = int(imgHatch3->Left + (imgHatch3->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[4]->Top =
+                            int(imgHatch[3]->Top + (imgHatch[3]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[4]->Left =
+                            int(imgHatch[3]->Left + (imgHatch[3]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 }
             }
@@ -1185,24 +1192,34 @@ void __fastcall TF::imgHatch1Click(TObject* Sender) {
             if (ingame[i]) {
                 switch (i) {
                 case 0: {
-                        imgPlayer1->Top = int(imgHatch1->Top + (imgHatch1->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer1->Left = int(imgHatch1->Left + (imgHatch1->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[0]->Top =
+                            int(imgHatch[1]->Top + (imgHatch[1]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[0]->Left =
+                            int(imgHatch[1]->Left + (imgHatch[1]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 1: {
-                        imgPlayer2->Top = int(imgHatch1->Top + (imgHatch1->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer2->Left = int(imgHatch1->Left + (imgHatch1->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[1]->Top =
+                            int(imgHatch[1]->Top + (imgHatch[1]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[1]->Left =
+                            int(imgHatch[1]->Left + (imgHatch[1]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 2: {
-                        imgPlayer3->Top = int(imgHatch1->Top + (imgHatch1->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer3->Left = int(imgHatch1->Left + (imgHatch1->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[2]->Top =
+                            int(imgHatch[1]->Top + (imgHatch[1]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[2]->Left =
+                            int(imgHatch[1]->Left + (imgHatch[1]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 3: {
-                        imgPlayer4->Top = int(imgHatch1->Top + (imgHatch1->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer4->Left = int(imgHatch1->Left + (imgHatch1->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[3]->Top =
+                            int(imgHatch[1]->Top + (imgHatch[1]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[3]->Left =
+                            int(imgHatch[1]->Left + (imgHatch[1]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 4: {
-                        imgPlayer5->Top = int(imgHatch1->Top + (imgHatch1->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer5->Left = int(imgHatch1->Left + (imgHatch1->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[4]->Top =
+                            int(imgHatch[1]->Top + (imgHatch[1]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[4]->Left =
+                            int(imgHatch[1]->Left + (imgHatch[1]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 }
             }
@@ -1226,24 +1243,34 @@ void __fastcall TF::imgHatch2Click(TObject* Sender) {
             if (ingame[i]) {
                 switch (i) {
                 case 0: {
-                        imgPlayer1->Top = int(imgHatch2->Top + (imgHatch2->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer1->Left = int(imgHatch2->Left + (imgHatch2->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[0]->Top =
+                            int(imgHatch[2]->Top + (imgHatch[2]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[0]->Left =
+                            int(imgHatch[2]->Left + (imgHatch[2]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 1: {
-                        imgPlayer2->Top = int(imgHatch2->Top + (imgHatch2->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer2->Left = int(imgHatch2->Left + (imgHatch2->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[1]->Top =
+                            int(imgHatch[2]->Top + (imgHatch[2]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[1]->Left =
+                            int(imgHatch[2]->Left + (imgHatch[2]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 2: {
-                        imgPlayer3->Top = int(imgHatch2->Top + (imgHatch2->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer3->Left = int(imgHatch2->Left + (imgHatch2->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[2]->Top =
+                            int(imgHatch[2]->Top + (imgHatch[2]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[2]->Left =
+                            int(imgHatch[2]->Left + (imgHatch[2]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 3: {
-                        imgPlayer4->Top = int(imgHatch2->Top + (imgHatch2->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer4->Left = int(imgHatch2->Left + (imgHatch2->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[3]->Top =
+                            int(imgHatch[2]->Top + (imgHatch[2]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[3]->Left =
+                            int(imgHatch[2]->Left + (imgHatch[2]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 4: {
-                        imgPlayer5->Top = int(imgHatch2->Top + (imgHatch2->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer5->Left = int(imgHatch2->Left + (imgHatch2->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[4]->Top =
+                            int(imgHatch[2]->Top + (imgHatch[2]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[4]->Left =
+                            int(imgHatch[2]->Left + (imgHatch[2]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 }
             }
@@ -1284,38 +1311,38 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
         switch (Key) {
         case '1':
         case VK_NUMPAD1:
-            if (imgHatch1->Enabled) {
-                imgHatch1Click(imgHatch1);
+            if (imgHatch[1]->Enabled) {
+                imgHatch1Click(imgHatch[1]);
             }
             break;
         case '2':
         case VK_NUMPAD2:
-            if (imgHatch2->Enabled) {
-                imgHatch2Click(imgHatch2);
+            if (imgHatch[2]->Enabled) {
+                imgHatch2Click(imgHatch[2]);
             }
             break;
         case '3':
         case VK_NUMPAD3:
-            if (imgHatch3->Enabled) {
-                imgHatch3Click(imgHatch3);
+            if (imgHatch[3]->Enabled) {
+                imgHatch3Click(imgHatch[3]);
             }
             break;
         case '4':
         case VK_NUMPAD4:
-            if (imgHatch4->Enabled) {
-                imgHatch4Click(imgHatch4);
+            if (imgHatch[4]->Enabled) {
+                imgHatch4Click(imgHatch[4]);
             }
             break;
         case '5':
         case VK_NUMPAD5:
-            if (imgHatch5->Enabled) {
-                imgHatch5Click(imgHatch5);
+            if (imgHatch[5]->Enabled) {
+                imgHatch5Click(imgHatch[5]);
             }
             break;
         case '6':
         case VK_NUMPAD6:
-            if (imgHatch0->Enabled) {
-                imgHatch0Click(imgHatch0);
+            if (imgHatch[0]->Enabled) {
+                imgHatch0Click(imgHatch[0]);
             }
             break;
         }
@@ -1326,31 +1353,31 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
         case '1':
         case VK_NUMPAD1:
             if (ingame[0] == true && CurrentHatch != 1) {
-                imgHatch1Click(imgHatch1);
+                imgHatch1Click(imgHatch[1]);
             }
             break;
         case '2':
         case VK_NUMPAD2:
             if (ingame[1] == true && CurrentHatch != 2) {
-                imgHatch2Click(imgHatch2);
+                imgHatch2Click(imgHatch[2]);
             }
             break;
         case '3':
         case VK_NUMPAD3:
             if (ingame[2] == true && CurrentHatch != 3) {
-                imgHatch3Click(imgHatch3);
+                imgHatch3Click(imgHatch[3]);
             }
             break;
         case '4':
         case VK_NUMPAD4:
             if (ingame[3] == true && CurrentHatch != 4) {
-                imgHatch4Click(imgHatch4);
+                imgHatch4Click(imgHatch[4]);
             }
             break;
         case '5':
         case VK_NUMPAD5:
             if (ingame[4] == true && CurrentHatch != 5) {
-                imgHatch5Click(imgHatch5);
+                imgHatch5Click(imgHatch[5]);
             }
             break;
         }
@@ -1521,7 +1548,7 @@ void TF::TransferMoney() {
                 Wait = 4;
                 tmrWaiting->Enabled = false;
             }
-            blabla();
+            ResetForm();
         }
     }
 }
@@ -1541,17 +1568,17 @@ void __fastcall TF::tmrLogTimer(TObject* Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void TF::blabla() // возвращает форму в исходное положение
+void TF::ResetForm() // возвращает форму в исходное положение
 {
     for (int i = 0; i <= RoundOfGame; ++i) {
         F->lblAnswers[i]->Visible = false;
     }
 
-    F->imgNumber1->Visible = False;
-    F->imgNumber2->Visible = False;
-    F->imgNumber3->Visible = False;
-    F->imgNumber4->Visible = False;
-    F->imgNumber5->Visible = False;
+    imgNumber[0]->Visible = False;
+    imgNumber[1]->Visible = False;
+    imgNumber[2]->Visible = False;
+    imgNumber[3]->Visible = False;
+    imgNumber[4]->Visible = False;
     F->imgChoosenAnswer->Visible = False;
     F->imgChAnsLeft->Visible = false;
     F->imgChAnsRight->Visible = false;
@@ -1574,11 +1601,11 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
     switch (ModeOfGame) {
     case 0: {
             if (Wait == 5) {
-                imgNumber1->Enabled = False;
-                imgNumber2->Enabled = False;
-                imgNumber3->Enabled = False;
-                imgNumber4->Enabled = False;
-                imgNumber5->Enabled = False;
+                imgNumber[0]->Enabled = False;
+                imgNumber[1]->Enabled = False;
+                imgNumber[2]->Enabled = False;
+                imgNumber[3]->Enabled = False;
+                imgNumber[4]->Enabled = False;
                 CanChoose = 0;
                 for (int i = 0; i < 5; i++) {
                     if (ingame[i]) {
@@ -1602,28 +1629,28 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                     if (ingame[i]) {
                         switch (i) {
                         case 0: {
-                                imgPlayer1->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer1->Height) / 2);
-                                imgPlayer1->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer1->Width) / 2);
+                                imgPlayer[0]->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer[0]->Height) / 2);
+                                imgPlayer[0]->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer[0]->Width) / 2);
                             } break;
 
                         case 1: {
-                                imgPlayer2->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer1->Height) / 2);
-                                imgPlayer2->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer1->Width) / 2);
+                                imgPlayer[1]->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer[0]->Height) / 2);
+                                imgPlayer[1]->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer[0]->Width) / 2);
                             } break;
 
                         case 2: {
-                                imgPlayer3->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer1->Height) / 2);
-                                imgPlayer3->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer1->Width) / 2);
+                                imgPlayer[2]->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer[0]->Height) / 2);
+                                imgPlayer[2]->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer[0]->Width) / 2);
                             } break;
 
                         case 3: {
-                                imgPlayer4->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer1->Height) / 2);
-                                imgPlayer4->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer1->Width) / 2);
+                                imgPlayer[3]->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer[0]->Height) / 2);
+                                imgPlayer[3]->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer[0]->Width) / 2);
                             } break;
 
                         case 4: {
-                                imgPlayer5->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer1->Height) / 2);
-                                imgPlayer5->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer1->Width) / 2);
+                                imgPlayer[4]->Top = int(imgPlace->Top + (imgPlace->Height - imgPlayer[0]->Height) / 2);
+                                imgPlayer[4]->Left = int(imgPlace->Left + (imgPlace->Width - imgPlayer[0]->Width) / 2);
                             } break;
                         }
                     }
@@ -1776,7 +1803,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                 imgChAnsRight->Visible = true;
                 LightHatchesW(3, 4);
                 ModeOfGame = 5;
-                waitinger = 10 + random(11);
+                WaitForFate = 10 + random(11);
                 MechanizmSetHatchesStates();
                 imgQuestion->Picture->LoadFromFile("Data\\quest_incorrect.png");
                 imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
@@ -1817,7 +1844,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
             }
         } break;
     case 5: { // игрок дал неверный ответ, но остался в игре
-            if (Wait == waitinger) {
+            if (Wait == WaitForFate) {
                 OpenRndHatches();
                 if (opened_now[CurrentHatch] == 1) {
                     PlayMusic("rr_fall.wav");
@@ -1828,19 +1855,19 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                             LabelMoney->Caption = IntToStr(money[i]);
                             switch (i) {
                             case 0:
-                                imgPlayer1->Visible = False;
+                                imgPlayer[0]->Visible = False;
                                 break;
                             case 1:
-                                imgPlayer2->Visible = False;
+                                imgPlayer[1]->Visible = False;
                                 break;
                             case 2:
-                                imgPlayer3->Visible = False;
+                                imgPlayer[2]->Visible = False;
                                 break;
                             case 3:
-                                imgPlayer4->Visible = False;
+                                imgPlayer[3]->Visible = False;
                                 break;
                             case 4:
-                                imgPlayer5->Visible = False;
+                                imgPlayer[4]->Visible = False;
                                 break;
                             }
                         }
@@ -1950,24 +1977,34 @@ void __fastcall TF::imgHatch0Click(TObject* Sender) {
             if (ingame[i]) {
                 switch (i) {
                 case 0: {
-                        imgPlayer1->Top = int(imgHatch0->Top + (imgHatch0->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer1->Left = int(imgHatch0->Left + (imgHatch0->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[0]->Top =
+                            int(imgHatch[0]->Top + (imgHatch[0]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[0]->Left =
+                            int(imgHatch[0]->Left + (imgHatch[0]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 1: {
-                        imgPlayer2->Top = int(imgHatch0->Top + (imgHatch0->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer2->Left = int(imgHatch0->Left + (imgHatch0->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[1]->Top =
+                            int(imgHatch[0]->Top + (imgHatch[0]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[1]->Left =
+                            int(imgHatch[0]->Left + (imgHatch[0]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 2: {
-                        imgPlayer3->Top = int(imgHatch0->Top + (imgHatch0->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer3->Left = int(imgHatch0->Left + (imgHatch0->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[2]->Top =
+                            int(imgHatch[0]->Top + (imgHatch[0]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[2]->Left =
+                            int(imgHatch[0]->Left + (imgHatch[0]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 3: {
-                        imgPlayer4->Top = int(imgHatch0->Top + (imgHatch0->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer4->Left = int(imgHatch0->Left + (imgHatch0->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[3]->Top =
+                            int(imgHatch[0]->Top + (imgHatch[0]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[3]->Left =
+                            int(imgHatch[0]->Left + (imgHatch[0]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 case 4: {
-                        imgPlayer5->Top = int(imgHatch0->Top + (imgHatch0->Height - imgNumber1->Height) / 2 - 5);
-                        imgPlayer5->Left = int(imgHatch0->Left + (imgHatch0->Width - imgNumber1->Width) / 2 - 5);
+                        imgPlayer[4]->Top =
+                            int(imgHatch[0]->Top + (imgHatch[0]->Height - imgNumber[0]->Height) / 2 - 5);
+                        imgPlayer[4]->Left =
+                            int(imgHatch[0]->Left + (imgHatch[0]->Width - imgNumber[0]->Width) / 2 - 5);
                     } break;
                 }
             }
@@ -2037,6 +2074,8 @@ void __fastcall TF::btnContinueGameClick(TObject* Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::FormClose(TObject* Sender, TCloseAction& Action) {
+    MenuForm->Show();
+
     for (int i = 0; i < 5; i++) {
         lblMoney[i]->Caption = "0";
         money[i] = 0;
@@ -2045,11 +2084,11 @@ void __fastcall TF::FormClose(TObject* Sender, TCloseAction& Action) {
         lblMoney[i]->Visible = True;
     }
 
-    imgNumber1->Enabled = False;
-    imgNumber2->Enabled = False;
-    imgNumber3->Enabled = False;
-    imgNumber4->Enabled = False;
-    imgNumber5->Enabled = False;
+    imgNumber[0]->Enabled = False;
+    imgNumber[1]->Enabled = False;
+    imgNumber[2]->Enabled = False;
+    imgNumber[3]->Enabled = False;
+    imgNumber[4]->Enabled = False;
 
     RoundOfGame = -1;
     Wait = 0;
@@ -2069,21 +2108,20 @@ void __fastcall TF::FormClose(TObject* Sender, TCloseAction& Action) {
     imgBorder->Visible = false;
     imgPlace->Picture->LoadFromFile("Data\\Place.png");
     imgSplash->Picture->LoadFromFile("Data\\Splash-1.png");
-    imgPlayer1->Visible = True;
-    imgPlayer2->Visible = True;
-    imgPlayer3->Visible = True;
-    imgPlayer4->Visible = True;
-    imgPlayer5->Visible = True;
+    imgPlayer[0]->Visible = True;
+    imgPlayer[1]->Visible = True;
+    imgPlayer[2]->Visible = True;
+    imgPlayer[3]->Visible = True;
+    imgPlayer[4]->Visible = True;
     imgMechanizm->Enabled = True;
 
+    // сохранение текущего положения и размеров формы
     if (!Settings->Fullscreen) {
         Settings->FormsWidth = Width;
         Settings->FormsHeight = Height;
         Settings->FormsTop = Top;
         Settings->FormsLeft = Left;
     }
-
-    MenuForm->Show();
 
     tmrLog->Enabled = False;
     tmrMoney->Enabled = False;
@@ -2102,19 +2140,21 @@ void __fastcall TF::FormClose(TObject* Sender, TCloseAction& Action) {
 void __fastcall TF::FormShow(TObject* Sender) {
     SetPlayers();
 
-    if (!Settings->Fullscreen) {
-        BorderStyle = bsSizeable;
-        Width = Settings->FormsWidth;
-        Height = Settings->FormsHeight;
-        Top = Settings->FormsTop;
-        Left = Settings->FormsLeft;
-    } else {
+    if (Settings->Fullscreen) {
         BorderStyle = bsNone;
         Width = Screen->Width;
         Height = Screen->Height;
         Top = 0;
         Left = 0;
+    } else {
+        BorderStyle = bsSizeable;
+        Width = Settings->FormsWidth;
+        Height = Settings->FormsHeight;
+        Top = Settings->FormsTop;
+        Left = Settings->FormsLeft;
     }
+
+    tmrPulseAnimation->Enabled = true;
 
     imgBorder->Left = (ClientWidth - imgBorder->Width) / 2;
     imgBorder->Top = ClientHeight - imgBorder->Height;
@@ -2147,11 +2187,11 @@ void __fastcall TF::FormShow(TObject* Sender) {
     tmrSplash->Enabled = True;
     PlayMusic("rr_round.wav");
 
-    imgNumber1->Enabled = False;
-    imgNumber2->Enabled = False;
-    imgNumber3->Enabled = False;
-    imgNumber4->Enabled = False;
-    imgNumber5->Enabled = False;
+    imgNumber[0]->Enabled = False;
+    imgNumber[1]->Enabled = False;
+    imgNumber[2]->Enabled = False;
+    imgNumber[3]->Enabled = False;
+    imgNumber[4]->Enabled = False;
 
     Hatches();
     LoadGraphic();
@@ -2165,24 +2205,21 @@ void __fastcall TF::FormShow(TObject* Sender) {
 
     SetQuestionsMaximum(8, 7, 7, 4);
 
-    Initialize();
+    imgPlayer[0]->Top = int(imgHatch[1]->Top + (imgHatch[1]->Height - imgNumber[0]->Height) / 2 - 5);
+    imgPlayer[0]->Left = int(imgHatch[1]->Left + (imgHatch[1]->Width - imgNumber[0]->Width) / 2 - 5);
 
-    imgPlayer1->Top = int(imgHatch1->Top + (imgHatch1->Height - imgNumber1->Height) / 2 - 5);
-    imgPlayer1->Left = int(imgHatch1->Left + (imgHatch1->Width - imgNumber1->Width) / 2 - 5);
+    imgPlayer[1]->Top = int(imgHatch[2]->Top + (imgHatch[2]->Height - imgNumber[1]->Height) / 2 - 5);
+    imgPlayer[1]->Left = int(imgHatch[2]->Left + (imgHatch[2]->Width - imgNumber[1]->Width) / 2 - 5);
 
-    imgPlayer2->Top = int(imgHatch2->Top + (imgHatch2->Height - imgNumber2->Height) / 2 - 5);
-    imgPlayer2->Left = int(imgHatch2->Left + (imgHatch2->Width - imgNumber2->Width) / 2 - 5);
+    imgPlayer[2]->Top = int(imgHatch[3]->Top + (imgHatch[3]->Height - imgNumber[2]->Height) / 2 - 5);
+    imgPlayer[2]->Left = int(imgHatch[3]->Left + (imgHatch[3]->Width - imgNumber[2]->Width) / 2 - 5);
 
-    imgPlayer3->Top = int(imgHatch3->Top + (imgHatch3->Height - imgNumber3->Height) / 2 - 5);
-    imgPlayer3->Left = int(imgHatch3->Left + (imgHatch3->Width - imgNumber3->Width) / 2 - 5);
+    imgPlayer[3]->Top = int(imgHatch[4]->Top + (imgHatch[4]->Height - imgNumber[3]->Height) / 2 - 5);
+    imgPlayer[3]->Left = int(imgHatch[4]->Left + (imgHatch[4]->Width - imgNumber[3]->Width) / 2 - 5);
 
-    imgPlayer4->Top = int(imgHatch4->Top + (imgHatch4->Height - imgNumber4->Height) / 2 - 5);
-    imgPlayer4->Left = int(imgHatch4->Left + (imgHatch4->Width - imgNumber4->Width) / 2 - 5);
+    imgPlayer[4]->Top = int(imgHatch[5]->Top + (imgHatch[5]->Height - imgNumber[4]->Height) / 2 - 5);
+    imgPlayer[4]->Left = int(imgHatch[5]->Left + (imgHatch[5]->Width - imgNumber[4]->Width) / 2 - 5);
 
-    imgPlayer5->Top = int(imgHatch5->Top + (imgHatch5->Height - imgNumber5->Height) / 2 - 5);
-    imgPlayer5->Left = int(imgHatch5->Left + (imgHatch5->Width - imgNumber5->Width) / 2 - 5);
-
-    pulse_pic = imgPulse->Picture;
     tmrPulseAnimation->Enabled = True;
 }
 // ---------------------------------------------------------------------------
@@ -2197,6 +2234,13 @@ void __fastcall TF::btnGetMoneyClick(TObject* Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::FormResize(TObject* Sender) {
+    static lock;
+    if (lock) {
+        return;
+    }
+
+    lock = true;
+
     if (Settings->Fullscreen) {
         Top = 0;
         Left = 0;
@@ -2223,19 +2267,19 @@ void __fastcall TF::FormResize(TObject* Sender) {
     LabelMoney->Top = imgTotalPrize->Top + 10;
     LabelMoney->Left = imgTotalPrize->Left + 9;
 
-    imgHatch3->Left = imgPlace->Left + 116;
-    imgHatch4->Left = imgPlace->Left + 225;
-    imgHatch5->Left = imgPlace->Left + 225;
-    imgHatch0->Left = imgPlace->Left + 116;
-    imgHatch1->Left = imgPlace->Left + 8;
-    imgHatch2->Left = imgPlace->Left + 8;
+    imgHatch[3]->Left = imgPlace->Left + 116;
+    imgHatch[4]->Left = imgPlace->Left + 225;
+    imgHatch[5]->Left = imgPlace->Left + 225;
+    imgHatch[0]->Left = imgPlace->Left + 116;
+    imgHatch[1]->Left = imgPlace->Left + 8;
+    imgHatch[2]->Left = imgPlace->Left + 8;
 
-    imgHatch3->Top = imgPlace->Top + 0;
-    imgHatch4->Top = imgPlace->Top + 56;
-    imgHatch5->Top = imgPlace->Top + 176;
-    imgHatch0->Top = imgPlace->Top + 236;
-    imgHatch1->Top = imgPlace->Top + 176;
-    imgHatch2->Top = imgPlace->Top + 56;
+    imgHatch[3]->Top = imgPlace->Top + 0;
+    imgHatch[4]->Top = imgPlace->Top + 56;
+    imgHatch[5]->Top = imgPlace->Top + 176;
+    imgHatch[0]->Top = imgPlace->Top + 236;
+    imgHatch[1]->Top = imgPlace->Top + 176;
+    imgHatch[2]->Top = imgPlace->Top + 56;
 
     imgTicker->Top = imgQuestion->Top - 59;
     imgTicker->Left = imgQuestion->Left + 30;
@@ -2267,38 +2311,12 @@ void __fastcall TF::FormResize(TObject* Sender) {
     imgTimer->Top = imgTicker->Top + 13;
     imgTimer->Left = imgTicker->Left + 21;
 
-    // Создаем лейблочки для денег
-    if (ingame[0]) {
-        CreateLabel(1, 0, 43, imgPlayers->Left + 80, 176, 25, money[0]);
-    }
-    if (ingame[1]) {
-        CreateLabel(1, 1, 126, imgPlayers->Left + 80, 176, 25, money[1]);
-    }
-    if (ingame[2]) {
-        CreateLabel(1, 2, 208, imgPlayers->Left + 80, 176, 25, money[2]);
-    }
-    if (ingame[3]) {
-        CreateLabel(1, 3, 291, imgPlayers->Left + 80, 176, 25, money[3]);
-    }
-    if (ingame[4]) {
-        CreateLabel(1, 4, 373, imgPlayers->Left + 80, 176, 25, money[4]);
-    }
-
-    // Создаем лейблочки для имен игроков
-    if (ingame[0]) {
-        CreateLabel(2, 0, 15, imgPlayers->Left + 67, 201, 20, Settings->PlayerNames[0]);
-    }
-    if (ingame[1]) {
-        CreateLabel(2, 1, 99, imgPlayers->Left + 67, 201, 20, Settings->PlayerNames[1]);
-    }
-    if (ingame[2]) {
-        CreateLabel(2, 2, 181, imgPlayers->Left + 67, 201, 20, Settings->PlayerNames[2]);
-    }
-    if (ingame[3]) {
-        CreateLabel(2, 3, 264, imgPlayers->Left + 67, 201, 20, Settings->PlayerNames[3]);
-    }
-    if (ingame[4]) {
-        CreateLabel(2, 4, 347, imgPlayers->Left + 67, 201, 20, Settings->PlayerNames[4]);
+    // Создаем лейблочки для имен игроков и денег
+    int offcet = 0;
+    for (int i = 0; i < 5; ++i) {
+        CreateLabel(lblPlayer, i, 15 + offcet, imgPlayers->Left + 67, 201, 20, Settings->PlayerNames[i]);
+        CreateLabel(lblMoney, i, 43 + offcet, imgPlayers->Left + 80, 176, 25, money[i]);
+        offcet += 83;
     }
 
     edFinalAnswer->Top = imgQuestion->Top + 214;
@@ -2315,54 +2333,28 @@ void __fastcall TF::FormResize(TObject* Sender) {
     imgSplash->Top = int((F->ClientHeight - imgSplash->Height) / 2);
     imgSplash->BringToFront();
 
-    imgPlayer1->Top = int(imgHatch1->Top + (imgHatch1->Height - imgNumber1->Height) / 2 - 5);
-    imgPlayer1->Left = int(imgHatch1->Left + (imgHatch1->Width - imgNumber1->Width) / 2 - 5);
-
-    imgPlayer2->Top = int(imgHatch2->Top + (imgHatch2->Height - imgNumber2->Height) / 2 - 5);
-    imgPlayer2->Left = int(imgHatch2->Left + (imgHatch2->Width - imgNumber2->Width) / 2 - 5);
-
-    imgPlayer3->Top = int(imgHatch3->Top + (imgHatch3->Height - imgNumber3->Height) / 2 - 5);
-    imgPlayer3->Left = int(imgHatch3->Left + (imgHatch3->Width - imgNumber3->Width) / 2 - 5);
-
-    imgPlayer4->Top = int(imgHatch4->Top + (imgHatch4->Height - imgNumber4->Height) / 2 - 5);
-    imgPlayer4->Left = int(imgHatch4->Left + (imgHatch4->Width - imgNumber4->Width) / 2 - 5);
-
-    imgPlayer5->Top = int(imgHatch5->Top + (imgHatch5->Height - imgNumber5->Height) / 2 - 5);
-    imgPlayer5->Left = int(imgHatch5->Left + (imgHatch5->Width - imgNumber5->Width) / 2 - 5);
-
-    if (ingame[0]) {
-        imgPlayer1->Visible = True;
-    }
-    if (ingame[1]) {
-        imgPlayer2->Visible = True;
-    }
-    if (ingame[2]) {
-        imgPlayer3->Visible = True;
-    }
-    if (ingame[3]) {
-        imgPlayer4->Visible = True;
-    }
-    if (ingame[4]) {
-        imgPlayer5->Visible = True;
+    for (int i = 0; i < 5; ++i) {
+        int j = i + 1;
+        imgPlayer[i]->Top = int(imgHatch[j]->Top + (imgHatch[j]->Height - imgNumber[i]->Height) / 2 - 5);
+        imgPlayer[i]->Left = int(imgHatch[j]->Left + (imgHatch[j]->Width - imgNumber[i]->Width) / 2 - 5);
+        imgPlayer[i]->Visible = True;
     }
 
     imgSplash->Center = true;
-    imgSplash->Width = std::max(F->Width, F->Height);
+    imgSplash->Width = (F->Width > F->Height) ? F->Width : F->Height;
     imgSplash->Height = imgSplash->Width;
+
+    lock = false;
 }
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrMechamizmTimer(TObject* Sender) {
     if (MechanizmOn == -1) {
-        if (MechState != 16) {
-            MechState++ ;
-        } else {
+        if (++MechState == 16) {
             tmrMechamizm->Enabled = False;
         }
     } else {
-        if (MechState != 1) {
-            MechState-- ;
-        } else {
+        if (--MechState == 1) {
             tmrMechamizm->Enabled = False;
         }
     }
@@ -2485,74 +2477,74 @@ void __fastcall TF::tmrLightAnimationTimer(TObject* Sender) {
     pos6[1] = imgPlace->Top + 236;
 
     if (spin_round_mode) {
-        if (imgHatch1->Top >= pos2[1]) {
-            imgHatch1->Top -= 4;
+        if (imgHatch[1]->Top >= pos2[1]) {
+            imgHatch[1]->Top -= 4;
 
-            imgHatch2->Left += 4;
-            imgHatch2->Top -= 2;
+            imgHatch[2]->Left += 4;
+            imgHatch[2]->Top -= 2;
 
-            imgHatch3->Left += 4;
-            imgHatch3->Top += 2;
+            imgHatch[3]->Left += 4;
+            imgHatch[3]->Top += 2;
 
-            imgHatch4->Top += 4;
+            imgHatch[4]->Top += 4;
 
-            imgHatch5->Left -= 4;
-            imgHatch5->Top += 2;
+            imgHatch[5]->Left -= 4;
+            imgHatch[5]->Top += 2;
 
-            imgHatch0->Left -= 4;
-            imgHatch0->Top -= 2;
+            imgHatch[0]->Left -= 4;
+            imgHatch[0]->Top -= 2;
         } else {
-            imgHatch1->Top = pos2[1];
+            imgHatch[1]->Top = pos2[1];
 
-            imgHatch2->Left = pos3[0];
-            imgHatch2->Top = pos3[1];
+            imgHatch[2]->Left = pos3[0];
+            imgHatch[2]->Top = pos3[1];
 
-            imgHatch3->Left = pos4[0];
-            imgHatch3->Top = pos4[1];
+            imgHatch[3]->Left = pos4[0];
+            imgHatch[3]->Top = pos4[1];
 
-            imgHatch4->Top = pos5[1];
+            imgHatch[4]->Top = pos5[1];
 
-            imgHatch5->Left = pos6[0];
-            imgHatch5->Top = pos6[1];
+            imgHatch[5]->Left = pos6[0];
+            imgHatch[5]->Top = pos6[1];
 
-            imgHatch0->Left = pos1[0];
-            imgHatch0->Top = pos1[1];
+            imgHatch[0]->Left = pos1[0];
+            imgHatch[0]->Top = pos1[1];
 
             spin_round_mode = 0;
         }
     } else {
-        if (imgHatch1->Top < pos1[1]) {
-            imgHatch1->Top += 4;
+        if (imgHatch[1]->Top < pos1[1]) {
+            imgHatch[1]->Top += 4;
 
-            imgHatch2->Left -= 4;
-            imgHatch2->Top += 2;
+            imgHatch[2]->Left -= 4;
+            imgHatch[2]->Top += 2;
 
-            imgHatch3->Left -= 4;
-            imgHatch3->Top -= 2;
+            imgHatch[3]->Left -= 4;
+            imgHatch[3]->Top -= 2;
 
-            imgHatch4->Top -= 4;
+            imgHatch[4]->Top -= 4;
 
-            imgHatch5->Left += 4;
-            imgHatch5->Top -= 2;
+            imgHatch[5]->Left += 4;
+            imgHatch[5]->Top -= 2;
 
-            imgHatch0->Left += 4;
-            imgHatch0->Top += 2;
+            imgHatch[0]->Left += 4;
+            imgHatch[0]->Top += 2;
         } else {
-            imgHatch1->Top = pos1[1];
+            imgHatch[1]->Top = pos1[1];
 
-            imgHatch2->Left = pos2[0];
-            imgHatch2->Top = pos2[1];
+            imgHatch[2]->Left = pos2[0];
+            imgHatch[2]->Top = pos2[1];
 
-            imgHatch3->Left = pos3[0];
-            imgHatch3->Top = pos3[1];
+            imgHatch[3]->Left = pos3[0];
+            imgHatch[3]->Top = pos3[1];
 
-            imgHatch4->Top = pos4[1];
+            imgHatch[4]->Top = pos4[1];
 
-            imgHatch5->Left = pos5[0];
-            imgHatch5->Top = pos5[1];
+            imgHatch[5]->Left = pos5[0];
+            imgHatch[5]->Top = pos5[1];
 
-            imgHatch0->Left = pos6[0];
-            imgHatch0->Top = pos6[1];
+            imgHatch[0]->Left = pos6[0];
+            imgHatch[0]->Top = pos6[1];
 
             tmrLightAnimation->Enabled = false;
 
@@ -2581,20 +2573,10 @@ void __fastcall TF::ControlLabelClick(TObject* Sender) {
         }
 
         // проверяем, какой именно ответ был выбран
-        if (Sender == lblAnswers[0]) {
-            answer = 0;
-        }
-        if (Sender == lblAnswers[1]) {
-            answer = 1;
-        }
-        if (Sender == lblAnswers[2]) {
-            answer = 2;
-        }
-        if (Sender == lblAnswers[3]) {
-            answer = 3;
-        }
-        if (Sender == lblAnswers[4]) {
-            answer = 4;
+        for (int i = 0; i < 5; ++i) {
+            if (Sender == lblAnswers[i]) {
+                answer = i;
+            }
         }
 
         // включаем функцию проверки ответа и отключаем таймер
@@ -2604,19 +2586,19 @@ void __fastcall TF::ControlLabelClick(TObject* Sender) {
     }
     if (ModeOfGame == 1 && CanChoose == 1 && Settings->PlayerType[CurrentHatch - 1] == bbHuman) {
         if (Sender == lblPlayer[0] && CurrentHatch != 1) {
-            F->imgHatch1Click(imgHatch1);
+            F->imgHatch1Click(NULL);
         }
         if (Sender == lblPlayer[1] && CurrentHatch != 2) {
-            F->imgHatch2Click(imgHatch2);
+            F->imgHatch2Click(NULL);
         }
         if (Sender == lblPlayer[2] && CurrentHatch != 3) {
-            F->imgHatch3Click(imgHatch3);
+            F->imgHatch3Click(NULL);
         }
         if (Sender == lblPlayer[3] && CurrentHatch != 4) {
-            F->imgHatch4Click(imgHatch4);
+            F->imgHatch4Click(NULL);
         }
         if (Sender == lblPlayer[4] && CurrentHatch != 5) {
-            F->imgHatch5Click(imgHatch5);
+            F->imgHatch5Click(NULL);
         }
         CanChoose == 0;
     }
@@ -2631,10 +2613,10 @@ void TF::ResizeAnswers() {
         lblAnswers[0]->Left =
             (int)(imgQuestion->Left + middle - 50 - (lblAnswers[0]->Width + lblAnswers[1]->Width) / 2.);
         lblAnswers[1]->Left = (int)(lblAnswers[0]->Left + (lblAnswers[0]->Width) + 100);
-        imgNumber1->Top = lblAnswers[0]->Top - 2;
-        imgNumber1->Left = lblAnswers[0]->Left - 30;
-        imgNumber2->Top = lblAnswers[1]->Top - 2;
-        imgNumber2->Left = lblAnswers[1]->Left - 30;
+        imgNumber[0]->Top = lblAnswers[0]->Top - 2;
+        imgNumber[0]->Left = lblAnswers[0]->Left - 30;
+        imgNumber[1]->Top = lblAnswers[1]->Top - 2;
+        imgNumber[1]->Left = lblAnswers[1]->Left - 30;
     }
     if (RoundOfGame == 2) {
         lblAnswers[0]->Top = imgQuestion->Top + 150;
@@ -2652,12 +2634,12 @@ void TF::ResizeAnswers() {
             lblAnswers[1]->Left = (int)(lblAnswers[2]->Left + (lblAnswers[2]->Width) + 100);
             lblAnswers[0]->Left = lblAnswers[2]->Left;
         }
-        imgNumber1->Top = lblAnswers[0]->Top - 2;
-        imgNumber1->Left = lblAnswers[0]->Left - 30;
-        imgNumber2->Top = lblAnswers[1]->Top - 2;
-        imgNumber2->Left = lblAnswers[1]->Left - 30;
-        imgNumber3->Top = lblAnswers[2]->Top - 2;
-        imgNumber3->Left = lblAnswers[2]->Left - 30;
+        imgNumber[0]->Top = lblAnswers[0]->Top - 2;
+        imgNumber[0]->Left = lblAnswers[0]->Left - 30;
+        imgNumber[1]->Top = lblAnswers[1]->Top - 2;
+        imgNumber[1]->Left = lblAnswers[1]->Left - 30;
+        imgNumber[2]->Top = lblAnswers[2]->Top - 2;
+        imgNumber[2]->Left = lblAnswers[2]->Left - 30;
     }
     if (RoundOfGame == 3) {
         lblAnswers[0]->Top = imgQuestion->Top + 150;
@@ -2688,22 +2670,17 @@ void TF::ResizeAnswers() {
             }
             lblAnswers[0]->Left = lblAnswers[2]->Left;
         }
-        imgNumber1->Top = lblAnswers[0]->Top - 2;
-        imgNumber1->Left = lblAnswers[0]->Left - 30;
-        imgNumber2->Top = lblAnswers[1]->Top - 2;
-        imgNumber2->Left = lblAnswers[1]->Left - 30;
-        imgNumber3->Top = lblAnswers[2]->Top - 2;
-        imgNumber3->Left = lblAnswers[2]->Left - 30;
-        imgNumber4->Top = lblAnswers[3]->Top - 2;
-        imgNumber4->Left = lblAnswers[3]->Left - 30;
+
+        for (int i = 0; i < 4; ++i) {
+            imgNumber[i]->Top = lblAnswers[i]->Top - 2;
+            imgNumber[i]->Left = lblAnswers[i]->Left - 30;
+        }
     }
     if (RoundOfGame == 4) {
-        lblAnswers[0]->Top = imgQuestion->Top + 150;
-        lblAnswers[1]->Top = imgQuestion->Top + 150;
-        lblAnswers[2]->Top = imgQuestion->Top + 150;
-        lblAnswers[3]->Top = imgQuestion->Top + 175;
-        lblAnswers[4]->Top = imgQuestion->Top + 175;
-        int middle = (int)((imgQuestion->Width) / 2.);
+        for (int i = 0; i < 5; ++i) {
+            lblAnswers[i]->Top = imgQuestion->Top + 150 + 25 * (i / 3);
+        }
+        double middle = imgQuestion->Width / 2.;
         lblAnswers[0]->Left =
             (int)(imgQuestion->Left + middle - 100 - (lblAnswers[0]->Width + lblAnswers[1]->Width +
                 lblAnswers[2]->Width) / 2.);
@@ -2712,84 +2689,80 @@ void TF::ResizeAnswers() {
         lblAnswers[3]->Left =
             (int)(imgQuestion->Left + middle - 50 - (lblAnswers[3]->Width + lblAnswers[4]->Width) / 2.);
         lblAnswers[4]->Left = (int)(lblAnswers[3]->Left + (lblAnswers[3]->Width) + 100);
-        imgNumber1->Top = lblAnswers[0]->Top - 2;
-        imgNumber1->Left = lblAnswers[0]->Left - 30;
-        imgNumber2->Top = lblAnswers[1]->Top - 2;
-        imgNumber2->Left = lblAnswers[1]->Left - 30;
-        imgNumber3->Top = lblAnswers[2]->Top - 2;
-        imgNumber3->Left = lblAnswers[2]->Left - 30;
-        imgNumber4->Top = lblAnswers[3]->Top - 2;
-        imgNumber4->Left = lblAnswers[3]->Left - 30;
-        imgNumber5->Top = lblAnswers[4]->Top - 2;
-        imgNumber5->Left = lblAnswers[4]->Left - 30;
+
+        for (int i = 0; i < 5; ++i) {
+            imgNumber[i]->Top = lblAnswers[i]->Top - 2;
+            imgNumber[i]->Left = lblAnswers[i]->Left - 30;
+        }
+
     }
 }
 
 // ---------------------------------------------------------------------------
 void TF::ShowAnswers() {
     if (RoundOfGame == 1) {
-        CreateLabel(3, 0, imgQuestion->Top + 160, imgQuestion->Left + 300,
+        CreateLabel(lblAnswers, 0, imgQuestion->Top + 160, imgQuestion->Left + 300,
             (base[NumberOfQuestion].Answers[variants[0]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[0]]);
-        CreateLabel(3, 1, imgQuestion->Top + 160, imgQuestion->Left + 600,
+        CreateLabel(lblAnswers, 1, imgQuestion->Top + 160, imgQuestion->Left + 600,
             (base[NumberOfQuestion].Answers[variants[1]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[1]]);
-        imgNumber1->Visible = True;
-        imgNumber2->Visible = True;
+        imgNumber[0]->Visible = True;
+        imgNumber[1]->Visible = True;
     }
     if (RoundOfGame == 2) {
-        CreateLabel(3, 0, imgQuestion->Top + 150, imgQuestion->Left + 300,
+        CreateLabel(lblAnswers, 0, imgQuestion->Top + 150, imgQuestion->Left + 300,
             (base[NumberOfQuestion].Answers[variants[0]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[0]]);
-        CreateLabel(3, 1, imgQuestion->Top + 150, imgQuestion->Left + 600,
+        CreateLabel(lblAnswers, 1, imgQuestion->Top + 150, imgQuestion->Left + 600,
             (base[NumberOfQuestion].Answers[variants[1]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[1]]);
-        CreateLabel(3, 2, imgQuestion->Top + 175, imgQuestion->Left + 300,
+        CreateLabel(lblAnswers, 2, imgQuestion->Top + 175, imgQuestion->Left + 300,
             (base[NumberOfQuestion].Answers[variants[2]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[2]]);
-        imgNumber1->Visible = True;
-        imgNumber2->Visible = True;
-        imgNumber3->Visible = True;
+        imgNumber[0]->Visible = True;
+        imgNumber[1]->Visible = True;
+        imgNumber[2]->Visible = True;
     }
     if (RoundOfGame == 3) {
-        CreateLabel(3, 0, imgQuestion->Top + 150, imgQuestion->Left + 300,
+        CreateLabel(lblAnswers, 0, imgQuestion->Top + 150, imgQuestion->Left + 300,
             (base[NumberOfQuestion].Answers[variants[0]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[0]]);
-        CreateLabel(3, 1, imgQuestion->Top + 150, imgQuestion->Left + 600,
+        CreateLabel(lblAnswers, 1, imgQuestion->Top + 150, imgQuestion->Left + 600,
             (base[NumberOfQuestion].Answers[variants[1]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[1]]);
-        CreateLabel(3, 2, imgQuestion->Top + 175, imgQuestion->Left + 300,
+        CreateLabel(lblAnswers, 2, imgQuestion->Top + 175, imgQuestion->Left + 300,
             (base[NumberOfQuestion].Answers[variants[2]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[2]]);
-        CreateLabel(3, 3, imgQuestion->Top + 175, imgQuestion->Left + 600,
+        CreateLabel(lblAnswers, 3, imgQuestion->Top + 175, imgQuestion->Left + 600,
             (base[NumberOfQuestion].Answers[variants[3]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[3]]);
-        imgNumber1->Visible = True;
-        imgNumber2->Visible = True;
-        imgNumber3->Visible = True;
-        imgNumber4->Visible = True;
+        imgNumber[0]->Visible = True;
+        imgNumber[1]->Visible = True;
+        imgNumber[2]->Visible = True;
+        imgNumber[3]->Visible = True;
     }
     if (RoundOfGame == 4) {
-        CreateLabel(3, 0, imgQuestion->Top + 150, imgQuestion->Left + 150,
+        CreateLabel(lblAnswers, 0, imgQuestion->Top + 150, imgQuestion->Left + 150,
             (base[NumberOfQuestion].Answers[variants[0]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[0]]);
-        CreateLabel(3, 1, imgQuestion->Top + 150, imgQuestion->Left + 450,
+        CreateLabel(lblAnswers, 1, imgQuestion->Top + 150, imgQuestion->Left + 450,
             (base[NumberOfQuestion].Answers[variants[1]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[1]]);
-        CreateLabel(3, 2, imgQuestion->Top + 150, imgQuestion->Left + 750,
+        CreateLabel(lblAnswers, 2, imgQuestion->Top + 150, imgQuestion->Left + 750,
             (base[NumberOfQuestion].Answers[variants[2]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[2]]);
-        CreateLabel(3, 3, imgQuestion->Top + 175, imgQuestion->Left + 300,
+        CreateLabel(lblAnswers, 3, imgQuestion->Top + 175, imgQuestion->Left + 300,
             (base[NumberOfQuestion].Answers[variants[3]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[3]]);
-        CreateLabel(3, 4, imgQuestion->Top + 175, imgQuestion->Left + 600,
+        CreateLabel(lblAnswers, 4, imgQuestion->Top + 175, imgQuestion->Left + 600,
             (base[NumberOfQuestion].Answers[variants[4]]).Length()* 12, 20,
             base[NumberOfQuestion].Answers[variants[4]]);
-        imgNumber1->Visible = True;
-        imgNumber2->Visible = True;
-        imgNumber3->Visible = True;
-        imgNumber4->Visible = True;
-        imgNumber5->Visible = True;
+        imgNumber[0]->Visible = True;
+        imgNumber[1]->Visible = True;
+        imgNumber[2]->Visible = True;
+        imgNumber[3]->Visible = True;
+        imgNumber[4]->Visible = True;
     }
 }
 
@@ -2797,40 +2770,40 @@ void TF::Choosen_Answer_Change_Position() {
     if (ModeOfGame == 4) {
         switch (answer) {
         case 0: {
-                imgChAnsLeft->Top = imgNumber1->Top - 10;
-                imgChAnsLeft->Left = imgNumber1->Left - 10;
+                imgChAnsLeft->Top = imgNumber[0]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[0]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
                 imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
             } break;
         case 1: {
-                imgChAnsLeft->Top = imgNumber2->Top - 10;
-                imgChAnsLeft->Left = imgNumber2->Left - 10;
+                imgChAnsLeft->Top = imgNumber[1]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[1]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
                 imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
             } break;
         case 2: {
-                imgChAnsLeft->Top = imgNumber3->Top - 10;
-                imgChAnsLeft->Left = imgNumber3->Left - 10;
+                imgChAnsLeft->Top = imgNumber[2]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[2]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
                 imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
             } break;
         case 3: {
-                imgChAnsLeft->Top = imgNumber4->Top - 10;
-                imgChAnsLeft->Left = imgNumber4->Left - 10;
+                imgChAnsLeft->Top = imgNumber[3]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[3]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
                 imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
             } break;
         case 4: {
-                imgChAnsLeft->Top = imgNumber5->Top - 10;
-                imgChAnsLeft->Left = imgNumber5->Left - 10;
+                imgChAnsLeft->Top = imgNumber[4]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[4]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
@@ -2841,40 +2814,40 @@ void TF::Choosen_Answer_Change_Position() {
     if (ModeOfGame == 5) {
         switch (RandomPlace) {
         case 0: {
-                imgChAnsLeft->Top = imgNumber1->Top - 10;
-                imgChAnsLeft->Left = imgNumber1->Left - 10;
+                imgChAnsLeft->Top = imgNumber[0]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[0]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
                 imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
             } break;
         case 1: {
-                imgChAnsLeft->Top = imgNumber2->Top - 10;
-                imgChAnsLeft->Left = imgNumber2->Left - 10;
+                imgChAnsLeft->Top = imgNumber[1]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[1]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
                 imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
             } break;
         case 2: {
-                imgChAnsLeft->Top = imgNumber3->Top - 10;
-                imgChAnsLeft->Left = imgNumber3->Left - 10;
+                imgChAnsLeft->Top = imgNumber[2]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[2]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
                 imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
             } break;
         case 3: {
-                imgChAnsLeft->Top = imgNumber4->Top - 10;
-                imgChAnsLeft->Left = imgNumber4->Left - 10;
+                imgChAnsLeft->Top = imgNumber[3]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[3]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
                 imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
             } break;
         case 4: {
-                imgChAnsLeft->Top = imgNumber5->Top - 10;
-                imgChAnsLeft->Left = imgNumber5->Left - 10;
+                imgChAnsLeft->Top = imgNumber[4]->Top - 10;
+                imgChAnsLeft->Left = imgNumber[4]->Left - 10;
                 imgChoosenAnswer->Top = imgChAnsLeft->Top;
                 imgChoosenAnswer->Left = imgChAnsLeft->Left + imgChAnsLeft->Width;
                 imgChAnsRight->Top = imgChoosenAnswer->Top;
@@ -2883,3 +2856,6 @@ void TF::Choosen_Answer_Change_Position() {
         }
     }
 }
+
+void __fastcall TF::FormHide(TObject* Sender) { tmrPulseAnimation->Enabled = false; }
+// ---------------------------------------------------------------------------

@@ -328,7 +328,7 @@ object AboutForm: TAboutForm
     Left = 165
     Top = 378
     Width = 183
-    Height = 19
+    Height = 20
     Caption = #1057#1072#1081#1090' '#1080#1075#1088#1099': http://rusrul.ru'
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clSilver

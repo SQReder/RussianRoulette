@@ -19,7 +19,6 @@ __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::FormCreate(TObject* Sender) {
-    // MenuVisible = True;
     InitializeSettings();
 
     MenuForm->Constraints->MinWidth = Settings->MinWidth;
@@ -44,12 +43,14 @@ void __fastcall TMenuForm::_btnBblNTuHaxepClick(TObject* Sender) { exit(0); }
 void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
     LoadQuestionFromBase(Settings->LastBase);
 
+    // сохранение текущего положения и размеров формы
     if (!Settings->Fullscreen) {
         Settings->FormsWidth = Width;
         Settings->FormsHeight = Height;
         Settings->FormsTop = Top;
         Settings->FormsLeft = Left;
     }
+
     F->Show();
     MenuForm->Hide();
 }
@@ -57,19 +58,7 @@ void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnShowSettingsClick(TObject* Sender) {
     SettingsForm->ShowModal();
-    if (Settings->Fullscreen) {
-        BorderStyle = bsNone;
-        Width = Screen->Width;
-        Height = Screen->Height;
-        Top = 0;
-        Left = 0;
-    }
-    else {
-        BorderStyle = bsSizeable;
-        Width = Settings->FormsWidth;
-        Height = Settings->FormsHeight;
-        // Left = F->Sett
-    }
+    FormResize(NULL);
 }
 
 // ---------------------------------------------------------------------------
@@ -90,7 +79,6 @@ void __fastcall TMenuForm::FormResize(TObject* Sender) {
         BorderStyle = bsSizeable;
         Width = Settings->FormsWidth;
         Height = Settings->FormsHeight;
-        // Left = F->Sett
     }
 
     btnNewGame->Top = spacer;

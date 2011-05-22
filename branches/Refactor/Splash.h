@@ -24,8 +24,7 @@ __published: // IDE-managed Components
     void __fastcall imgSplashClick(TObject* Sender);
     void __fastcall tmrOpenSplashTimer(TObject* Sender);
 
-private: // User declarations
-        public : // User declarations
+public: // User declarations
     __fastcall TSplashForm(TComponent* Owner);
 };
 

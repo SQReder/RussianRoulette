@@ -109,10 +109,6 @@
 				<DependentOn>Splash.h</DependentOn>
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="uAnimate.cpp">
-				<DependentOn>uAnimate.h</DependentOn>
-				<BuildOrder>5</BuildOrder>
-			</CppCompile>
 			<CppCompile Include="uHostMode.cpp">
 				<DependentOn>uHostMode.h</DependentOn>
 				<BuildOrder>13</BuildOrder>
@@ -122,10 +118,10 @@
 				<DependentOn>uSettings.h</DependentOn>
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
-			<FormResources Include="Splash.dfm"/>
 			<FormResources Include="uSettings.dfm"/>
-			<FormResources Include="About.dfm"/>
+			<FormResources Include="Splash.dfm"/>
 			<FormResources Include="MainMenu.dfm"/>
+			<FormResources Include="About.dfm"/>
 			<FormResources Include="MainForm.dfm"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
@@ -152,7 +148,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">335</VersionInfo>
+						<VersionInfo Name="Build">338</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -164,7 +160,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule inc.</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">just for fun</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.0.335</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.0.338</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GPL v3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

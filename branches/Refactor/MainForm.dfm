@@ -16,6 +16,7 @@ object F: TF
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
@@ -5989,6 +5990,7 @@ object F: TF
     Top = 248
   end
   object tmrPulseAnimation: TTimer
+    Enabled = False
     Interval = 70
     OnTimer = tmrPulseAnimationTimer
     Left = 200

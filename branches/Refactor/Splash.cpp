@@ -200,8 +200,7 @@ void __fastcall TSplashForm::FormCreate(TObject* Sender) {
     if (OSIsWin7()) {
         BorderStyle = bsToolWindow;
         imgSplash->Top -= 25;
-    }
-    else {
+    } else {
         BorderStyle = bsNone;
         Color = clBlack;
     };
@@ -210,9 +209,7 @@ void __fastcall TSplashForm::FormCreate(TObject* Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TSplashForm::FormClick(TObject* Sender) {
     tmrSplash->Enabled = False;
-    // if (!MenuForm->MenuVisible) {
     MenuForm->Show();
-    // }
     imgSplash->Free();
     tmrSplash->Enabled = False;
     SplashForm->Hide();

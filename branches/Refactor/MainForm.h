@@ -9,10 +9,9 @@
 #include <Forms.hpp>
 #include <ExtCtrls.hpp>
 #include <pngimage.hpp>
-#include <MPlayer.hpp>
 #include <ComCtrls.hpp>
-#include <GIFImg.hpp>
 #include "uSettings.h"
+#include <MPlayer.hpp>
 
 // -----------------------------------------------------------------------------
 class TF : public TForm {
@@ -81,7 +80,6 @@ __published: // IDE-managed Components
     void __fastcall Button1Click(TObject* Sender);
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall LoadGraphic();
-    void __fastcall Button2Click(TObject* Sender);
     void __fastcall btnMechStartClick(TObject* Sender);
     void __fastcall btnExitClick(TObject* Sender);
     void __fastcall btnMechStopClick(TObject* Sender);
@@ -113,9 +111,10 @@ __published: // IDE-managed Components
     void __fastcall tmrDecidedTimer(TObject* Sender);
     void __fastcall tmrLightAnimationTimer(TObject* Sender);
     void __fastcall ControlLabelClick(TObject* Sender);
+    void __fastcall FormHide(TObject *Sender);
 
 private: // User declarations
-    void CreateLabel(int, int, int, int, int, int, UnicodeString);
+    void CreateLabel(TLabel**, int, int, int, int, int, UnicodeString);
 
 public: // User declarations
     __fastcall TF(TComponent* Owner);
@@ -136,7 +135,7 @@ public: // User declarations
     int Wait;
     int RandomPlace;
 
-    void blabla();
+    void ResetForm();
 
     bool _Parse(UnicodeString ans);
     void TransferMoneyFinal();
