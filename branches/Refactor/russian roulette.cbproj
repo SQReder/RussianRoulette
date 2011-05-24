@@ -83,6 +83,10 @@
 				<DependentOn>GameLogic.h</DependentOn>
 				<BuildOrder>5</BuildOrder>
 			</CppCompile>
+			<CppCompile Include="GfxCache.cpp">
+				<DependentOn>GfxCache.h</DependentOn>
+				<BuildOrder>13</BuildOrder>
+			</CppCompile>
 			<CppCompile Include="Hatches.cpp">
 				<DependentOn>Hatches.h</DependentOn>
 				<BuildOrder>4</BuildOrder>

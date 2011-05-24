@@ -1034,7 +1034,6 @@ object SplashForm: TSplashForm
     Width = 417
     Height = 9
     Align = alBottom
-    Smooth = True
     TabOrder = 0
   end
   object tmrSplash: TTimer

@@ -4,17 +4,16 @@
 #pragma hdrstop
 #include <tchar.h>
 // ---------------------------------------------------------------------------
-USEFORM("Splash.cpp", SplashForm);
 USEFORM("uSettings.cpp", SettingsForm);
-USEFORM("About.cpp", AboutForm);
+USEFORM("Splash.cpp", SplashForm);
 USEFORM("MainMenu.cpp", MenuForm);
+USEFORM("About.cpp", AboutForm);
 USEFORM("MainForm.cpp", F);
 
 // ---------------------------------------------------------------------------
 WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
     try {
         Application->Initialize();
-        // Application->MainFormOnTaskBar = true;
         Application->Title = "Русская рулетка";
         Application->CreateForm(__classid(TSplashForm), & SplashForm);
         Application->CreateForm(__classid(TMenuForm), & MenuForm);

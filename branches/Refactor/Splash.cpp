@@ -10,6 +10,7 @@
 #include "classes.hpp"
 #include <windows.h>
 #include "uSettings.h"
+#include "GfxCache.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -29,7 +30,7 @@ void CheckFile(UnicodeString filename) {
 }
 
 void CheckSystemIntegrity() {
-    TStringList* nonExisten = new TStringList;
+    nonExisten = new TStringList;
 
     CheckFile("base\\main.dat");
 
@@ -37,7 +38,7 @@ void CheckSystemIntegrity() {
         CheckFile("data\\" + IntToStr(i) + "sec.png");
     }
 
-    for (int i = 1; i < 17; i++) {
+    for (int i = 0; i < 16; i++) {
         CheckFile("data\\рычаг_" + IntToStr(i) + ".png");
     }
 
@@ -97,16 +98,18 @@ void CheckSystemIntegrity() {
 
 // ---------------------------------------------------------------------------
 inline void UpdPB() {
-    SplashForm->PBLoad->Position += 1;
+    SplashForm->PBLoad->Position = SplashForm->PBLoad->Position + 1;
     SplashForm->Update();
 }
 
 void Loader() {
-    SplashForm->PBLoad->Max = 1;
+    SplashForm->PBLoad->Max = 3;
 
     CheckSystemIntegrity();
     UpdPB();
     Settings = new TSettings(ExtractFilePath(Application->ExeName) + "\settings.cfg");
+    UpdPB();
+    gfx = new sGfxCache;
     UpdPB();
 
     SplashForm->PBLoad->Visible = false;

@@ -15,6 +15,7 @@
 #include "uSettings.h"
 #include "uHostMode.h"
 #include "base.h"
+#include "GfxCache.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TeeFilters"
@@ -39,7 +40,6 @@ int colquestions[4]; // массив, определяющий максимальное количество вопросов по
 int MaximalSumm; // переменная, определяющая максимальное значение среди сумм игроков
 int MaximalSummCount; // переменная, определяющая кол-во максимумов среди игроков
 int indexes[5], variants[5]; // массивы, помогающие случайно распредлить варианты ответов
-int MechState = 1;
 bool spin_round_mode; // определяет анимацию (1 - по часовой, 0 - против часовой)
 int TimeToDecide; // время, необходимое боту для принятия решения
 int LeaderPlayerAtFinal; // порядковый индекс игрока, прошедшего в финал (необходимо для принятия решений)
@@ -49,9 +49,6 @@ int opened_now[6]; // указывает какие люки будут открыты после остановки механиз
 int TempRoundOfGame;
 int chooseplayer;
 int CantFall;
-
-const int FramesCount = 56;
-TPicture* PulseFrames[FramesCount];
 
 // Some controls pointers
 TImage* imgPlayer[5];
@@ -63,13 +60,12 @@ void SetQuestionsMaximum(int FirstRound, int SecondRound, int ThirdRound, int Fo
 // -----------------------------------------------------------------------------
 
 void __fastcall TF::LoadGraphic() {
-    imgPlace->Picture->LoadFromFile("Data\\Place.png");
+    imgPlace->Picture->Assign(gfx->Place);
     Wait = 0;
 
     hatches_enable_state(false);
     tmrWaiting->Enabled = False;
     imgTotalPrize->Visible = False;
-    MechState = 1;
 
     F->Constraints->MinWidth = Settings->MinWidth;
     F->Constraints->MinHeight = Settings->MinHeight;
@@ -88,12 +84,7 @@ void __fastcall TF::LoadGraphic() {
 
     imgChoosenAnswer->Visible = false;
 
-    imgQuestion->Picture->LoadFromFile("data\\rr_quest.png");
-
-    for (int i = 0; i < FramesCount; i++) {
-        PulseFrames[i] = new TPicture();
-        PulseFrames[i]->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
-    }
+    imgQuestion->Picture->Assign(gfx->rr_quest);
 
     btnMechStop->Enabled = 0;
     CantFall = -1;
@@ -162,9 +153,7 @@ void __fastcall TF::PlayMusic(String path) {
 __fastcall TF::TF(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::Button1Click(TObject* Sender) {
-    DumpMemory(0);
-}
+void __fastcall TF::Button1Click(TObject* Sender) { DumpMemory(0); }
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::FormCreate(TObject* Sender) {
@@ -193,8 +182,8 @@ void __fastcall TF::FormCreate(TObject* Sender) {
 
 void __fastcall TF::tmrPulseAnimationTimer(TObject* Sender) {
     static frame = 0;
-    imgPulse->Picture->Assign(PulseFrames[frame]);
-    frame = ++frame % FramesCount;
+    imgPulse->Picture->Assign(gfx->PulseFrames[frame]);
+    frame = ++frame % gfx->PulseFramesCount;
 }
 
 // ---------------------------------------------------------------------------
@@ -223,7 +212,7 @@ void __fastcall TF::btnMechStartClick(TObject* Sender) {
     }
     tmrRotator->Interval = SpeedOfRotation;
     MechanizmOn = -1;
-    imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
+    imgPlace->Picture->Assign(gfx->PlaceRedZero);
     tmrRotator->Enabled = True;
     PlayMusic("rr_mexopen.wav");
     btnMechStart->Enabled = 0;
@@ -247,7 +236,7 @@ void __fastcall TF::btnMechStopClick(TObject* Sender) {
     randomize();
     WaitForFate = 5 + random(11);
     if (RoundOfGame < 1) {
-        imgPlace->Picture->LoadFromFile("Data\\Place.png");
+        imgPlace->Picture->Assign(gfx->Place);
     }
 
     if (FinalRoundOfGame > 0) {
@@ -510,7 +499,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
             imgPulse->Visible = True;
             imgPulseBar->Visible = True;
             imgTicker->Visible = True;
-            imgTimer->Picture->LoadFromFile("Data\\" + IntToStr(TimeOfQuestion) + "sec.png");
+            imgTimer->Picture->Assign(gfx->Tick[TimeOfQuestion]);
             ShowAnswers();
             ResizeAnswers();
             // --[ 4. Финальное: определение надписи, в которой лежит правильный ответ ]--
@@ -555,7 +544,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
         if (Wait == 2) {
             CanAnswer = 0;
             if (answer == RandomPlace) {
-                imgQuestion->Picture->LoadFromFile("Data\\quest_correct.png");
+                imgQuestion->Picture->Assign(gfx->quest_correct);
                 if (!Settings->HostMode) {
                     tmrWaiting->Enabled = True;
                 }
@@ -571,7 +560,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                 chooseplayer = 255;
                 QuestionsLeft-- ;
             } else {
-                imgQuestion->Picture->LoadFromFile("Data\\quest_incorrect.png");
+                imgQuestion->Picture->Assign(gfx->quest_incorrect);
                 if (answer != -1) {
                     imgChoosenAnswer->Visible = True;
                     imgChAnsLeft->Visible = true;
@@ -677,7 +666,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                     F->imgChAnsRight->Visible = false;
                     F->imgTimer->Visible = False;
                     F->lblTimer->Visible = False;
-                    F->imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+                    F->imgQuestion->Picture->Assign(gfx->rr_quest);
                     F->LabelQuestion->Visible = False;
                     if (!Settings->HostMode) {
                         tmrWaiting->Enabled = true;
@@ -691,7 +680,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                     PlayMusic("rr_save.wav");
                     CurrentHatch = chooseplayer;
                     chooseplayer = 255;
-                    imgPlace->Picture->LoadFromFile("Data\\Place.png");
+                    imgPlace->Picture->Assign(gfx->Place);
                     ResetForm();
                 }
             }
@@ -790,7 +779,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                 }
                 if (RoundOfGame != 5) {
                     ModeOfGame = 11;
-                    imgSplash->Picture->LoadFromFile("Data\\Splash-" + IntToStr(RoundOfGame) + ".png");
+                    imgSplash->Picture->Assign(gfx->Splash[RoundOfGame]);
                 } else {
                     ModeOfGame = 0;
                     tmrWaiting->Enabled = False;
@@ -804,7 +793,7 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
                 imgSplash->Visible = True;
                 LightHatchesW(255, 2);
                 MechanizmSetHatchesStates();
-                imgPlace->Picture->LoadFromFile("Data\\Place.png");
+                imgPlace->Picture->Assign(gfx->Place);
             }
             if (Wait == 12) {
                 imgSplash->Visible = False;
@@ -1123,7 +1112,7 @@ void __fastcall TF::tmrTimeTimer(TObject* Sender) {
     }
     if (TimeOfQuestion >= 0) {
         lblTimer->Caption = IntToStr(TimeOfQuestion);
-        imgTimer->Picture->LoadFromFile("Data\\" + IntToStr(TimeOfQuestion) + "sec.png");
+        imgTimer->Picture->Assign(gfx->Tick[TimeOfQuestion]);
     }
     if (TimeOfQuestion < 0) {
         if (TimeOfQuestion == -3) {
@@ -1238,7 +1227,7 @@ void TF::ResetForm() // возвращает форму в исходное положение
     F->imgPulse->Visible = False;
     F->imgTotalPrize->Visible = False;
     F->imgPulseBar->Visible = False;
-    F->imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+    F->imgQuestion->Picture->Assign(gfx->rr_quest);
     F->LabelQuestion->Visible = False;
     F->LabelMoney->Visible = False;
     hatches_enable_state(false);
@@ -1262,12 +1251,12 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                 }
                 PlaySound("rr_final.wav");
                 hatches_enable_state(false);
-                imgSplash->Picture->LoadFromFile("Data\\Final.png");
+                imgSplash->Picture->Assign(gfx->FinalSplash);
                 imgSplash->Visible = True;
                 CantFall = -1;
                 LightHatchesW(255, 2);
                 MechanizmSetHatchesStates();
-                imgPlace->Picture->LoadFromFile("Data\\Place.png");
+                imgPlace->Picture->Assign(gfx->Place);
                 FinalRoundOfGame = 1;
             }
             if (Wait == 11) {
@@ -1291,7 +1280,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                 imgTicker->Visible = false;
                 imgChAnsLeft->Visible = false;
                 imgChAnsRight->Visible = false;
-                imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+                imgQuestion->Picture->Assign(gfx->rr_quest);
                 imgQuestion->Visible = False;
                 LabelQuestion->Visible = False;
                 lblRightAnswer->Visible = False;
@@ -1361,7 +1350,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                 load_final_question();
                 lblTimer->Caption = IntToStr(TimeOfQuestion);
                 lblTimer->Visible = True;
-                imgTimer->Picture->LoadFromFile("Data\\" + IntToStr(TimeOfQuestion) + "sec.png");
+                imgTimer->Picture->Assign(gfx->Tick[TimeOfQuestion]);
                 imgTimer->Visible = True;
                 edFinalAnswer->Top = imgQuestion->Top + imgQuestion->Height - 30 - edFinalAnswer->Height;
                 edFinalAnswer->Left = (int)(imgQuestion->Left + (imgQuestion->Width - edFinalAnswer->Width) / 2.);
@@ -1402,7 +1391,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                 imgChAnsLeft->Visible = true;
                 imgChAnsRight->Visible = true;
                 Reward = StrToInt(LabelMoney->Caption);
-                imgQuestion->Picture->LoadFromFile("Data\\quest_correct.png");
+                imgQuestion->Picture->Assign(gfx->quest_correct);
                 LightHatchesW(255, 4);
                 MechanizmSetHatchesStates();
                 ModeOfGame = 4;
@@ -1429,8 +1418,8 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                 ModeOfGame = 5;
                 WaitForFate = 10 + random(11);
                 MechanizmSetHatchesStates();
-                imgQuestion->Picture->LoadFromFile("Data\\quest_incorrect.png");
-                imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
+                imgQuestion->Picture->Assign(gfx->quest_incorrect);
+                imgPlace->Picture->Assign(gfx->PlaceRedZero);
             }
             Wait = 0;
         } break;
@@ -1453,7 +1442,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                 lblTimer->Visible = False;
                 LabelMoney->Visible = False;
                 imgPulse->Visible = False;
-                imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+                imgQuestion->Picture->Assign(gfx->rr_quest);
                 imgQuestion->Visible = False;
                 LabelQuestion->Visible = False;
                 lblRightAnswer->Visible = False;
@@ -1490,7 +1479,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                     imgTicker->Visible = false;
                     imgPulseBar->Visible = false;
                     imgTotalPrize->Visible = false;
-                    imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+                    imgQuestion->Picture->Assign(gfx->rr_quest);
                     imgQuestion->Visible = False;
                     LabelQuestion->Visible = False;
                     lblRightAnswer->Visible = False;
@@ -1515,7 +1504,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
         } break;
     case 6: {
             if (Wait == 32) {
-                imgPlace->Picture->LoadFromFile("Data\\Place.png");
+                imgPlace->Picture->Assign(gfx->Place);
                 // PlaySound("rr_save.wav");
                 LightHatchesW(1, 0);
                 MechanizmSetHatchesStates();
@@ -1536,7 +1525,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject* Sender) {
                             imgChAnsLeft->Visible = false;
                             imgChAnsRight->Visible = false;
                             imgPulse->Visible = False;
-                            imgQuestion->Picture->LoadFromFile("Data\\rr_quest.png");
+                            imgQuestion->Picture->Assign(gfx->rr_quest);
                             imgQuestion->Visible = False;
                             LabelQuestion->Visible = False;
                             lblRightAnswer->Visible = False;
@@ -1664,8 +1653,8 @@ void __fastcall TF::FormClose(TObject* Sender, TCloseAction& Action) {
     imgChAnsRight->Visible = false;
     imgChoosenAnswer->Visible = false;
     imgBorder->Visible = false;
-    imgPlace->Picture->LoadFromFile("Data\\Place.png");
-    imgSplash->Picture->LoadFromFile("Data\\Splash-1.png");
+    imgPlace->Picture->Assign(gfx->Place);
+    imgSplash->Picture->Assign(gfx->Splash[1]);
     for (int i = 0; i < 5; ++i) {
         imgPlayer[i]->Visible = True;
     }
@@ -1846,7 +1835,7 @@ void __fastcall TF::FormResize(TObject* Sender) {
 
     imgMechanizm->Left = 0;
     imgMechanizm->Top = 145;
-    imgMechanizm->Picture->LoadFromFile("Data\\рычаг_" + IntToStr(MechState) + ".png");
+    imgMechanizm->Picture->Assign(gfx->Liver[0]);
 
     imgSplash->Left = int((F->ClientWidth - imgSplash->Width) / 2);
     imgSplash->Top = int((F->ClientHeight - imgSplash->Height) / 2);
@@ -1866,16 +1855,17 @@ void __fastcall TF::FormResize(TObject* Sender) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrMechamizmTimer(TObject* Sender) {
+    static int MechState = 1;
     if (MechanizmOn == -1) {
-        if (++MechState == 16) {
+        if (++MechState == 15) {
             tmrMechamizm->Enabled = False;
         }
     } else {
-        if (--MechState == 1) {
+        if (--MechState == 0) {
             tmrMechamizm->Enabled = False;
         }
     }
-    imgMechanizm->Picture->LoadFromFile("Data\\рычаг_" + IntToStr(MechState) + ".png");
+    imgMechanizm->Picture->Assign(gfx->Liver[MechState]);
 }
 // ---------------------------------------------------------------------------
 

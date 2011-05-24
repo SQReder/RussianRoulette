@@ -7,6 +7,7 @@
 #include "MainForm.h"
 #include "uSettings.h"
 #include "About.h"
+#include "GfxCache.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -31,7 +32,10 @@ void __fastcall TMenuForm::FormCreate(TObject* Sender) {
 void __fastcall TMenuForm::FormClose(TObject* Sender, TCloseAction& Action) { exit(0); }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::_btnBblNTuHaxepClick(TObject* Sender) { exit(0); }
+void __fastcall TMenuForm::_btnBblNTuHaxepClick(TObject* Sender) {
+    delete gfx;
+    exit(0);
+}
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
@@ -94,4 +98,3 @@ void __fastcall TMenuForm::FormShow(TObject* Sender) {
     LoadFormPosition(MenuForm);
 }
 // ---------------------------------------------------------------------------
-
