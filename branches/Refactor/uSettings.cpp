@@ -1,10 +1,9 @@
 // ---------------------------------------------------------------------------
-#include <utility>
-#include <vector>
-#pragma hdrstop
-#include <vcl.h>
-#pragma hdrstop
 #include "inifiles.hpp"
+#include <map>
+#include <vector>
+#include <vcl.h>
+#include <system.hpp>
 #pragma hdrstop
 
 #include "uSettings.h"
@@ -17,48 +16,82 @@ TSettingsForm* SettingsForm;
 std::vector <std::pair <UnicodeString, UnicodeString> > BaseFiles;
 
 // ---------------------------------------------------------------------------
+TSettings::TSettings() {
+    for (int i = 0; i < 5; ++i) {
+        PlayerNames[i] = "Игрок № ";
+        PlayerNames[i][8] = 49 + i; // generate number 1..5. char 49 is '1'
+        PlayerType[i] = bbHuman;
+    }
 
-void ReadCfgFile() {
-    TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
-    Settings->Fullscreen = ini->ReadBool("Global", "FullScreen", False);
-    Settings->FormsWidth = ini->ReadInteger("Global", "Width", 1024);
-    Settings->FormsHeight = ini->ReadInteger("Global", "Height", 1024);
-    Settings->SoundEnabled = ini->ReadBool("Global", "Sound", False);
-    Settings->SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
-    Settings->MusicEnabled = ini->ReadBool("Global", "Music", False);
-    Settings->MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
-    Settings->HostMode = ini->ReadBool("Global", "HostMode", False);
+    Fullscreen = True;
+
+    FormsTop = 0;
+    FormsLeft = 0;
+    FormsWidth = 1024;
+    FormsHeight = 768;
+
+    MinWidth = 1024;
+    MinHeight = 768;
+
+    SoundEnabled = True;
+    SoundVolume = 100;
+    MusicEnabled = True;
+    MusicVolume = 100;
+
+    Win7Features = False;
+
+    LastBase = "main.dat";
+
+    BaseNames = new TStringList();
+    HostMode = false;
+};
+
+TSettings::TSettings(UnicodeString filename) {
+    TIniFile* ini = new TIniFile(filename);
+
+    Fullscreen = ini->ReadBool("Global", "FullScreen", False);
+    FormsWidth = ini->ReadInteger("Global", "Width", 1024);
+    FormsHeight = ini->ReadInteger("Global", "Height", 1024);
+    FormsLeft = ini->ReadInteger("Global", "Left", 0);
+    FormsTop= ini->ReadInteger("Global", "Top", 0);
+    SoundEnabled = ini->ReadBool("Global", "Sound", False);
+    SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
+    MusicEnabled = ini->ReadBool("Global", "Music", False);
+    MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
+    HostMode = ini->ReadBool("Global", "HostMode", False);
+
+    MinWidth = 1024;
+    MinHeight = 768;
 
     for (int i = 1; i <= 5; i++) {
-        Settings->PlayerNames[i - 1] = ini->ReadString("Players", "Player" + IntToStr(i), "FUUUUuuuuu...");
-        Settings->PlayerType[i - 1] = (TBotType)ini->ReadInteger("Players", "PlayerType" + IntToStr(i), 0);
+        PlayerNames[i - 1] = ini->ReadString("Players", "Player" + IntToStr(i), "FUUUUuuuuu...");
+        PlayerType[i - 1] = (TBotType)ini->ReadInteger("Players", "PlayerType" + IntToStr(i), 0);
     }
 
-    Settings->LastBase = ini->ReadString("Global", "LastBase", "");
+    LastBase = ini->ReadString("Global", "LastBase", "");
+    if (LastBase == "") {
+        if (FileExists("base\\main.dat")) {
+            LastBase = "main.dat";
+        } else {
+            MessageBox(Application->Handle,
+                "Ошибка загрузки последней базы вопросов\n Попытка загрузить base\\main.dat также провалилась - файла не существует. \n",
+                "Критическая ошибка", MB_YESNO);
+            MB_YESNO;
+        }
+    }
 
     int i = 0;
+    BaseNames = new TStringList;
     while (1) {
-        String str = ini->ReadString("Bases", "basename" + IntToStr(i), "");
+        String str = ini->ReadString("Bases", "basename" + IntToStr(i++), "");
         if (str != "") {
-            Settings->BaseNames->Add(str);
-        }
-        else {
+            BaseNames->Add(str);
+        } else {
             break;
         }
-        i++ ;
-    }
-
-    if (Settings->LastBase == "") {
-        ShowError(1);
     }
 
     ini->Free();
-}
-
-// ---------------------------------------------------------------------------
-void InitializeSettings() {
-    Settings = new TSettings();
-    ReadCfgFile();
 }
 
 // ---------------------------------------------------------------------------
@@ -66,13 +99,6 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 void __fastcall TSettingsForm::FormShow(TObject* Sender) {
-    cbWin7Features->Checked = Settings->Win7Features;
-    tbSoundVolume->Position = Settings->SoundVolume;
-    tbMusicVolume->Position = Settings->MusicVolume;
-}
-// ---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
     // <- Загрузка соответствий файлов баз данных их именам
     TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
 
@@ -84,8 +110,7 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
         if ((name != "") && (file != "")) {
             BaseFiles.push_back(std::make_pair(name, file));
             cmbListOfBases->Items->Add(BaseFiles[BaseFiles.size() - 1].first);
-        }
-        else {
+        } else {
             break;
         }
         i++ ;
@@ -117,17 +142,25 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
     cbSoundOnOff->Checked = Settings->SoundEnabled;
     cbMusicOnOff->Checked = Settings->MusicEnabled;
     cbFullscreen->Checked = Settings->Fullscreen;
+
+    cbWin7Features->Checked = Settings->Win7Features;
+    tbSoundVolume->Position = Settings->SoundVolume;
+    tbMusicVolume->Position = Settings->MusicVolume;
+
     // «режим ведущего» отныне и навеки работает ТОЛЬКО при наличии
     // 2-х и более подключенных мониторов к ПК
     if (Screen->MonitorCount > 1) {
         cbHostModeOnOff->Checked = Settings->HostMode;
         cbHostModeOnOff->Enabled = 1;
-    }
-    else {
+    } else {
         cbHostModeOnOff->Checked = 0;
         cbHostModeOnOff->Enabled = 0;
     }
 
+}
+// ---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
     btnCancel->Caption = "Cancel";
     btnOK->Caption = "OK";
     gbPlayerNames->Caption = "Имена игроков";
@@ -155,6 +188,8 @@ void SaveSettings() {
     ini->WriteBool("Global", "FullScreen", Settings->Fullscreen);
     ini->WriteInteger("Global", "Width", Settings->FormsWidth);
     ini->WriteInteger("Global", "Height", Settings->FormsHeight);
+    ini->WriteInteger("Global", "Left", Settings->FormsLeft);
+    ini->WriteInteger("Global", "Top", Settings->FormsTop);
     ini->WriteBool("Global", "Sound", Settings->SoundEnabled);
     ini->WriteInteger("Global", "SoundVolume", Settings->SoundVolume);
     ini->WriteBool("Global", "Music", Settings->MusicEnabled);
@@ -241,10 +276,46 @@ void __fastcall TSettingsForm::addBaseClick(TObject* Sender) {
                 cmbListOfBases->Items->Add(BaseFiles[i].first);
             }
             cmbListOfBases->ItemIndex = cmbListOfBases->Items->Count - 1;
-        }
-        else {
+        } else {
             ShowMessage("Ошибка добавления базы =(");
         }
     }
 }
+
 // ---------------------------------------------------------------------------
+void LoadFormPosition(TForm* form) {
+    if (Settings->Fullscreen) {
+        form->BorderStyle = bsNone;
+        form->Width = Screen->Width;
+        form->Height = Screen->Height;
+        form->Top = 0;
+        form->Left = 0;
+    } else {
+        form->BorderStyle = bsSizeable;
+        form->Width = Settings->FormsWidth;
+        form->Height = Settings->FormsHeight;
+        form->Left = Settings->FormsLeft;
+        form->Top = Settings->FormsTop;
+    }
+}
+
+void SaveFormPosition(TForm* form) {
+    if (!Settings->Fullscreen) {
+        Settings->FormsWidth = form->Width;
+        Settings->FormsHeight = form->Height;
+        Settings->FormsTop = form->Top;
+        Settings->FormsLeft = form->Left;
+    }
+}
+
+void CoolPositionFix(TForm* form) {
+    /* АЦЦКИЙ КОСТЫЛЬ
+     суть в том, что после перевода формы в состояние Borderless
+     она самопроизвольно сдвигается влево, что не есть гут
+     при этом контролировать это смещение из LoadFormPosition()
+     не представляется возможным =(
+     */
+    if (form->Left < 0) {
+        form->Left = 0;
+    }
+}

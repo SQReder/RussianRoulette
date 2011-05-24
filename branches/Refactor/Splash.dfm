@@ -1028,6 +1028,15 @@ object SplashForm: TSplashForm
       3EC1F7BEEBD1090000000049454E44AE426082}
     OnClick = imgSplashClick
   end
+  object PBLoad: TProgressBar
+    Left = 0
+    Top = 311
+    Width = 417
+    Height = 9
+    Align = alBottom
+    Smooth = True
+    TabOrder = 0
+  end
   object tmrSplash: TTimer
     Enabled = False
     OnTimer = tmrSplashTimer

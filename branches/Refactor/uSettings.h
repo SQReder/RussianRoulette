@@ -6,13 +6,15 @@
 #include <StdCtrls.hpp>
 #include <Forms.hpp>
 #include <ExtCtrls.hpp>
-#include <FileCtrl.hpp>
+#include "AI.h"
 #include <ComCtrls.hpp>
 #include <Dialogs.hpp>
-#include "AI.h"
 
 class TSettings {
 public:
+    TSettings();
+    TSettings(UnicodeString filename);
+
     UnicodeString PlayerNames[5];
     TBotType PlayerType[5];
     bool Fullscreen;
@@ -30,36 +32,6 @@ public:
     bool HostMode;
     String LastBase;
     TStringList* BaseNames;
-
-    TSettings() {
-        for (int i = 0; i < 5; ++i) {
-            PlayerNames[i] = "Игрок № ";
-            PlayerNames[i][8] = 49 + i; // generate number 1..5. char 49 is '1'
-            PlayerType[i] = bbHuman;
-        }
-
-        Fullscreen = True;
-
-        FormsTop = 0;
-        FormsLeft = 0;
-        FormsWidth = 1024;
-        FormsHeight = 768;
-
-        MinWidth = 1024;
-        MinHeight = 768;
-
-        SoundEnabled = True;
-        SoundVolume = 100;
-        MusicEnabled = True;
-        MusicVolume = 100;
-
-        Win7Features = False;
-
-        LastBase = "main.dat";
-
-        BaseNames = new TStringList();
-        HostMode = false;
-    };
 };
 
 extern TSettings* Settings;
@@ -114,7 +86,9 @@ private: // User declarations
 
 // ---------------------------------------------------------------------------
 extern PACKAGE TSettingsForm* SettingsForm;
-// ---------------------------------------------------------------------------
-extern void ReadCfgFile();
 
+void LoadFormPosition(TForm* form);
+void SaveFormPosition(TForm* form);
+void CoolPositionFix(TForm* form);
+// ---------------------------------------------------------------------------
 #endif

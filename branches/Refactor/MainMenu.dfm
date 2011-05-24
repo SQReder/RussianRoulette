@@ -15,7 +15,6 @@ object MenuForm: TMenuForm
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
-  OnHide = FormHide
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96

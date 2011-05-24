@@ -1575,7 +1575,6 @@ object F: TF
     Width = 394
     Height = 392
     AutoSize = True
-    OnClick = imgPlaceClick
   end
   object imgHatch0: TImage
     Left = 364
@@ -1583,7 +1582,7 @@ object F: TF
     Width = 160
     Height = 160
     AutoSize = True
-    OnClick = imgHatch0Click
+    OnClick = HatchClick
   end
   object imgHatch3: TImage
     Left = 364
@@ -1591,7 +1590,7 @@ object F: TF
     Width = 160
     Height = 160
     AutoSize = True
-    OnClick = imgHatch3Click
+    OnClick = HatchClick
   end
   object imgHatch1: TImage
     Left = 473
@@ -1599,7 +1598,7 @@ object F: TF
     Width = 160
     Height = 160
     AutoSize = True
-    OnClick = imgHatch1Click
+    OnClick = HatchClick
   end
   object imgHatch2: TImage
     Left = 473
@@ -1607,7 +1606,7 @@ object F: TF
     Width = 160
     Height = 160
     AutoSize = True
-    OnClick = imgHatch2Click
+    OnClick = HatchClick
   end
   object imgHatch5: TImage
     Left = 256
@@ -1615,7 +1614,7 @@ object F: TF
     Width = 160
     Height = 160
     AutoSize = True
-    OnClick = imgHatch5Click
+    OnClick = HatchClick
   end
   object imgHatch4: TImage
     Left = 256
@@ -1623,7 +1622,7 @@ object F: TF
     Width = 160
     Height = 160
     AutoSize = True
-    OnClick = imgHatch4Click
+    OnClick = HatchClick
   end
   object imgQuestion: TImage
     Left = 8
@@ -3380,7 +3379,6 @@ object F: TF
       1FF0B7FE68E1CCBFD16F8775808BE7D69EF1D16330A2657B552421D1D90E4CBD
       3EF662E1BF56A2225E475D2A0AFF2DF8BEE0B3A1B65213FD06A1D212E4B02F29
       C60000000049454E44AE426082}
-    OnClick = imgHatch1Click
   end
   object imgPlayer2: TImage
     Left = 93
@@ -3423,7 +3421,6 @@ object F: TF
       1B340EFA31F8CFAD1EE3A3C7E0C4967C55BC147E671B34F5FAD88B85FFB5F22B
       E27DB54B45F09F82EF07A6CBB2959AF01F67B839E48E3D19F20000000049454E
       44AE426082}
-    OnClick = imgHatch2Click
   end
   object imgPlayer3: TImage
     Left = 101
@@ -3467,7 +3464,6 @@ object F: TF
       6E755A2F3D162352A56E15BAE0187CA10F90C59DADD7D6EB4B1E2CFCD7CADD11
       EFC30E15417F06BA1F785D92ADD486BFAE0A5DE44995E21A0000000049454E44
       AE426082}
-    OnClick = imgHatch3Click
   end
   object imgPlayer4: TImage
     Left = 101
@@ -3508,7 +3504,6 @@ object F: TF
       83FAE6A3854EFE95ED76782AB9786EAD5A1F3D16274ECD57C5BF4054B60D5BAD
       F7BD58E8AF95C888B75E978A267F0DB93374737A29B5E10F142B4BE4447E3F02
       0000000049454E44AE426082}
-    OnClick = imgHatch4Click
   end
   object imgPlayer5: TImage
     Left = 117
@@ -3552,7 +3547,6 @@ object F: TF
       0303031E253A05259B73DD8A1B2F3D0623D6F45B854A7CB7612A2B2B9361787C
       7CA4E2E2621D8B3B5BB7A9D7871E2CFCD7CAA988F761C7BDC37F02BE9F789D57
       5BA989FE01CB4B45E48E633B7E0000000049454E44AE426082}
-    OnClick = imgHatch5Click
   end
   object imgMechanizm: TImage
     Left = 154

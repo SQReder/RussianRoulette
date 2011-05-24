@@ -76,7 +76,6 @@ __published: // IDE-managed Components
     TLabel* ControlLabel;
 
     void __fastcall tmrPulseAnimationTimer(TObject* Sender);
-    void __fastcall imgPlaceClick(TObject* Sender);
     void __fastcall Button1Click(TObject* Sender);
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall LoadGraphic();
@@ -88,16 +87,10 @@ __published: // IDE-managed Components
     void __fastcall PlayMusic(String path);
     void __fastcall tmrWaitingTimer(TObject* Sender);
     void __fastcall tmrMoneyTimer(TObject* Sender);
-    void __fastcall imgHatch4Click(TObject* Sender);
-    void __fastcall imgHatch5Click(TObject* Sender);
-    void __fastcall imgHatch3Click(TObject* Sender);
-    void __fastcall imgHatch1Click(TObject* Sender);
-    void __fastcall imgHatch2Click(TObject* Sender);
     void __fastcall FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift);
     void __fastcall tmrTimeTimer(TObject* Sender);
     void __fastcall tmrLogTimer(TObject* Sender);
     void __fastcall tmrWaitingFinalTimer(TObject* Sender);
-    void __fastcall imgHatch0Click(TObject* Sender);
     void __fastcall edFinalAnswerKeyPress(TObject* Sender, wchar_t& Key);
     void __fastcall btnContinueGameClick(TObject* Sender);
     void __fastcall FormClose(TObject* Sender, TCloseAction& Action);
@@ -111,6 +104,7 @@ __published: // IDE-managed Components
     void __fastcall tmrLightAnimationTimer(TObject* Sender);
     void __fastcall ControlLabelClick(TObject* Sender);
     void __fastcall FormHide(TObject *Sender);
+    void __fastcall HatchClick(TObject* Sender);
 
 private: // User declarations
     void CreateLabel(TLabel**, int, int, int, int, int, UnicodeString);
@@ -121,6 +115,7 @@ public: // User declarations
     TLabel* lblMoney[5]; // лейблы и конструктор дл€ отображени€ денег на панели игроков.
     TLabel* lblPlayer[5];
     TLabel* lblAnswers[5];
+
 
     int answer;
     int Reward;

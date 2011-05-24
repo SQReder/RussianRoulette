@@ -9,6 +9,7 @@
 #include <Forms.hpp>
 #include <ExtCtrls.hpp>
 #include <pngimage.hpp>
+#include <ComCtrls.hpp>
 
 // ---------------------------------------------------------------------------
 class TSplashForm : public TForm {
@@ -17,6 +18,7 @@ __published: // IDE-managed Components
     TImage* imgSplash;
     TTimer* tmrSplash;
     TTimer* tmrOpenSplash;
+    TProgressBar *PBLoad;
 
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall FormClick(TObject* Sender);

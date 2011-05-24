@@ -12,18 +12,12 @@
 #pragma resource "*.dfm"
 
 TMenuForm* MenuForm;
-extern void InitializeSettings();
 
 // ---------------------------------------------------------------------------
 __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::FormCreate(TObject* Sender) {
-    InitializeSettings();
-
-    MenuForm->Constraints->MinWidth = Settings->MinWidth;
-    MenuForm->Constraints->MinHeight = Settings->MinHeight;
-
     Color = clBlack;
 
     btnNewGame->Caption = "Новая Игра";
@@ -44,21 +38,17 @@ void __fastcall TMenuForm::btnNewGameClick(TObject* Sender) {
     LoadQuestionFromBase(Settings->LastBase);
 
     // сохранение текущего положения и размеров формы
-    if (!Settings->Fullscreen) {
-        Settings->FormsWidth = Width;
-        Settings->FormsHeight = Height;
-        Settings->FormsTop = Top;
-        Settings->FormsLeft = Left;
-    }
+    SaveFormPosition(MenuForm);
 
     F->Show();
-    MenuForm->Hide();
+    Hide();
 }
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnShowSettingsClick(TObject* Sender) {
     SettingsForm->ShowModal();
-    FormResize(NULL);
+
+    LoadFormPosition(MenuForm);
 }
 
 // ---------------------------------------------------------------------------
@@ -66,20 +56,14 @@ void __fastcall TMenuForm::btnAboutClick(TObject* Sender) { AboutForm->ShowModal
 // ---------------------------------------------------------------------------
 
 void __fastcall TMenuForm::FormResize(TObject* Sender) {
-    const spacer = 0;
+    static bool lock_form = false;
+    if (lock_form) {
+        return;
+    }
 
-    if (Settings->Fullscreen) {
-        BorderStyle = bsNone;
-        Width = Screen->Width;
-        Height = Screen->Height;
-        Top = 0;
-        Left = 0;
-    }
-    else {
-        BorderStyle = bsSizeable;
-        Width = Settings->FormsWidth;
-        Height = Settings->FormsHeight;
-    }
+    lock_form = true;
+    CoolPositionFix(MenuForm);
+    const spacer = 0;
 
     btnNewGame->Top = spacer;
     btnNewGame->Left = MenuForm->ClientWidth - btnNewGame->ClientWidth - spacer;
@@ -99,35 +83,15 @@ void __fastcall TMenuForm::FormResize(TObject* Sender) {
     btnAbout->Top = MenuForm->ClientHeight - btnBblNTuHaxep->ClientHeight - btnAbout->ClientHeight - spacer * 2;
     btnAbout->Left = MenuForm->ClientWidth - btnAbout->ClientWidth - spacer;
 
+    lock_form = false;
 }
 // ---------------------------------------------------------------------------
 
 void __fastcall TMenuForm::FormShow(TObject* Sender) {
-    MenuForm->Resize();
-    // SettingsForm->FileListBox1->Directory = "\Base";
-    if (Settings->Fullscreen) {
-        BorderStyle = bsNone;
-        Width = Screen->Width;
-        Height = Screen->Height;
-        Top = 0;
-        Left = 0;
-    }
-    else {
-        BorderStyle = bsSizeable;
-        Width = Settings->FormsWidth;
-        Height = Settings->FormsHeight;
-        Left = Settings->FormsLeft;
-        Top = Settings->FormsTop;
-    }
+    MenuForm->Constraints->MinWidth = Settings->MinWidth;
+    MenuForm->Constraints->MinHeight = Settings->MinHeight;
+
+    LoadFormPosition(MenuForm);
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TMenuForm::FormHide(TObject* Sender) {
-    if (!Settings->Fullscreen) {
-        Settings->FormsWidth = Width;
-        Settings->FormsHeight = Height;
-        Settings->FormsTop = Top;
-        Settings->FormsLeft = Left;
-    }
-}
-// ---------------------------------------------------------------------------
