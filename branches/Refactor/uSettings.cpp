@@ -1,9 +1,9 @@
 // ---------------------------------------------------------------------------
-#include "inifiles.hpp"
 #include <map>
 #include <vector>
 #include <vcl.h>
 #include <system.hpp>
+#include "inifiles.hpp"
 #pragma hdrstop
 
 #include "uSettings.h"
@@ -13,7 +13,7 @@ TSettings* Settings;
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TSettingsForm* SettingsForm;
-std::vector <std::pair <UnicodeString, UnicodeString> > BaseFiles;
+std::map <String, String> BaseFiles;
 
 // ---------------------------------------------------------------------------
 TSettings::TSettings() {
@@ -53,7 +53,7 @@ TSettings::TSettings(UnicodeString filename) {
     FormsWidth = ini->ReadInteger("Global", "Width", 1024);
     FormsHeight = ini->ReadInteger("Global", "Height", 1024);
     FormsLeft = ini->ReadInteger("Global", "Left", 0);
-    FormsTop= ini->ReadInteger("Global", "Top", 0);
+    FormsTop = ini->ReadInteger("Global", "Top", 0);
     SoundEnabled = ini->ReadBool("Global", "Sound", False);
     SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
     MusicEnabled = ini->ReadBool("Global", "Music", False);
@@ -108,8 +108,8 @@ void __fastcall TSettingsForm::FormShow(TObject* Sender) {
         String name = ini->ReadString("Bases", "basename" + IntToStr(i), "");
         String file = ini->ReadString("Bases", "base" + IntToStr(i), "");
         if ((name != "") && (file != "")) {
-            BaseFiles.push_back(std::make_pair(name, file));
-            cmbListOfBases->Items->Add(BaseFiles[BaseFiles.size() - 1].first);
+            BaseFiles[name] = file;
+            cmbListOfBases->Items->Add(name);
         } else {
             break;
         }
@@ -121,9 +121,13 @@ void __fastcall TSettingsForm::FormShow(TObject* Sender) {
 
     cmbListOfBases->Items->Assign(Settings->BaseNames);
 
-    for (int i = 0; i < cmbListOfBases->Items->Count; i++) {
-        if (BaseFiles[i].second == Settings->LastBase) {
-            cmbListOfBases->ItemIndex = i;
+    for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
+        if (it->second == Settings->LastBase) {
+            for (int i = 0; i < cmbListOfBases->Items->Count; ++i) {
+                if (it->first == cmbListOfBases->Items->Strings[i]) {
+                    cmbListOfBases->ItemIndex = i;
+                }
+            }
         }
     }
 
@@ -153,8 +157,8 @@ void __fastcall TSettingsForm::FormShow(TObject* Sender) {
         cbHostModeOnOff->Checked = Settings->HostMode;
         cbHostModeOnOff->Enabled = 1;
     } else {
-        cbHostModeOnOff->Checked = 0;
-        cbHostModeOnOff->Enabled = 0;
+        cbHostModeOnOff->Checked = false;
+        cbHostModeOnOff->Enabled = false;
     }
 
 }
@@ -204,9 +208,12 @@ void SaveSettings() {
 
     // SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName) + "\\base\\";
     // SettingsForm->FileListBox1->Update();
-    for (int i = 0; i < SettingsForm->cmbListOfBases->Items->Count; i++) {
-        ini->WriteString("Bases", "basename" + IntToStr(i), BaseFiles[i].first);
-        ini->WriteString("Bases", "base" + IntToStr(i), ExtractFileName(BaseFiles[i].second));
+
+    int i = 0;
+    for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
+        ini->WriteString("Bases", "basename" + IntToStr(i), it->first);
+        ini->WriteString("Bases", "base" + IntToStr(i), ExtractFileName(it->second));
+        ++i;
     }
     ini->Free();
 
@@ -234,7 +241,7 @@ void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
     Settings->Win7Features = cbWin7Features->Checked;
     Settings->HostMode = cbHostModeOnOff->Checked;
 
-    Settings->LastBase = BaseFiles[cmbListOfBases->ItemIndex].second;
+    Settings->LastBase = BaseFiles[cmbListOfBases->Items->Strings[cmbListOfBases->ItemIndex]];
 
     SaveSettings();
     SettingsForm->Hide();
@@ -269,11 +276,11 @@ void __fastcall TSettingsForm::addBaseClick(TObject* Sender) {
         if (CopyFileW(from, to, 0)) {
             String name = InputBox("Русская рулетка :: Добавить базу", "Введите имя новой базы",
                 ExtractFileName(OpenDialog1->FileName));
-            BaseFiles.push_back(std::make_pair(name, OpenDialog1->FileName));
+            BaseFiles[name] = OpenDialog1->FileName;
 
             cmbListOfBases->Clear();
-            for (unsigned int i = 0; i < BaseFiles.size(); i++) {
-                cmbListOfBases->Items->Add(BaseFiles[i].first);
+            for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
+                cmbListOfBases->Items->Add(it->first);
             }
             cmbListOfBases->ItemIndex = cmbListOfBases->Items->Count - 1;
         } else {

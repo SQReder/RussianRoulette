@@ -25,7 +25,7 @@ sGfxCache::sGfxCache() {
 
     for (int i = 1; i < 5; ++i) {
         Splash[i] = new TPicture();
-        Splash[i]->LoadFromFile("Data\\splash-" + IntToStr(1) + ".png");
+        Splash[i]->LoadFromFile("Data\\splash-" + IntToStr(i) + ".png");
     }
 
     Place = new TPicture();

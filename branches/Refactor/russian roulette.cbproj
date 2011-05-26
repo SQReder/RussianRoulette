@@ -58,6 +58,7 @@
 			<ILINK_TranslatedLibraryPath>$(BDS)\lib\$(LANGDIR)\debug;$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<BCC_AsmToObj>false</BCC_AsmToObj>
 			<TASM_Debugging>None</TASM_Debugging>
 			<DynamicRTL>false</DynamicRTL>
 			<Defines>NDEBUG;$(Defines)</Defines>
@@ -122,9 +123,9 @@
 				<DependentOn>uSettings.h</DependentOn>
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
+			<FormResources Include="MainMenu.dfm"/>
 			<FormResources Include="uSettings.dfm"/>
 			<FormResources Include="Splash.dfm"/>
-			<FormResources Include="MainMenu.dfm"/>
 			<FormResources Include="About.dfm"/>
 			<FormResources Include="MainForm.dfm"/>
 			<BuildConfiguration Include="Release">
@@ -152,7 +153,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">344</VersionInfo>
+						<VersionInfo Name="Build">346</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -164,7 +165,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule inc.</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">just for fun</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.0.344</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.0.346</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GPL v3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
@@ -194,13 +195,7 @@
 						<Source Name="MainSource">russian roulette.cpp</Source>
 					</Source>
 					<Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dcldb150.bpl">Embarcadero Database Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclmid150.bpl">Embarcadero MyBase DataAccess Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclIndyCore150.bpl">Indy 10 Core Design Time</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclIntraweb_110_150.bpl">VCL for the Web 11.0 Design Package for Embarcadero RAD Studio XE</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclwbm150.bpl">Embarcadero InternetExpress Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclnet150.bpl">Embarcadero Internet Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dcldbx150.bpl">Embarcadero dbExpress Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\bcbie150.bpl">Embarcadero C++Builder Internet Explorer Components Package</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dcltee9150.bpl">TeeChart Standard 9 Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\applet150.bpl">Embarcadero Control Panel Applet Package</Excluded_Packages>

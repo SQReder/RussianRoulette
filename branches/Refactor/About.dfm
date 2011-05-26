@@ -160,7 +160,7 @@ object AboutForm: TAboutForm
   end
   object Label11: TLabel
     Left = 189
-    Top = 200
+    Top = 198
     Width = 156
     Height = 16
     Alignment = taRightJustify
