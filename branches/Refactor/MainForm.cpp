@@ -1,4 +1,21 @@
 // ---------------------------------------------------------------------------
+//    Russian Roulette is PC version of popular television game show.
+//    Copyright (C) 2010-2011 Popovskiy Andrey
+//    Copyright (C) 2010-2011 Boytsov Sergey
+
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// ---------------------------------------------------------------------------
 
 #include <vcl.h>
 #include <stdio.h>
@@ -18,8 +35,6 @@
 #include "GfxCache.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma link "TeeFilters"
-#pragma link "SHDocVw_OCX"
 #pragma resource "*.dfm"
 
 #define _StartRotaingSpeed 50
@@ -931,20 +946,16 @@ void __fastcall TF::HatchClick(TObject* Sender) {
     CanChoose = 0;
 }
 
+// 'a' + n === VK_NUMPAD1 + n
+const char* KeyCode[6] = { "6f", "1a", "2b", "3c", "4d", "5e" };
+
 void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
+    // инвариация значения
+    answer = 255;
+
     if (Screen->MonitorCount > 1 && Key == 'H') {
         initialize_host_mode();
     }
-
-    // 'a' + n === VK_NUMPAD1 + n
-    char one[3] = "1a\0"; // VK_NUMPAD1
-    char two[3] = "2b\0"; // VK_NUMPAD2
-    char three[3] = "3c\0"; // VK_NUMPAD3
-    char four[3] = "4d\0"; // VK_NUMPAD4
-    char five[3] = "5e\0"; // VK_NUMPAD5
-    char six[3] = "6f\0"; // VK_NUMPAD6
-
-    char* num[6] = { six, one, two, three, four, five };
 
     if (Key == VK_RIGHT && Settings->HostMode == true) {
         if (RoundOfGame >= 1 && RoundOfGame <= 4) {
@@ -966,7 +977,7 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
     // выбор игрового места в финале
     if (FinalRoundOfGame > 0 && ModeOfGame == 0 && Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
         for (int i = 1; i < 6; ++i) {
-            if (strchr(num[i], Key) && imgHatch[i]->Enabled) {
+            if (strchr(KeyCode[i], Key) && imgHatch[i]->Enabled) {
                 HatchClick(imgHatch[i]);
             }
         }
@@ -974,14 +985,14 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
 
     if (ModeOfGame == 1 && Settings->PlayerType[CurrentHatch - 1] == bbHuman && CanChoose == 1) {
         for (int i = 1; i < 6; ++i) {
-            if (strchr(num[i], Key) && ingame[i - 1] == true && CurrentHatch != i) {
+            if (strchr(KeyCode[i], Key) && ingame[i - 1] == true && CurrentHatch != i) {
                 HatchClick(imgHatch[i]);
             }
         }
     }
     if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[chooseplayer - 1] == bbHuman) {
         for (int i = 1; i < 6; ++i) {
-            if (strchr(num[i], Key) && ingame[i - 1] == true && CurrentHatch != i) {
+            if (strchr(KeyCode[i], Key) && ingame[i - 1] == true && CurrentHatch != i) {
                 answer = i - 1;
             }
         }

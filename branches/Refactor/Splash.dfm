@@ -5,8 +5,8 @@ object SplashForm: TSplashForm
   AlphaBlendValue = 0
   BorderIcons = []
   BorderStyle = bsNone
-  ClientHeight = 320
-  ClientWidth = 417
+  ClientHeight = 600
+  ClientWidth = 800
   Color = clBlack
   DoubleBuffered = True
   ParentFont = True
@@ -19,11 +19,13 @@ object SplashForm: TSplashForm
   PixelsPerInch = 96
   TextHeight = 13
   object imgSplash: TImage
-    Left = -368
-    Top = 32
-    Width = 1280
-    Height = 205
+    Left = 0
+    Top = 0
+    Width = 800
+    Height = 592
+    Align = alClient
     AutoSize = True
+    Center = True
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D49484452000005000000
       00CD0806000000E7AADD3A0000001974455874536F6674776172650041646F62
@@ -1026,14 +1028,25 @@ object SplashForm: TSplashForm
       FB9AFF54A2C74BF57590D754BFDFFA6F81DE032E5DF833BDE61FAFF9587FEDF3
       9A0400100002000060745A6DF745D91C62FCD58D3F48F92A45000080A5F37F17
       3EC1F7BEEBD1090000000049454E44AE426082}
-    OnClick = imgSplashClick
+    ExplicitLeft = -280
+    ExplicitTop = 176
+    ExplicitWidth = 1280
+    ExplicitHeight = 205
   end
   object PBLoad: TProgressBar
     Left = 0
-    Top = 311
-    Width = 417
-    Height = 9
+    Top = 592
+    Width = 800
+    Height = 8
     Align = alBottom
+    BorderWidth = 1
+    DoubleBuffered = False
+    Max = 133
+    ParentDoubleBuffered = False
+    Smooth = True
+    MarqueeInterval = 1
+    Step = 1
+    State = pbsError
     TabOrder = 0
   end
   object tmrSplash: TTimer

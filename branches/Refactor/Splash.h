@@ -23,7 +23,6 @@ __published: // IDE-managed Components
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall FormClick(TObject* Sender);
     void __fastcall tmrSplashTimer(TObject* Sender);
-    void __fastcall imgSplashClick(TObject* Sender);
     void __fastcall tmrOpenSplashTimer(TObject* Sender);
 
 public: // User declarations

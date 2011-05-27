@@ -1,5 +1,21 @@
 ﻿// ---------------------------------------------------------------------------
+//    Russian Roulette is PC version of popular television game show.
+//    Copyright (C) 2010-2011 Popovskiy Andrey
+//    Copyright (C) 2010-2011 Boytsov Sergey
 
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// ---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
 
@@ -21,9 +37,16 @@ bool FatalError = false;
 TStringList* nonExisten;
 
 __fastcall TSplashForm::TSplashForm(TComponent* Owner) : TForm(Owner) { }
+
 // ---------------------------------------------------------------------------
+inline void UpdPB() {
+    SplashForm->PBLoad->Position = SplashForm->PBLoad->Position + 1;
+    SplashForm->PBLoad->Update();
+    SplashForm->Update();
+}
 
 void CheckFile(UnicodeString filename) {
+    UpdPB();
     if (!FileExists(filename)) {
         nonExisten->Add(filename);
     }
@@ -97,23 +120,17 @@ void CheckSystemIntegrity() {
 }
 
 // ---------------------------------------------------------------------------
-inline void UpdPB() {
-    SplashForm->PBLoad->Position = SplashForm->PBLoad->Position + 1;
-    SplashForm->Update();
-}
-
 void Loader() {
-    SplashForm->PBLoad->Max = 3;
+    SplashForm->PBLoad->Max = 133;
 
-    CheckSystemIntegrity();
+    Settings = new TSettings(ExtractFilePath(Application->ExeName) + "settings.cfg");
     UpdPB();
-    Settings = new TSettings(ExtractFilePath(Application->ExeName) + "\settings.cfg");
+    CheckSystemIntegrity();
     UpdPB();
     gfx = new sGfxCache;
     UpdPB();
 
-    SplashForm->PBLoad->Visible = false;
-    SplashForm->tmrSplash->Enabled = True;
+    SplashForm->tmrSplash->Enabled = true;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,11 +139,9 @@ void Loader() {
 
 BOOL OSIsWin7() {
     OSVERSIONINFOEX osvi;
-    BOOL bOsVersionInfoEx;
 
     // Пытаемся вызвать GetVersionEx используя структуру OSVERSIONINFOEX.
     // В случае ошибки пытаемся проделать тоже самое со структурой OSVERSIONINFO.
-
     ZeroMemory(& osvi, sizeof(OSVERSIONINFOEX));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
@@ -138,29 +153,17 @@ BOOL OSIsWin7() {
         }
     }
 
-    // ShowMessage(IntToStr((int)osvi.dwMajorVersion));
-    if (osvi.dwMajorVersion >= 6) {
-        return true;
-    }
-
-    return false;
+    return osvi.dwMajorVersion >= 6;
 }
 
 // ---------------------------------------------------------------------------
 void __fastcall TSplashForm::FormCreate(TObject* Sender) {
-    Width = 800;
-    Height = 600;
-
     if (OSIsWin7()) {
         BorderStyle = bsToolWindow;
-        imgSplash->Top -= 25;
     } else {
         BorderStyle = bsNone;
         Color = clBlack;
     };
-
-    imgSplash->Top = (SplashForm->Height - imgSplash->Height) / 2;
-    imgSplash->Left = (SplashForm->Width - imgSplash->Width) / 2;
 }
 
 // ---------------------------------------------------------------------------
@@ -179,9 +182,6 @@ void __fastcall TSplashForm::tmrSplashTimer(TObject* Sender) {
         SplashForm->Click();
     }
 }
-
-// ---------------------------------------------------------------------------
-void __fastcall TSplashForm::imgSplashClick(TObject* Sender) { SplashForm->Click(); }
 
 // ---------------------------------------------------------------------------
 void __fastcall TSplashForm::tmrOpenSplashTimer(TObject* Sender) {
