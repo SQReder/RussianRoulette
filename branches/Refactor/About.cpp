@@ -1,20 +1,20 @@
 // ---------------------------------------------------------------------------
-//    Russian Roulette is PC version of popular television game show.
-//    Copyright (C) 2010-2011 Popovskiy Andrey
-//    Copyright (C) 2010-2011 Boytsov Sergey
+// Russian Roulette is PC version of popular television game show.
+// Copyright (C) 2010-2011 Popovskiy Andrey
+// Copyright (C) 2010-2011 Boytsov Sergey
 
-//    This program is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-//    This program is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-//    You should have received a copy of the GNU General Public License
-//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
 #include <vector>
 #include <vcl.h>
@@ -58,22 +58,19 @@ TLabel* new_label(String caption, int top, align al, bool bold = false) {
 }
 
 const char* licence =
-"Russian Roulette это PC версия популярного телешоу.\nCopyright (C) 2010-2011 Popovskiy Andrey\n"
-"Copyright (C) 2010-2011 Boytsov Sergey\n\nЭто свободная программа; вы можете повторно рас-\n"
-"пространять её и/или модифицировать её в соответ-\nствии с Стандартной Общественной Лицензий GNU,\n"
-"опубликованной Фондом Свободного ПО; либо вер-\nсии 3, либо (по вашему выбору) любой более позд-\n"
-"ней версии.\n\n"
-"Эта программа распространяется в надежде, что\n"
-"она будет полезной, но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ;\nдаже без подразумеваемых гарантий КОММЕРЧЕ-\n"
-"СКОЙ ЦЕННОСТИ или ПРИГОДНОСТИ ДЛЯ\nКОНКРЕТНОЙ ЦЕЛИ. Для получения подробных\n"
-"сведений смотрите Стандартную Общественную\nЛицензию GNU.\n\n"
-"Вы должны были получить копию Стандартной Об-\nщественной Лицензии GNU вместе с этой програм-\n"
-"мой; если нет,смотрите\n"
-"                            http://www.gnu.org/licenses/";
-
+    "Russian Roulette это PC версия популярного телешоу.\nCopyright (C) 2010-2011 Popovskiy Andrey\n"
+    "Copyright (C) 2010-2011 Boytsov Sergey\n\nЭто свободная программа; вы можете повторно рас-\n"
+    "пространять её и/или модифицировать её в соответ-\nствии с Стандартной Общественной Лицензий GNU,\n"
+    "опубликованной Фондом Свободного ПО; либо вер-\nсии 3, либо (по вашему выбору) любой более позд-\n"
+    "ней версии.\n\n" "Эта программа распространяется в надежде, что\n"
+    "она будет полезной, но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ;\nдаже без подразумеваемых гарантий КОММЕРЧЕ-\n"
+    "СКОЙ ЦЕННОСТИ или ПРИГОДНОСТИ ДЛЯ\nКОНКРЕТНОЙ ЦЕЛИ. Для получения подробных\n"
+    "сведений смотрите Стандартную Общественную\nЛицензию GNU.\n\n"
+    "Вы должны были получить копию Стандартной Об-\nщественной Лицензии GNU вместе с этой програм-\n"
+    "мой; если нет,смотрите\n" "                            http://www.gnu.org/licenses/";
 
 // Peolpe who works with project
-String sversion = "1.2a";
+String sversion = "1.0.2.3a";
 
 #define dev_count 2
 const char* sdevelopers[dev_count] = {
@@ -146,6 +143,7 @@ void __fastcall TAboutForm::FormCreate(TObject* Sender) {
 
     mLicence = new_label(licence, 0, r);
     mLicence->Align = alClient;
+    mLicence->AlignWithMargins = true;
     mLicence->Visible = false;
     mLicence->BringToFront();
 }
@@ -172,4 +170,16 @@ void __fastcall TAboutForm::lblLicenceClick(TObject* Sender) {
     }
 
 }
+
+// ---------------------------------------------------------------------------
+void __fastcall TAboutForm::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
+    if (Shift.Empty()) {
+        if (Key == 32) {
+            lblLicenceClick(NULL);
+        } else if (Key == 27) {
+            AboutForm->Close();
+        }
+    }
+}
+
 // ---------------------------------------------------------------------------

@@ -22,7 +22,7 @@ object SplashForm: TSplashForm
     Left = 0
     Top = 0
     Width = 800
-    Height = 592
+    Height = 573
     Align = alClient
     AutoSize = True
     Center = True
@@ -1028,10 +1028,21 @@ object SplashForm: TSplashForm
       FB9AFF54A2C74BF57590D754BFDFFA6F81DE032E5DF833BDE61FAFF9587FEDF3
       9A0400100002000060745A6DF745D91C62FCD58D3F48F92A45000080A5F37F17
       3EC1F7BEEBD1090000000049454E44AE426082}
-    ExplicitLeft = -280
-    ExplicitTop = 176
     ExplicitWidth = 1280
     ExplicitHeight = 205
+  end
+  object lblLoadState: TLabel
+    AlignWithMargins = True
+    Left = 3
+    Top = 576
+    Width = 794
+    Height = 13
+    Align = alBottom
+    Alignment = taRightJustify
+    Caption = 'lblLoadState'
+    ExplicitLeft = 384
+    ExplicitTop = 296
+    ExplicitWidth = 59
   end
   object PBLoad: TProgressBar
     Left = 0
@@ -1043,7 +1054,6 @@ object SplashForm: TSplashForm
     DoubleBuffered = False
     Max = 133
     ParentDoubleBuffered = False
-    Smooth = True
     MarqueeInterval = 1
     Step = 1
     State = pbsError

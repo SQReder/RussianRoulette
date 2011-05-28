@@ -18,6 +18,7 @@ __published: // IDE-managed Components
     TLabel *Label1;
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall lblLicenceClick(TObject *Sender);
+    void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 
 public: // User declarations
     __fastcall TAboutForm(TComponent* Owner);

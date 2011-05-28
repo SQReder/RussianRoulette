@@ -23,12 +23,13 @@ __published: // IDE-managed Components
 
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall FormClose(TObject* Sender, TCloseAction& Action);
-    void __fastcall _btnBblNTuHaxepClick(TObject* Sender);
+    void __fastcall btnBblNTuHaxepClick(TObject* Sender);
     void __fastcall btnNewGameClick(TObject* Sender);
     void __fastcall btnShowSettingsClick(TObject* Sender);
     void __fastcall btnAboutClick(TObject* Sender);
     void __fastcall FormResize(TObject* Sender);
     void __fastcall FormShow(TObject *Sender);
+    void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 
 public: // User declarations
     __fastcall TMenuForm(TComponent* Owner);

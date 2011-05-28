@@ -3,7 +3,7 @@
 			<ProjectGuid>{F4C714DE-4D39-48F1-AEA0-EE53EB016C79}</ProjectGuid>
 			<ProjectVersion>12.3</ProjectVersion>
 			<MainSource>russian roulette.cpp</MainSource>
-			<Config Condition="'$(Config)'==''">Debug</Config>
+			<Config Condition="'$(Config)'==''">Release</Config>
 			<Base>True</Base>
 			<Platform>Win32</Platform>
 			<AppType>Application</AppType>
@@ -152,8 +152,8 @@
 						<VersionInfo Name="AutoIncBuild">True</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
-						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">351</VersionInfo>
+						<VersionInfo Name="Release">2</VersionInfo>
+						<VersionInfo Name="Build">359</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -165,7 +165,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule inc.</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">just for fun</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.0.351</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.2.359</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GPL v3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

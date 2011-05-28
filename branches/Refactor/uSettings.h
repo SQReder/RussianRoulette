@@ -49,7 +49,7 @@ __published: // IDE-managed Components
     TLabeledEdit* edPlayer3;
     TLabeledEdit* edPlayer4;
     TButton* btnOK;
-    TPanel* Panel1;
+    TPanel *pButtons;
     TCheckBox* cbFullscreen;
     TCheckBox* cbWin7Features;
     TComboBox* cmbListOfBases;
@@ -90,5 +90,6 @@ extern PACKAGE TSettingsForm* SettingsForm;
 void LoadFormPosition(TForm* form);
 void SaveFormPosition(TForm* form);
 void CoolPositionFix(TForm* form);
+void SwitchFullscreen(TForm* form);
 // ---------------------------------------------------------------------------
 #endif

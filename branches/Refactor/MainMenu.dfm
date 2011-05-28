@@ -3,7 +3,7 @@ object MenuForm: TMenuForm
   Top = 0
   Caption = #1056#1091#1089#1089#1082#1072#1103' '#1056#1091#1083#1077#1090#1082#1072': '#1043#1083#1072#1074#1085#1086#1077' '#1084#1077#1085#1102
   ClientHeight = 318
-  ClientWidth = 426
+  ClientWidth = 394
   Color = clBlack
   DoubleBuffered = True
   Font.Charset = RUSSIAN_CHARSET
@@ -11,10 +11,12 @@ object MenuForm: TMenuForm
   Font.Height = -48
   Font.Name = 'FrizQuadrataCTT'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -45011,6 +45013,6 @@ object MenuForm: TMenuForm
     AutoSize = False
     Caption = 'btnBblNTuHaxep'
     GlowSize = 20
-    OnClick = _btnBblNTuHaxepClick
+    OnClick = btnBblNTuHaxepClick
   end
 end

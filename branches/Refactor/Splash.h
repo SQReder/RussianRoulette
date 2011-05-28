@@ -19,6 +19,7 @@ __published: // IDE-managed Components
     TTimer* tmrSplash;
     TTimer* tmrOpenSplash;
     TProgressBar *PBLoad;
+    TLabel *lblLoadState;
 
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall FormClick(TObject* Sender);

@@ -5,7 +5,7 @@ object AboutForm: TAboutForm
   BorderStyle = bsToolWindow
   Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
   ClientHeight = 473
-  ClientWidth = 367
+  ClientWidth = 378
   Color = clBlack
   DoubleBuffered = True
   Font.Charset = RUSSIAN_CHARSET
@@ -14,16 +14,18 @@ object AboutForm: TAboutForm
   Font.Name = 'FrizQuadrataCTT'
   Font.Style = []
   GlassFrame.SheetOfGlass = True
+  KeyPreview = True
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poOwnerFormCenter
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 38
   object lblProjTitle: TLabel
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 361
+    Width = 372
     Height = 41
     Align = alTop
     Alignment = taCenter
@@ -45,7 +47,7 @@ object AboutForm: TAboutForm
     AlignWithMargins = True
     Left = 3
     Top = 422
-    Width = 361
+    Width = 372
     Height = 16
     Margins.Top = 0
     Margins.Bottom = 0
@@ -59,15 +61,14 @@ object AboutForm: TAboutForm
     Font.Style = []
     ParentFont = False
     OnClick = lblLicenceClick
-    ExplicitLeft = -2
-    ExplicitTop = 403
-    ExplicitWidth = 356
+    ExplicitLeft = 24
+    ExplicitWidth = 340
   end
   object Label22: TLabel
     AlignWithMargins = True
     Left = 3
     Top = 454
-    Width = 361
+    Width = 372
     Height = 16
     Margins.Top = 0
     Align = alBottom
@@ -79,15 +80,14 @@ object AboutForm: TAboutForm
     Font.Name = 'Verdana'
     Font.Style = []
     ParentFont = False
-    ExplicitLeft = 69
-    ExplicitTop = 376
+    ExplicitLeft = 185
     ExplicitWidth = 179
   end
   object Label1: TLabel
     AlignWithMargins = True
     Left = 3
     Top = 438
-    Width = 361
+    Width = 372
     Height = 16
     Margins.Top = 0
     Margins.Bottom = 0
@@ -100,8 +100,7 @@ object AboutForm: TAboutForm
     Font.Name = 'Verdana'
     Font.Style = []
     ParentFont = False
-    ExplicitLeft = 88
-    ExplicitTop = 427
+    ExplicitLeft = 90
     ExplicitWidth = 274
   end
 end

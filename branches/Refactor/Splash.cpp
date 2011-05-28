@@ -119,17 +119,25 @@ void CheckSystemIntegrity() {
     nonExisten->Free();
 }
 
+void ShowState(String state) {
+    SplashForm->lblLoadState->Caption = state;
+}
 // ---------------------------------------------------------------------------
 void Loader() {
     SplashForm->PBLoad->Max = 133;
 
+    ShowState("Load settings...");
     Settings = new TSettings(ExtractFilePath(Application->ExeName) + "settings.cfg");
     UpdPB();
+    ShowState("Checking system integrity...");
     CheckSystemIntegrity();
     UpdPB();
+    ShowState("Load graphics...");
     gfx = new sGfxCache;
     UpdPB();
+    ShowState("Load complete");
 
+    Sleep(10);
     SplashForm->tmrSplash->Enabled = true;
 }
 
@@ -163,6 +171,7 @@ void __fastcall TSplashForm::FormCreate(TObject* Sender) {
     } else {
         BorderStyle = bsNone;
         Color = clBlack;
+        lblLoadState->Font->Color = clWhite;
     };
 }
 
@@ -192,3 +201,5 @@ void __fastcall TSplashForm::tmrOpenSplashTimer(TObject* Sender) {
     }
 }
 // ---------------------------------------------------------------------------
+
+
