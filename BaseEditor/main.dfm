@@ -258,7 +258,6 @@ object f: Tf
     WantReturns = False
     OnEnter = FieldEnter
     OnExit = FieldExit
-    ExplicitLeft = 8
   end
   object Button1: TButton
     Left = 8
