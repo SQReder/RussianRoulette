@@ -11,7 +11,8 @@ WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
     try {
         Application->Initialize();
         Application->MainFormOnTaskBar = true;
-        Application->CreateForm(__classid(Tf), & f);
+        Application->Title = "Base editor for Russian Roulette";
+         Application->CreateForm(__classid(Tf), & f);
         Application->Run();
     }
     catch (Exception& exception) {

@@ -24,7 +24,7 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<OutputExt>exe</OutputExt>
-			<PackageImports>rtl.bpi;vclimg.bpi;vcl.bpi;vclx.bpi;vcldb.bpi;dbrtl.bpi;xmlrtl.bpi;vclactnband.bpi;dsnap.bpi;IndyCore.bpi;IndySystem.bpi;vclie.bpi;webdsnap.bpi;inet.bpi;IndyProtocols.bpi;inetdbbde.bpi;inetdbxpress.bpi;dbexpress.bpi;DbxCommonDriver.bpi;dbxcds.bpi;bcbsmp.bpi;VclSmp.bpi;svnui.bpi;svn.bpi</PackageImports>
+			<PackageImports>rtl.bpi;vclimg.bpi;vcl.bpi;vclx.bpi;xmlrtl.bpi;vclactnband.bpi;VclSmp.bpi;svnui.bpi;svn.bpi</PackageImports>
 			<Multithreaded>true</Multithreaded>
 			<LinkPackageImports>rtl.bpi;vcl.bpi;vclx.bpi;VclSmp.bpi</LinkPackageImports>
 			<_TCHARMapping>wchar_t</_TCHARMapping>
@@ -32,8 +32,6 @@
 			<ProjectType>CppVCLApplication</ProjectType>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE</DCC_UnitAlias>
-			<DynamicRTL>true</DynamicRTL>
-			<UsePackages>true</UsePackages>
 			<IntermediateOutputDir>.\$(Config)\$(Platform)</IntermediateOutputDir>
 			<FinalOutputDir>.\$(Config)\$(Platform)</FinalOutputDir>
 			<BCC_wpar>false</BCC_wpar>
@@ -45,7 +43,6 @@
 			<BCC_wntn>true</BCC_wntn>
 			<BCC_wdef>true</BCC_wdef>
 			<BCC_wstu>true</BCC_wstu>
-			<BCC_wsig>true</BCC_wsig>
 			<ILINK_wdpl>true</ILINK_wdpl>
 			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
 			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
@@ -79,6 +76,9 @@
 			<ResFiles Include="BaseEditor.res">
 				<BuildOrder>1</BuildOrder>
 			</ResFiles>
+			<CppCompile Include="crc32.cpp">
+				<BuildOrder>6</BuildOrder>
+			</CppCompile>
 			<CppCompile Include="main.cpp">
 				<Form>f</Form>
 				<DependentOn>main.h</DependentOn>
@@ -113,14 +113,14 @@
 						<Source Name="MainSource">BaseEditor.cpp</Source>
 					</Source>
 					<VersionInfo>
-						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
-						<VersionInfo Name="MajorVer">1</VersionInfo>
-						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="MajorVer">0</VersionInfo>
+						<VersionInfo Name="MinorVer">1</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">0</VersionInfo>
-						<VersionInfo Name="Debug">False</VersionInfo>
-						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Build">22</VersionInfo>
+						<VersionInfo Name="Debug">True</VersionInfo>
+						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
 						<VersionInfo Name="Private">False</VersionInfo>
 						<VersionInfo Name="DLL">False</VersionInfo>
@@ -128,11 +128,11 @@
 						<VersionInfo Name="CodePage">1251</VersionInfo>
 					</VersionInfo>
 					<VersionInfoKeys>
-						<VersionInfoKeys Name="CompanyName"/>
-						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName">QWERule studios</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">Questions sase editor for Russian Roulette</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">0.1.0.22</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
-						<VersionInfoKeys Name="LegalCopyright"/>
+						<VersionInfoKeys Name="LegalCopyright">GNU GPLv3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename"/>
 						<VersionInfoKeys Name="ProductName"/>
@@ -144,6 +144,45 @@
 						<ProjectProperties Name="ManagePaths">True</ProjectProperties>
 						<ProjectProperties Name="VerifyPackages">True</ProjectProperties>
 					</ProjectProperties>
+					<Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcldb150.bpl">Embarcadero Database Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclmid150.bpl">Embarcadero MyBase DataAccess Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclIndyCore150.bpl">Indy 10 Core Design Time</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclwbm150.bpl">Embarcadero InternetExpress Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclnet150.bpl">Embarcadero Internet Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcldbx150.bpl">Embarcadero dbExpress Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclbcbsmp150.bpl">Embarcadero Sample Controls Design Time Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclIntraweb_110_150.bpl">VCL for the Web 11.0 Design Package for Embarcadero RAD Studio XE</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\bcbie150.bpl">Embarcadero C++Builder Internet Explorer Components Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcltee9150.bpl">TeeChart Standard 9 Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\applet150.bpl">Embarcadero Control Panel Applet Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcl31w150.bpl">Delphi 1.0 Compatibility Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclact150.bpl">Embarcadero ActionBar Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclbde150.bpl">Embarcadero BDE DB Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclemacsedit150.bpl">Embarcadero Editor Emacs Enhancements</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclmlwiz150.bpl">Embarcadero Markup Language Wizards</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclsmpedit150.bpl">Embarcadero Editor Script Enhancements</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcltouch150.bpl">Embarcadero Touch Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclmcn150.bpl">Embarcadero DataSnap Connection Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclado150.bpl">Embarcadero ADO DB Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclIndyProtocols150.bpl">Indy 10 Protocols Design Time</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclie150.bpl">Internet Explorer Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclwebsnap150.bpl">Embarcadero WebSnap Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclsoap150.bpl">Embarcadero SOAP Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapIndy10ServerTransport150.bpl">Embarcadero DBExpress DataSnap Server Transport Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapProviderClient150.bpl">Embarcadero DBExpress DataSnap Provider Client Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapClient150.bpl">Embarcadero DBExpress DataSnap Client Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapServer150.bpl">Embarcadero DBExpress DataSnap Server Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclWindowsAzureManagement150.bpl">Embarcadero Windows Azure management components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDeployCloud150.bpl">Embarcadero Deploy to the Cloud</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDBXDrivers150.bpl">Embarcadero Driver Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDBXDriversEnt150.bpl">Embarcadero Enterprise Driver Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcldbxcds150.bpl">Embarcadero SimpleDataset Component (DBX)</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\bcboffice2k150.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\bcbofficexp150.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcloffice2k150.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclofficexp150.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+					</Excluded_Packages>
 				</CPlusPlusBuilder.Personality>
 				<Platforms>
 					<Platform value="Win32">True</Platform>

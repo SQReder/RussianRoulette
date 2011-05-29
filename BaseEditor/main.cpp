@@ -289,7 +289,10 @@ void __fastcall Tf::mmNewBaseClick(TObject* Sender) {
 void __fastcall Tf::mmSaveBaseClick(TObject* Sender) { base->save(L"base.rrb"); }
 
 // ---------------------------------------------------------------------------
-void __fastcall Tf::mmOpenBaseClick(TObject* Sender) { base->load(L"base.rrb"); }
+void __fastcall Tf::mmOpenBaseClick(TObject* Sender) {
+    base->load(L"base.rrb");
+    lstQuestions->Items->Assign(base->GetQuestionsList());
+}
 
 // ---------------------------------------------------------------------------
 void __fastcall Tf::Button1Click(TObject* Sender) {
