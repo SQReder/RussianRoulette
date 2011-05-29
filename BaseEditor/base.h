@@ -6,24 +6,24 @@
 // ---------------------------------------------------------------------------
 class sBase {
 public:
-	sBase();
-	~sBase();
+    sBase();
+    ~sBase();
 
-	void add(sQuestion* question);
-	void drop(sQuestion* question);
-	void replace(sQuestion* question);
+    void add(sQuestion* question);
+    void drop(sQuestion* question);
+    void replace(sQuestion* question);
 
-	sQuestion* GetQuestionPointer(unsigned index) const;
-	const TStrings* GetQuestionsList() const ;
+    sQuestion* GetQuestionPointer(unsigned index) const ;
+    const TStrings* GetQuestionsList() const ;
 
-	const sQuestion* GetRandomQuestion() const ;
+    const sQuestion* GetRandomQuestion() const ;
 
-	void save(UnicodeString filename);
-	void load(UnicodeString filename);
+    void save(UnicodeString filename);
+    void load(UnicodeString filename);
 
 private:
-	std::list <sQuestion *> questions;
-	std::list <bool> question_is_used;
+    std::list <sQuestion *> questions;
+    std::list <bool> question_is_used;
 };
 // ---------------------------------------------------------------------------
 #endif

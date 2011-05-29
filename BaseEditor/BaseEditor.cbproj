@@ -88,9 +88,7 @@
 				<DependentOn>question.h</DependentOn>
 				<BuildOrder>4</BuildOrder>
 			</CppCompile>
-			<None Include="sQuestionSpec.txt">
-				<ModuleName>New1</ModuleName>
-			</None>
+			<None Include="sQuestionSpec.txt"/>
 			<FormResources Include="main.dfm"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
@@ -150,6 +148,7 @@
 				<Platforms>
 					<Platform value="Win32">True</Platform>
 				</Platforms>
+				<ModelSupport>False</ModelSupport>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>

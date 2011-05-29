@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------
+s// ---------------------------------------------------------------------------
 //    Russian Roulette is PC version of popular television game show.
 //    Copyright (C) 2010-2011 Popovskiy Andrey
 //    Copyright (C) 2010-2011 Boytsov Sergey

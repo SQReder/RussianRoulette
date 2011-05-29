@@ -1040,8 +1040,7 @@ object SplashForm: TSplashForm
     Align = alBottom
     Alignment = taRightJustify
     Caption = 'lblLoadState'
-    ExplicitLeft = 384
-    ExplicitTop = 296
+    ExplicitLeft = 738
     ExplicitWidth = 59
   end
   object PBLoad: TProgressBar

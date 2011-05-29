@@ -73,15 +73,14 @@ object f: Tf
       Width = 505
       Height = 49
       Margins.Right = 0
-      TabStop = False
       Align = alClient
       Lines.Strings = (
         'Some question')
       MaxLength = 255
       TabOrder = 2
       WantReturns = False
-      OnEnter = mQuestionEnter
-      OnExit = mQuestionExit
+      OnEnter = FieldEnter
+      OnExit = FieldExit
     end
     object SpinRound: TSpinButton
       AlignWithMargins = True
@@ -150,22 +149,6 @@ object f: Tf
       Margins.Right = 0
       Align = alTop
       TabOrder = 1
-      object edAnswer: TEdit
-        AlignWithMargins = True
-        Left = 4
-        Top = 4
-        Width = 254
-        Height = 24
-        Margins.Right = 0
-        Align = alClient
-        MaxLength = 40
-        TabOrder = 0
-        Text = 'Integer vulputate, lacus vel massa nunc.'
-        OnEnter = edAnswerEnter
-        OnExit = edAnswerExit
-        OnKeyDown = edAnswerKeyDown
-        ExplicitHeight = 21
-      end
       object btnAddAnswer: TButton
         AlignWithMargins = True
         Left = 258
@@ -176,8 +159,23 @@ object f: Tf
         Margins.Left = 0
         Align = alRight
         Caption = 'v'
-        TabOrder = 1
+        TabOrder = 0
         OnClick = btnAddAnswerClick
+      end
+      object mAnswer: TMemo
+        AlignWithMargins = True
+        Left = 4
+        Top = 4
+        Width = 251
+        Height = 24
+        Align = alClient
+        Lines.Strings = (
+          'mAnswer')
+        TabOrder = 1
+        WantReturns = False
+        OnEnter = FieldEnter
+        OnExit = FieldExit
+        OnKeyDown = mAnswerKeyDown
       end
     end
   end
@@ -206,21 +204,6 @@ object f: Tf
       Height = 32
       Align = alTop
       TabOrder = 1
-      object edSearch: TEdit
-        AlignWithMargins = True
-        Left = 4
-        Top = 4
-        Width = 280
-        Height = 24
-        Margins.Right = 0
-        Align = alClient
-        TabOrder = 0
-        Text = 'edSearch'
-        OnChange = edSearchChange
-        OnEnter = edSearchEnter
-        OnExit = edSearchExit
-        ExplicitHeight = 21
-      end
       object btnClearSearchField: TButton
         AlignWithMargins = True
         Left = 284
@@ -230,8 +213,23 @@ object f: Tf
         Margins.Left = 0
         Align = alRight
         Caption = 'Clear'
-        TabOrder = 1
+        TabOrder = 0
         OnClick = btnClearSearchFieldClick
+      end
+      object mSearch: TMemo
+        AlignWithMargins = True
+        Left = 4
+        Top = 4
+        Width = 277
+        Height = 24
+        Align = alClient
+        Lines.Strings = (
+          'mSearch')
+        TabOrder = 1
+        WantReturns = False
+        OnChange = edSearchChange
+        OnEnter = FieldEnter
+        OnExit = FieldExit
       end
     end
   end
@@ -257,8 +255,10 @@ object f: Tf
     Align = alBottom
     MaxLength = 255
     TabOrder = 4
-    OnEnter = mCommentEnter
-    OnExit = mCommentExit
+    WantReturns = False
+    OnEnter = FieldEnter
+    OnExit = FieldExit
+    ExplicitLeft = 8
   end
   object Button1: TButton
     Left = 8

@@ -3,7 +3,7 @@
 			<ProjectGuid>{F4C714DE-4D39-48F1-AEA0-EE53EB016C79}</ProjectGuid>
 			<ProjectVersion>12.3</ProjectVersion>
 			<MainSource>russian roulette.cpp</MainSource>
-			<Config Condition="'$(Config)'==''">Release</Config>
+			<Config Condition="'$(Config)'==''">Debug</Config>
 			<Base>True</Base>
 			<Platform>Win32</Platform>
 			<AppType>Application</AppType>
@@ -153,7 +153,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">2</VersionInfo>
-						<VersionInfo Name="Build">359</VersionInfo>
+						<VersionInfo Name="Build">362</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -163,16 +163,16 @@
 						<VersionInfo Name="CodePage">1251</VersionInfo>
 					</VersionInfo>
 					<VersionInfoKeys>
-						<VersionInfoKeys Name="CompanyName">QWERule inc.</VersionInfoKeys>
-						<VersionInfoKeys Name="FileDescription">just for fun</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.2.359</VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName">QWERule studios</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">It&apos;s PC realisation of TV gameshow</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.2.362</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
-						<VersionInfoKeys Name="LegalCopyright">GPL v3</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">GNU GPLv3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
-						<VersionInfoKeys Name="OriginalFilename"/>
+						<VersionInfoKeys Name="OriginalFilename">russian roulette.exe</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName"/>
 						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-						<VersionInfoKeys Name="Comments">-=[YZ]=-</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments">Have fun!</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Debugging>
 						<Debugging Name="DebugSourceDirs"/>

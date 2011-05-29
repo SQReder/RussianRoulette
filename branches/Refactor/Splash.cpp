@@ -1,4 +1,4 @@
-п»ї// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 //    Russian Roulette is PC version of popular television game show.
 //    Copyright (C) 2010-2011 Popovskiy Andrey
 //    Copyright (C) 2010-2011 Boytsov Sergey
@@ -62,7 +62,7 @@ void CheckSystemIntegrity() {
     }
 
     for (int i = 0; i < 16; i++) {
-        CheckFile("data\\СЂС‹С‡Р°Рі_" + IntToStr(i) + ".png");
+        CheckFile("data\\рычаг_" + IntToStr(i) + ".png");
     }
 
     for (int i = 1; i < 57; i++) {
@@ -111,7 +111,8 @@ void CheckSystemIntegrity() {
         FatalError = true;
         nonExisten->SaveToFile("nonExistent.txt");
         MessageDlg(
-            "Р•Р“Р“РћР“! РќРµРєРѕС‚РѕСЂС‹С… С„Р°Р№Р»РѕРІ, РЅРµРѕР±С…РѕРґРёРјС‹С… РґР»СЏ Р·Р°РїСѓСЃРєР° РёРіСЂС‹, РЅРµС‚ РЅР° СЃРІРѕРёС… РјРµСЃС‚Р°С…. РџРѕРґСЂРѕР±РЅРѕСЃС‚Рё РІ С„Р°Р№Р»Рµ nonExistent.txt",
+            "ЕГГОГ! Некоторых файлов, необходимых для запуска игры, нет на своих местах.\n"
+            "Подробности в файле nonExistent.txt",
             mtError, TMsgDlgButtons() << mbOK, 0);
         std::exit(1);
     }
@@ -136,8 +137,6 @@ void Loader() {
     gfx = new sGfxCache;
     UpdPB();
     ShowState("Load complete");
-
-    Sleep(10);
     SplashForm->tmrSplash->Enabled = true;
 }
 
@@ -148,13 +147,13 @@ void Loader() {
 BOOL OSIsWin7() {
     OSVERSIONINFOEX osvi;
 
-    // РџС‹С‚Р°РµРјСЃСЏ РІС‹Р·РІР°С‚СЊ GetVersionEx РёСЃРїРѕР»СЊР·СѓСЏ СЃС‚СЂСѓРєС‚СѓСЂСѓ OSVERSIONINFOEX.
-    // Р’ СЃР»СѓС‡Р°Рµ РѕС€РёР±РєРё РїС‹С‚Р°РµРјСЃСЏ РїСЂРѕРґРµР»Р°С‚СЊ С‚РѕР¶Рµ СЃР°РјРѕРµ СЃРѕ СЃС‚СЂСѓРєС‚СѓСЂРѕР№ OSVERSIONINFO.
+    // Пытаемся вызвать GetVersionEx используя структуру OSVERSIONINFOEX.
+    // В случае ошибки пытаемся проделать тоже самое со структурой OSVERSIONINFO.
     ZeroMemory(& osvi, sizeof(OSVERSIONINFOEX));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
     if (!GetVersionEx((OSVERSIONINFO *) &osvi)) {
-        // Р•СЃР»Рё OSVERSIONINFOEX РЅРµ СЂР°Р±РѕС‚Р°РµС‚, С‚Рѕ РёСЃРїРѕР»СЊР·СѓРµРј OSVERSIONINFO.
+        // Если OSVERSIONINFOEX не работает, то используем OSVERSIONINFO.
         osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
         if (!GetVersionEx((OSVERSIONINFO *) &osvi)) {
             return FALSE;
