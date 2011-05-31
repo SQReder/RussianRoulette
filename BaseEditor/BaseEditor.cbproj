@@ -23,10 +23,10 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<LinkPackageStatics>rtl.lib;vcl.lib;vclx.lib;VclSmp.lib</LinkPackageStatics>
 			<OutputExt>exe</OutputExt>
 			<PackageImports>rtl.bpi;vclimg.bpi;vcl.bpi;vclx.bpi;xmlrtl.bpi;vclactnband.bpi;VclSmp.bpi;svnui.bpi;svn.bpi</PackageImports>
 			<Multithreaded>true</Multithreaded>
-			<LinkPackageImports>rtl.bpi;vcl.bpi;vclx.bpi;VclSmp.bpi</LinkPackageImports>
 			<_TCHARMapping>wchar_t</_TCHARMapping>
 			<AllPackageLibs>rtl.lib;vcl.lib;vclx.lib;VclSmp.lib</AllPackageLibs>
 			<ProjectType>CppVCLApplication</ProjectType>
@@ -76,6 +76,7 @@
 			<ResFiles Include="BaseEditor.res">
 				<BuildOrder>1</BuildOrder>
 			</ResFiles>
+			<None Include="BaseEditor.todo"/>
 			<CppCompile Include="crc32.cpp">
 				<BuildOrder>6</BuildOrder>
 			</CppCompile>

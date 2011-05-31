@@ -81,6 +81,7 @@ object f: Tf
       WantReturns = False
       OnEnter = FieldEnter
       OnExit = FieldExit
+      ExplicitTop = -12
     end
     object SpinRound: TSpinButton
       AlignWithMargins = True
@@ -186,6 +187,8 @@ object f: Tf
     Height = 256
     Align = alClient
     TabOrder = 2
+    ExplicitLeft = 295
+    ExplicitTop = 41
     object lstQuestions: TListBox
       AlignWithMargins = True
       Left = 4
@@ -196,6 +199,9 @@ object f: Tf
       ItemHeight = 13
       TabOrder = 0
       OnDblClick = lstQuestionsDblClick
+      OnKeyDown = lstQuestionsKeyDown
+      ExplicitLeft = 20
+      ExplicitTop = 0
     end
     object Panel1: TPanel
       Left = 1
@@ -269,8 +275,8 @@ object f: Tf
     OnClick = Button1Click
   end
   object MainMenu: TMainMenu
-    Left = 304
-    Top = 192
+    Left = 544
+    Top = 8
     object mmFile: TMenuItem
       Caption = 'File'
       object mmNewBase: TMenuItem
@@ -290,6 +296,7 @@ object f: Tf
       end
       object mmSaveBaseAs: TMenuItem
         Caption = 'Save as...'
+        OnClick = mmSaveBaseAsClick
       end
       object mmExit: TMenuItem
         Break = mbBarBreak
@@ -302,5 +309,16 @@ object f: Tf
       Caption = 'About...'
       ShortCut = 112
     end
+  end
+  object dlgOpen: TOpenDialog
+    Filter = 'Russian Roulette Base|*.rrb'
+    InitialDir = '.'
+    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
+    Left = 488
+    Top = 8
+  end
+  object dlgSave: TSaveDialog
+    Left = 440
+    Top = 8
   end
 end

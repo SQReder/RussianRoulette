@@ -4,6 +4,7 @@
 #include "base.h"
 #include "crc32.cpp"
 #pragma package(smart_init)
+extern HWND msg_hwnd;
 
 // ---------------------------------------------------------------------------
 sBase::sBase() {
@@ -62,21 +63,24 @@ TFileStream* stream;
 
 // templates for easy manipulate with some types in stream
 template <class T>
-void WriteString(T str) { stream->WriteBuffer(&str[1], str.Length() *sizeof(str[1])); }
+void WriteString(T str) {
+    if (str != "") {
+        stream->WriteBuffer(& str[1], str.Length()* sizeof(str[1]));
+    }
+}
 
 AnsiString ReadStringA(unsigned length) {
     char* buff = new char[length + 1];
-    for (int i = 0; i < length + 1; ++i) {
+    for (unsigned i = 0; i < length + 1; ++i) {
         buff[i] = L'\0';
     }
-    // strnset(buff, '\0', length + 1);
     stream->ReadBuffer(& buff[0], length* sizeof(char));
     return buff;
 };
 
 UnicodeString ReadStringW(unsigned length) {
     wchar_t* buff = new wchar_t[length + 1];
-    for (int i = 0; i < length + 1; ++i) {
+    for (unsigned i = 0; i < length + 1; ++i) {
         buff[i] = L'\0';
     }
     stream->ReadBuffer(& buff[0], length* sizeof(wchar_t));
@@ -105,30 +109,34 @@ char ReadChar() {
 // -> templates
 
 void sBase::save(UnicodeString filename) {
-    stream = new TFileStream(filename, fmCreate);
-    WriteString(signature);
-    WriteN(Crc32(pass.c_str(), pass.Length()));
-    WriteN(questions.size());
+    try {
+        stream = new TFileStream(filename, fmCreate);
+        WriteString(signature);
+        WriteN(Crc32(pass.c_str(), pass.Length()));
+        WriteN(questions.size());
 
-    // start writing questions
-    std::list <sQuestion *> ::iterator it;
-    for (it = questions.begin(); it != questions.end(); ++it) {
-        sQuestion* q = *it;
-        WriteChar(q->round);
-        WriteChar(q->question.Length());
-        WriteChar(q->comment.Length());
-        WriteString(q->question);
-        WriteString(q->comment);
+        // start writing questions
+        std::list <sQuestion *> ::iterator it;
+        for (it = questions.begin(); it != questions.end(); ++it) {
+            sQuestion* q = *it;
+            WriteChar(q->round);
+            WriteChar(q->question.Length());
+            WriteChar(q->comment.Length());
+            WriteString(q->question);
+            WriteString(q->comment);
 
-        TStringList* answers = const_cast <TStringList *> (q->GetAnswersList());
-        WriteChar((char)answers->Count);
-        for (int i = 0; i < answers->Count; ++i) {
-            WriteChar(answers->Strings[i].Length());
-            WriteString(answers->Strings[i]);
+            TStringList* answers = const_cast <TStringList *> (q->GetAnswersList());
+            WriteChar((char)answers->Count);
+            for (int i = 0; i < answers->Count; ++i) {
+                WriteChar(answers->Strings[i].Length());
+                WriteString(answers->Strings[i]);
+            }
+            WriteChar(q->true_answer);
         }
-        WriteChar(q->true_answer);
     }
-
+    catch (Exception&) {
+        MessageBoxA(msg_hwnd, "Неизвестная ошибка сохранения файла", "Base Loading Err", 0);
+    }
     stream->Free();
 }
 // ---------------------------------------------------------------------------
@@ -138,39 +146,44 @@ void sBase::load(UnicodeString filename) {
         stream = new TFileStream(filename, fmOpenRead);
     }
     catch (Exception&) {
-        MessageBoxA(0, "Невозможно открыть файл", "Base Loading Err", 0);
+        MessageBoxA(msg_hwnd, "Невозможно открыть файл", "Base Loading Err", 0);
         return;
     }
-    if (ReadStringA(4) == signature) {
-//        unsigned __int32 pass_crc = ReadN <unsigned __int32> ();
-//        MessageBoxW(0, IntToStr((__int64)pass_crc).c_str(), L"Password CRC32", 0);
-        unsigned q_count = ReadN <unsigned> ();
-//        MessageBoxW(0, IntToStr((int)q_count).c_str(), L"Count of questions", 0);
+    try {
+        if (ReadStringA(4) == signature) {
+            unsigned __int32 pass_crc = ReadN <unsigned __int32> ();
+            // MessageBoxW(0, IntToStr((__int64)pass_crc).c_str(), L"Password CRC32", 0);
+            unsigned q_count = ReadN <unsigned> ();
+            // MessageBoxW(0, IntToStr((int)q_count).c_str(), L"Count of questions", 0);
 
-        questions.clear();
-        for (unsigned i = 0; i < q_count; ++i) {
-            sQuestion* q = new sQuestion;
-            q->round = ReadChar(); 
-            int question_len = ReadChar();
-            int comment_len = ReadChar(); 
-            q->question = ReadStringW(question_len); 
-            q->comment = ReadStringW(comment_len);
+            questions.clear();
+            for (unsigned i = 0; i < q_count; ++i) {
+                sQuestion* q = new sQuestion;
+                q->round = ReadChar();
+                unsigned question_len = ReadChar();
+                unsigned comment_len = ReadChar();
+                q->question = ReadStringW(question_len);
+                q->comment = ReadStringW(comment_len);
 
-            TStringList* answers = new TStringList;
-            int answers_count = ReadChar(); 
-            for (unsigned i = 0; i < answers_count; ++i) { 
-                int answer_len = ReadChar(); 
-                answers->Add(ReadStringW(answer_len));
+                TStringList* answers = new TStringList;
+                unsigned answers_count = ReadChar();
+                for (unsigned i = 0; i < answers_count; ++i) {
+                    unsigned answer_len = ReadChar();
+                    answers->Add(ReadStringW(answer_len));
+                }
+                q->AssignAnswersList(answers);
+                delete answers;
+
+                q->true_answer = ReadChar();
+                questions.push_back(q);
             }
-            q->AssignAnswersList(answers);
-            delete answers;
 
-            q->true_answer = ReadChar(); 
-            questions.push_back(q);
+        } else {
+            MessageBoxA(msg_hwnd, "Ошибка загрузки базы вопросов: сигнатура неверна", "Base Loading Err", 0);
         }
-
-    } else {
-        MessageBoxA(0, "Ошибка загрузки базы вопросов: сигнатура неверна", "Base Loading Err", 0);
+    }
+    catch (Exception&) {
+        MessageBoxA(msg_hwnd, "Ошибка загрузки базы вопросов: ошибка чтения файла", "Base Loading Err", 0);
     }
     stream->Free();
 }

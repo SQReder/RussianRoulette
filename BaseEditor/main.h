@@ -11,6 +11,7 @@
 #include <ExtCtrls.hpp>
 #include <ComCtrls.hpp>
 #include <Menus.hpp>
+#include <Dialogs.hpp>
 
 // ---------------------------------------------------------------------------
 class Tf : public TForm {
@@ -42,6 +43,8 @@ __published: // IDE-managed Components
     TButton* Button1;
     TMemo* mAnswer;
     TMemo* mSearch;
+    TOpenDialog *dlgOpen;
+    TSaveDialog *dlgSave;
 
     void __fastcall FieldEnter(TObject* Sender);
     void __fastcall FieldExit(TObject* Sender);
@@ -63,6 +66,8 @@ __published: // IDE-managed Components
     void __fastcall mmNewBaseClick(TObject* Sender);
     void __fastcall mmOpenBaseClick(TObject* Sender);
     void __fastcall mmSaveBaseClick(TObject* Sender);
+    void __fastcall lstQuestionsKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+    void __fastcall mmSaveBaseAsClick(TObject *Sender);
 
 private:
     void ExitAllFields();

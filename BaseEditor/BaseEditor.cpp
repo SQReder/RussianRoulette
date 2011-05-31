@@ -5,6 +5,8 @@
 #include <tchar.h>
 // ---------------------------------------------------------------------------
 USEFORM("main.cpp", f);
+//---------------------------------------------------------------------------
+HWND msg_hwnd;
 
 // ---------------------------------------------------------------------------
 WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
@@ -12,7 +14,8 @@ WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
         Application->Initialize();
         Application->MainFormOnTaskBar = true;
         Application->Title = "Base editor for Russian Roulette";
-         Application->CreateForm(__classid(Tf), & f);
+        Application->CreateForm(__classid(Tf), &f);
+         msg_hwnd = Application->Handle;
         Application->Run();
     }
     catch (Exception& exception) {
