@@ -35,8 +35,8 @@ sGfxCache::sGfxCache() {
         Tick[i]->LoadFromFile("data\\" + Trim(IntToStr(i)) + "sec.png");
     }
 
-    for (int i = 0; i < 16; ++i) {
-        Liver[i] = new TPicture();
+	for (int i = 0; i < 16; ++i) {
+		Liver[i] = new TPicture();
         Liver[i]->LoadFromFile("Data\\рычаг_" + IntToStr(i) + ".png");
     }
 
