@@ -81,7 +81,6 @@ object f: Tf
       WantReturns = False
       OnEnter = FieldEnter
       OnExit = FieldExit
-      ExplicitTop = -12
     end
     object SpinRound: TSpinButton
       AlignWithMargins = True
@@ -187,8 +186,6 @@ object f: Tf
     Height = 256
     Align = alClient
     TabOrder = 2
-    ExplicitLeft = 295
-    ExplicitTop = 41
     object lstQuestions: TListBox
       AlignWithMargins = True
       Left = 4
@@ -200,8 +197,6 @@ object f: Tf
       TabOrder = 0
       OnDblClick = lstQuestionsDblClick
       OnKeyDown = lstQuestionsKeyDown
-      ExplicitLeft = 20
-      ExplicitTop = 0
     end
     object Panel1: TPanel
       Left = 1
@@ -298,8 +293,10 @@ object f: Tf
         Caption = 'Save as...'
         OnClick = mmSaveBaseAsClick
       end
+      object N1: TMenuItem
+        Caption = '-'
+      end
       object mmExit: TMenuItem
-        Break = mbBarBreak
         Caption = 'Exit'
         ShortCut = 16471
         OnClick = mmExitClick

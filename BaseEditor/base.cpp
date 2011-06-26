@@ -3,6 +3,7 @@
 #pragma hdrstop
 #include "base.h"
 #include "crc32.cpp"
+#include "frm_pass.h"
 #pragma package(smart_init)
 extern HWND msg_hwnd;
 
@@ -56,7 +57,7 @@ const TStrings* sBase::GetQuestionsList() const {
 
 // set default base signature and password
 const AnsiString signature = "rrb1";
-const AnsiString pass = "soooo strong password!!11";
+const AnsiString pass = ""; // "soooo strong password!!11";
 
 // stream for i|o base file
 TFileStream* stream;
@@ -139,7 +140,16 @@ void sBase::save(UnicodeString filename) {
     }
     stream->Free();
 }
+
 // ---------------------------------------------------------------------------
+bool check_pass(unsigned __int32 hash) {
+    if (hash) {
+        fpass->ShowModal();
+        return true;
+    } else {
+        return true;
+    }
+}
 
 void sBase::load(UnicodeString filename) {
     try {
@@ -152,6 +162,10 @@ void sBase::load(UnicodeString filename) {
     try {
         if (ReadStringA(4) == signature) {
             unsigned __int32 pass_crc = ReadN <unsigned __int32> ();
+            if (!check_pass(pass_crc)) {
+                MessageBoxA(msg_hwnd, "Неверный пароль", "Base Loading Err", 0);
+            }
+
             // MessageBoxW(0, IntToStr((__int64)pass_crc).c_str(), L"Password CRC32", 0);
             unsigned q_count = ReadN <unsigned> ();
             // MessageBoxW(0, IntToStr((int)q_count).c_str(), L"Count of questions", 0);

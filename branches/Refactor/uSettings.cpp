@@ -91,8 +91,7 @@ TSettings::TSettings(UnicodeString filename) {
             LastBase = "main.dat";
         } else {
             MessageBox(Application->Handle,
-                "Ошибка загрузки последней базы вопросов\n"
-                "Попытка загрузить base\\main.dat также провалилась - файла не существует.",
+                "Ошибка загрузки последней базы вопросов\n" "Попытка загрузить base\\main.dat также провалилась - файла не существует.",
                 "Критическая ошибка", MB_YESNO);
             MB_YESNO;
         }

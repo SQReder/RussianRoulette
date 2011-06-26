@@ -45,6 +45,7 @@ __published: // IDE-managed Components
     TMemo* mSearch;
     TOpenDialog *dlgOpen;
     TSaveDialog *dlgSave;
+    TMenuItem *N1;
 
     void __fastcall FieldEnter(TObject* Sender);
     void __fastcall FieldExit(TObject* Sender);

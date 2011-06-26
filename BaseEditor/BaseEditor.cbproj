@@ -80,6 +80,11 @@
 			<CppCompile Include="crc32.cpp">
 				<BuildOrder>6</BuildOrder>
 			</CppCompile>
+			<CppCompile Include="frm_pass.cpp">
+				<Form>fpass</Form>
+				<DependentOn>frm_pass.h</DependentOn>
+				<BuildOrder>8</BuildOrder>
+			</CppCompile>
 			<CppCompile Include="main.cpp">
 				<Form>f</Form>
 				<DependentOn>main.h</DependentOn>
@@ -91,6 +96,7 @@
 			</CppCompile>
 			<None Include="sQuestionSpec.txt"/>
 			<FormResources Include="main.dfm"/>
+			<FormResources Include="frm_pass.dfm"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>

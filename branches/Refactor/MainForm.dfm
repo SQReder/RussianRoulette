@@ -2,8 +2,8 @@ object F: TF
   Left = 333
   Top = 229
   Caption = #1056#1091#1089#1089#1082#1072#1103' '#1056#1091#1083#1077#1090#1082#1072
-  ClientHeight = 742
-  ClientWidth = 1008
+  ClientHeight = 703
+  ClientWidth = 955
   Color = clBlack
   DoubleBuffered = True
   Font.Charset = RUSSIAN_CHARSET
@@ -21,10 +21,10 @@ object F: TF
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 19
+  TextHeight = 18
   object imgBorder: TImage
     Left = 8
-    Top = 636
+    Top = 603
     Width = 1280
     Height = 143
     Align = alCustom
@@ -1568,65 +1568,67 @@ object F: TF
       A74E9D3A75EAD4A953A74E9D264CFF1F963BF749CF3367B10000000049454E44
       AE426082}
     Visible = False
+    ExplicitWidth = 1212
+    ExplicitHeight = 135
   end
   object imgPlace: TImage
-    Left = 248
+    Left = 235
     Top = 8
-    Width = 394
-    Height = 392
+    Width = 373
+    Height = 371
     AutoSize = True
   end
   object imgHatch0: TImage
-    Left = 364
+    Left = 345
     Top = 5
-    Width = 160
-    Height = 160
+    Width = 151
+    Height = 151
     AutoSize = True
     OnClick = HatchClick
   end
   object imgHatch3: TImage
-    Left = 364
-    Top = 240
-    Width = 160
-    Height = 160
+    Left = 345
+    Top = 227
+    Width = 151
+    Height = 152
     AutoSize = True
     OnClick = HatchClick
   end
   object imgHatch1: TImage
-    Left = 473
-    Top = 64
-    Width = 160
-    Height = 160
+    Left = 448
+    Top = 61
+    Width = 152
+    Height = 151
     AutoSize = True
     OnClick = HatchClick
   end
   object imgHatch2: TImage
-    Left = 473
-    Top = 184
-    Width = 160
-    Height = 160
+    Left = 448
+    Top = 174
+    Width = 152
+    Height = 152
     AutoSize = True
     OnClick = HatchClick
   end
   object imgHatch5: TImage
-    Left = 256
-    Top = 64
-    Width = 160
-    Height = 160
+    Left = 243
+    Top = 61
+    Width = 151
+    Height = 151
     AutoSize = True
     OnClick = HatchClick
   end
   object imgHatch4: TImage
-    Left = 256
-    Top = 184
-    Width = 160
-    Height = 160
+    Left = 243
+    Top = 174
+    Width = 151
+    Height = 152
     AutoSize = True
     OnClick = HatchClick
   end
   object imgQuestion: TImage
     Left = 8
-    Top = 477
+    Top = 452
     Width = 856
     Height = 219
     AutoSize = True
@@ -2089,7 +2091,7 @@ object F: TF
       00000049454E44AE426082}
   end
   object imgPlayers: TImage
-    Left = 696
+    Left = 659
     Top = 0
     Width = 328
     Height = 497
@@ -3126,10 +3128,10 @@ object F: TF
     Stretch = True
   end
   object imgNumber1: TImage
-    Left = 34
-    Top = 336
-    Width = 20
-    Height = 20
+    Left = 32
+    Top = 318
+    Width = 19
+    Height = 19
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D494844520000001F0000
       001D0806000001256187A4000000097048597300000B1300000B1301009A9C18
@@ -3163,9 +3165,9 @@ object F: TF
   end
   object imgNumber2: TImage
     Left = 8
-    Top = 355
-    Width = 20
-    Height = 20
+    Top = 336
+    Width = 19
+    Height = 19
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D494844520000001F0000
       001D0806000001256187A4000000097048597300000B1300000B1301009A9C18
@@ -3205,10 +3207,10 @@ object F: TF
     Visible = False
   end
   object imgNumber3: TImage
-    Left = 33
-    Top = 380
-    Width = 20
-    Height = 20
+    Left = 31
+    Top = 360
+    Width = 19
+    Height = 19
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D494844520000001F0000
       001D0806000001256187A4000000097048597300000B1300000B1301009A9C18
@@ -3249,10 +3251,10 @@ object F: TF
     Visible = False
   end
   object imgNumber4: TImage
-    Left = 59
-    Top = 371
-    Width = 20
-    Height = 20
+    Left = 56
+    Top = 351
+    Width = 19
+    Height = 19
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D494844520000001F0000
       001D0806000001256187A4000000097048597300000B1300000B1301009A9C18
@@ -3289,10 +3291,10 @@ object F: TF
     Visible = False
   end
   object imgNumber5: TImage
-    Left = 85
-    Top = 365
-    Width = 20
-    Height = 20
+    Left = 81
+    Top = 346
+    Width = 18
+    Height = 19
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D494844520000001F0000
       001D0806000001256187A4000000097048597300000B1300000B1301009A9C18
@@ -3332,22 +3334,22 @@ object F: TF
     Visible = False
   end
   object lblRightAnswer: TLabel
-    Left = 473
-    Top = 645
-    Width = 117
-    Height = 19
+    Left = 448
+    Top = 611
+    Width = 107
+    Height = 18
     Caption = 'lblRightAnswer'
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Arial'
     Font.Style = [fsBold]
     ParentFont = False
     Visible = False
   end
   object imgPlayer1: TImage
-    Left = 85
-    Top = 256
+    Left = 81
+    Top = 243
     Width = 31
     Height = 29
     AutoSize = True
@@ -3381,8 +3383,8 @@ object F: TF
       C60000000049454E44AE426082}
   end
   object imgPlayer2: TImage
-    Left = 93
-    Top = 264
+    Left = 88
+    Top = 250
     Width = 31
     Height = 29
     AutoSize = True
@@ -3423,8 +3425,8 @@ object F: TF
       44AE426082}
   end
   object imgPlayer3: TImage
-    Left = 101
-    Top = 272
+    Left = 96
+    Top = 258
     Width = 31
     Height = 29
     AutoSize = True
@@ -3466,8 +3468,8 @@ object F: TF
       AE426082}
   end
   object imgPlayer4: TImage
-    Left = 101
-    Top = 288
+    Left = 96
+    Top = 273
     Width = 31
     Height = 29
     AutoSize = True
@@ -3506,8 +3508,8 @@ object F: TF
       0000000049454E44AE426082}
   end
   object imgPlayer5: TImage
-    Left = 117
-    Top = 288
+    Left = 111
+    Top = 273
     Width = 31
     Height = 29
     AutoSize = True
@@ -3549,18 +3551,18 @@ object F: TF
       5BA989FE01CB4B45E48E633B7E0000000049454E44AE426082}
   end
   object imgMechanizm: TImage
-    Left = 154
-    Top = 251
-    Width = 105
-    Height = 105
+    Left = 146
+    Top = 238
+    Width = 99
+    Height = 99
     AutoSize = True
     OnClick = imgMechanizmClick
   end
   object imgSplash: TImage
-    Left = 197
-    Top = -739
-    Width = 1280
-    Height = 1024
+    Left = 187
+    Top = -700
+    Width = 1212
+    Height = 970
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D49484452000005000000
       0400080200000031F163140000001974455874536F6674776172650041646F62
@@ -4625,22 +4627,22 @@ object F: TF
     Visible = False
   end
   object lblExit: TLabel
-    Left = 181
-    Top = 36
-    Width = 119
-    Height = 22
+    Left = 171
+    Top = 34
+    Width = 112
+    Height = 19
     Caption = #1042#1099#1093#1086#1076' '#1080#1079' '#1080#1075#1088#1099
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -19
+    Font.Height = -17
     Font.Name = 'FrizQuadrataCTT'
     Font.Style = []
     ParentFont = False
     OnClick = btnExitClick
   end
   object imgTotalPrize: TImage
-    Left = 101
-    Top = 442
+    Left = 96
+    Top = 419
     Width = 533
     Height = 65
     AutoSize = True
@@ -4751,23 +4753,23 @@ object F: TF
     Visible = False
   end
   object LabelMoney: TLabel
-    Left = 117
-    Top = 456
-    Width = 510
-    Height = 41
+    Left = 111
+    Top = 432
+    Width = 483
+    Height = 39
     Alignment = taCenter
     AutoSize = False
     Caption = 'LabelMoney'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWhite
-    Font.Height = -32
+    Font.Height = -31
     Font.Name = 'Dauphin'
     Font.Style = []
     ParentFont = False
   end
   object imgTicker: TImage
-    Left = 152
-    Top = 567
+    Left = 144
+    Top = 537
     Width = 128
     Height = 128
     AutoSize = True
@@ -5053,10 +5055,10 @@ object F: TF
     Visible = False
   end
   object imgTimer: TImage
-    Left = 167
-    Top = 583
-    Width = 105
-    Height = 105
+    Left = 158
+    Top = 552
+    Width = 100
+    Height = 100
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D494844520000005C0000
       00650806000001B79DB4AB000000097048597300000B1300000B1301009A9C18
@@ -5234,24 +5236,24 @@ object F: TF
     Visible = False
   end
   object lblTimer: TLabel
-    Left = 165
-    Top = 599
-    Width = 94
-    Height = 65
+    Left = 156
+    Top = 567
+    Width = 89
+    Height = 62
     Alignment = taCenter
     AutoSize = False
     Caption = '20'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWhite
-    Font.Height = -48
+    Font.Height = -45
     Font.Name = 'Dauphin'
     Font.Style = []
     ParentFont = False
     Visible = False
   end
   object imgPulseBar: TImage
-    Left = 656
-    Top = 431
+    Left = 621
+    Top = 408
     Width = 122
     Height = 122
     AutoSize = True
@@ -5489,8 +5491,8 @@ object F: TF
     Visible = False
   end
   object imgPulse: TImage
-    Left = 672
-    Top = 442
+    Left = 637
+    Top = 419
     Width = 106
     Height = 106
     AutoSize = True
@@ -5714,8 +5716,8 @@ object F: TF
     Visible = False
   end
   object imgChoosenAnswer: TImage
-    Left = 154
-    Top = 345
+    Left = 146
+    Top = 327
     Width = 1
     Height = 40
     AutoSize = True
@@ -5728,8 +5730,8 @@ object F: TF
     Visible = False
   end
   object imgChAnsLeft: TImage
-    Left = 130
-    Top = 345
+    Left = 123
+    Top = 327
     Width = 18
     Height = 40
     AutoSize = True
@@ -5757,8 +5759,8 @@ object F: TF
     Visible = False
   end
   object imgChAnsRight: TImage
-    Left = 161
-    Top = 345
+    Left = 153
+    Top = 327
     Width = 18
     Height = 40
     AutoSize = True
@@ -5786,25 +5788,25 @@ object F: TF
     Visible = False
   end
   object ControlLabel: TLabel
-    Left = 416
-    Top = 417
-    Width = 82
-    Height = 19
+    Left = 394
+    Top = 395
+    Width = 89
+    Height = 18
     Caption = 'ControlLabel'
     Visible = False
     OnClick = ControlLabelClick
   end
   object LabelQuestion: TLabel
-    Left = 233
-    Top = 535
-    Width = 111
-    Height = 19
+    Left = 221
+    Top = 507
+    Width = 104
+    Height = 18
     Caption = 'LabelQuestion'
     Color = clBlack
-    Constraints.MaxWidth = 572
+    Constraints.MaxWidth = 542
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Arial'
     Font.Style = [fsBold]
     ParentColor = False
@@ -5814,12 +5816,12 @@ object F: TF
   object btnMechStart: TButton
     Left = 8
     Top = 8
-    Width = 167
-    Height = 41
+    Width = 158
+    Height = 38
     Caption = #1052#1077#1093#1072#1085#1080#1079#1084' '#1057#1058#1040#1056#1058
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
@@ -5829,13 +5831,13 @@ object F: TF
   end
   object btnMechStop: TButton
     Left = 8
-    Top = 48
-    Width = 167
-    Height = 41
+    Top = 45
+    Width = 158
+    Height = 39
     Caption = #1052#1077#1093#1072#1085#1080#1079#1084' '#1057#1058#1054#1055
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
@@ -5845,13 +5847,13 @@ object F: TF
   end
   object btnGetMoney: TButton
     Left = 8
-    Top = 95
-    Width = 167
-    Height = 42
+    Top = 90
+    Width = 158
+    Height = 40
     Caption = #1047#1072#1073#1088#1072#1090#1100' '#1076#1077#1085#1100#1075#1080
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
@@ -5861,13 +5863,13 @@ object F: TF
   end
   object btnContinueGame: TButton
     Left = 8
-    Top = 134
-    Width = 167
-    Height = 39
+    Top = 127
+    Width = 158
+    Height = 37
     Caption = #1055#1088#1086#1076#1086#1083#1078#1080#1090#1100' '#1080#1075#1088#1091
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
@@ -5876,10 +5878,10 @@ object F: TF
     OnClick = btnContinueGameClick
   end
   object btnExit: TButton
-    Left = 916
-    Top = 787
-    Width = 108
-    Height = 25
+    Left = 868
+    Top = 746
+    Width = 102
+    Height = 23
     Caption = #1042#1099#1093#1086#1076
     TabOrder = 4
     Visible = False
@@ -5887,17 +5889,17 @@ object F: TF
   end
   object MediaPlayer1: TMediaPlayer
     Left = 8
-    Top = 406
+    Top = 385
     Width = 253
-    Height = 30
+    Height = 28
     Visible = False
     TabOrder = 5
   end
   object mlog: TMemo
-    Left = 639
-    Top = 20
-    Width = 65
-    Height = 38
+    Left = 605
+    Top = 19
+    Width = 62
+    Height = 36
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
     Font.Height = -11
@@ -5910,15 +5912,15 @@ object F: TF
     Visible = False
   end
   object edFinalAnswer: TEdit
-    Left = 364
-    Top = 670
-    Width = 329
-    Height = 27
+    Left = 345
+    Top = 635
+    Width = 312
+    Height = 26
     Alignment = taCenter
     Color = clNone
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Arial'
     Font.Style = [fsBold]
     ParentFont = False
@@ -5927,10 +5929,10 @@ object F: TF
     OnKeyPress = edFinalAnswerKeyPress
   end
   object Button1: TButton
-    Left = 181
+    Left = 171
     Top = 8
-    Width = 114
-    Height = 25
+    Width = 108
+    Height = 23
     Caption = 'MemoryDump'
     TabOrder = 8
     Visible = False
@@ -5938,9 +5940,9 @@ object F: TF
   end
   object MediaPlayer2: TMediaPlayer
     Left = 8
-    Top = 477
+    Top = 452
     Width = 253
-    Height = 30
+    Height = 28
     Visible = False
     TabOrder = 9
   end
@@ -5973,7 +5975,6 @@ object F: TF
   end
   object tmrLog: TTimer
     Enabled = False
-    OnTimer = tmrLogTimer
     Left = 168
     Top = 200
   end

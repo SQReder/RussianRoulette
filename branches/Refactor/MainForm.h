@@ -89,7 +89,6 @@ __published: // IDE-managed Components
     void __fastcall tmrMoneyTimer(TObject* Sender);
     void __fastcall FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift);
     void __fastcall tmrTimeTimer(TObject* Sender);
-    void __fastcall tmrLogTimer(TObject* Sender);
     void __fastcall tmrWaitingFinalTimer(TObject* Sender);
     void __fastcall edFinalAnswerKeyPress(TObject* Sender, wchar_t& Key);
     void __fastcall btnContinueGameClick(TObject* Sender);
@@ -103,11 +102,11 @@ __published: // IDE-managed Components
     void __fastcall tmrDecidedTimer(TObject* Sender);
     void __fastcall tmrLightAnimationTimer(TObject* Sender);
     void __fastcall ControlLabelClick(TObject* Sender);
-    void __fastcall FormHide(TObject *Sender);
+    void __fastcall FormHide(TObject* Sender);
     void __fastcall HatchClick(TObject* Sender);
 
 private: // User declarations
-    void CreateLabel(TLabel**, int, int, int, int, int, UnicodeString);
+    void CreateLabel(TLabel** , int, int, int, int, int, UnicodeString);
 
 public: // User declarations
     __fastcall TF(TComponent* Owner);
@@ -115,7 +114,6 @@ public: // User declarations
     TLabel* lblMoney[5]; // лейблы и конструктор дл€ отображени€ денег на панели игроков.
     TLabel* lblPlayer[5];
     TLabel* lblAnswers[5];
-
 
     int answer;
     int Reward;

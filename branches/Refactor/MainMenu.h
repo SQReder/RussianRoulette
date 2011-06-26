@@ -28,8 +28,8 @@ __published: // IDE-managed Components
     void __fastcall btnShowSettingsClick(TObject* Sender);
     void __fastcall btnAboutClick(TObject* Sender);
     void __fastcall FormResize(TObject* Sender);
-    void __fastcall FormShow(TObject *Sender);
-    void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+    void __fastcall FormShow(TObject* Sender);
+    void __fastcall FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift);
 
 public: // User declarations
     __fastcall TMenuForm(TComponent* Owner);
