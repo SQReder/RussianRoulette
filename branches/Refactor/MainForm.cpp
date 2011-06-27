@@ -121,6 +121,10 @@ void __fastcall TF::LoadGraphic() {
     btnMechStop->Enabled = false;
     CantFall = -1;
     AnimationFrame = 1;
+
+    imgSplash->Left = 0;
+    imgSplash->Top = 0;
+    imgSplash->Center = true;
 }
 
 // ---------------------------------------------------------------------------
@@ -208,6 +212,9 @@ void __fastcall TF::FormCreate(TObject* Sender) {
     imgHatch[3] = imgHatch3;
     imgHatch[4] = imgHatch4;
     imgHatch[5] = imgHatch5;
+
+    F->Color = clBlack;
+    F->Font->Color = clWhite;
 }
 
 // ---------------------------------------------------------------------------
@@ -935,14 +942,11 @@ void __fastcall TF::HatchClick(TObject* Sender) {
 const char* KeyCode[6] = { "6f", "1a", "2b", "3c", "4d", "5e" };
 
 void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
-    if (Shift.Contains(ssAlt) && (Key == 13)) {
+    if (Shift.Contains(ssAlt) && (Key == 13)) { // Alt+Enter
         SwitchFullscreen(F);
-    } else if (Shift.Empty() && (Key == 27)) {
+    } else if (Shift.Empty() && (Key == 27)) { // Esc
         btnExitClick(NULL);
     }
-
-    // инвариация значения
-    answer = 255;
 
     if (Screen->MonitorCount > 1 && Key == 'H') {
         initialize_host_mode();
@@ -982,6 +986,9 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
         }
     }
     if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[chooseplayer - 1] == bbHuman) {
+        // инвариация значения
+        answer = 255;
+
         for (int i = 1; i < 6; ++i) {
             if (strchr(KeyCode[i], Key) && ingame[i - 1] == true && CurrentHatch != i) {
                 answer = i - 1;
@@ -1004,13 +1011,13 @@ void __fastcall TF::tmrTimeTimer(TObject* Sender) {
     if (RoundOfGame < 5) {
         if (TimeOfQuestion == (20 - TimeToDecide)) {
             if (bot[chooseplayer - 1]->Get_Answer()) {
-                F->answer = F->RandomPlace;
+                answer = RandomPlace;
                 Reward = RoundOfGame * 1000;
             } else {
                 do {
-                    F->answer = random(RoundOfGame + 1);
+                    answer = random(RoundOfGame + 1);
                 }
-                while (F->answer == F->RandomPlace);
+                while (answer == RandomPlace);
             }
             Proverka();
             ModeOfGame = 4;
@@ -1567,9 +1574,6 @@ void __fastcall TF::FormShow(TObject* Sender) {
 
     tmrPulseAnimation->Enabled = true;
 
-    imgBorder->Left = (ClientWidth - imgBorder->Width) / 2;
-    imgBorder->Top = ClientHeight - imgBorder->Height;
-
     imgTicker->Top = imgQuestion->Top - 59;
     imgTicker->Left = imgQuestion->Left + 30;
 
@@ -1638,9 +1642,6 @@ void __fastcall TF::FormResize(TObject* Sender) {
 
     imgQuestion->Left = (ClientWidth - imgQuestion->Width) / 2;
     imgQuestion->Top = ClientHeight - imgQuestion->Height - 50;
-
-    imgBorder->Left = (ClientWidth - imgBorder->Width) / 2;
-    imgBorder->Top = ClientHeight - imgBorder->Height;
 
     imgPlace->Left = int((ClientWidth - imgPlace->Width) / 2 - 1 / Width * 80);
     imgPlace->Top = 50;
@@ -1723,20 +1724,17 @@ void __fastcall TF::FormResize(TObject* Sender) {
     imgMechanizm->Top = 145;
     imgMechanizm->Picture->Assign(gfx->Liver[0]);
 
-    imgSplash->Left = int((F->ClientWidth - imgSplash->Width) / 2);
-    imgSplash->Top = int((F->ClientHeight - imgSplash->Height) / 2);
-    imgSplash->BringToFront();
-
     for (int i = 0; i < 5; ++i) {
         int j = i + 1;
         imgPlayer[i]->Top = int(imgHatch[j]->Top + (imgHatch[j]->Height - imgNumber[i]->Height) / 2 - 5);
         imgPlayer[i]->Left = int(imgHatch[j]->Left + (imgHatch[j]->Width - imgNumber[i]->Width) / 2 - 5);
-        imgPlayer[i]->Visible = True;
+        // imgPlayer[i]->Visible = True;
     }
 
-    imgSplash->Center = true;
     imgSplash->Width = (F->Width > F->Height) ? F->Width : F->Height;
     imgSplash->Height = imgSplash->Width;
+
+    imgSplash->BringToFront();
 }
 
 // ---------------------------------------------------------------------------
@@ -1769,7 +1767,7 @@ void __fastcall TF::imgMechanizmClick(TObject* Sender) {
 void __fastcall TF::tmrSplashTimer(TObject* Sender) {
     Wait++ ;
 #ifdef _DEBUG
-#define RoundSplash_Outtime 1
+#define RoundSplash_Outtime 10
 #else
 #define RoundSplash_Outtime 5
 #endif

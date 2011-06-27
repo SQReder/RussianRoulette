@@ -46,7 +46,6 @@ __published: // IDE-managed Components
     TTimer* tmrTime;
     TLabel* lblTimer;
     TImage* imgTimer;
-    TMemo* mlog;
     TTimer* tmrLog;
     TImage* imgPulse;
     TTimer* tmrWaitingFinal;

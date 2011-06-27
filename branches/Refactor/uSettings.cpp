@@ -33,7 +33,10 @@ TSettingsForm* SettingsForm;
 std::map <String, String> BaseFiles;
 
 // ---------------------------------------------------------------------------
+// сейчас не используется
 TSettings::TSettings() {
+    MessageBoxA(Application->Handle,
+        "Внезапный вызов конструктора по-умолчанию для настроек!\nНе опасно, но удивительно.", "Кстати!", MB_OK);
     for (int i = 0; i < 5; ++i) {
         PlayerNames[i] = "Игрок № ";
         PlayerNames[i][8] = 49 + i; // generate number 1..5. char 49 is '1'
@@ -78,7 +81,7 @@ TSettings::TSettings(UnicodeString filename) {
     HostMode = ini->ReadBool("Global", "HostMode", False);
 
     MinWidth = 1024;
-    MinHeight = 768;
+    MinHeight = 200;
 
     for (int i = 1; i <= 5; i++) {
         PlayerNames[i - 1] = ini->ReadString("Players", "Player" + IntToStr(i), "FUUUUuuuuu...");
@@ -91,9 +94,10 @@ TSettings::TSettings(UnicodeString filename) {
             LastBase = "main.dat";
         } else {
             MessageBox(Application->Handle,
-                "Ошибка загрузки последней базы вопросов\n" "Попытка загрузить base\\main.dat также провалилась - файла не существует.",
-                "Критическая ошибка", MB_YESNO);
-            MB_YESNO;
+                "Ошибка загрузки последней базы вопросов\n"
+                "Попытка загрузить base\\main.dat также провалилась - файла не существует.",
+                "Критическая ошибка", MB_OK);
+            std::exit(1);
         }
     }
 

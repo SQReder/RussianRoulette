@@ -104,8 +104,6 @@ object SettingsForm: TSettingsForm
     Align = alTop
     Caption = 'gbChooseQuestionBase'
     TabOrder = 3
-    ExplicitLeft = 6
-    ExplicitWidth = 331
     object addBase: TButton
       AlignWithMargins = True
       Left = 217
