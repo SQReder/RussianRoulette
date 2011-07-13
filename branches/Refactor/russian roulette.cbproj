@@ -153,7 +153,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">2</VersionInfo>
-						<VersionInfo Name="Build">363</VersionInfo>
+						<VersionInfo Name="Build">364</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -165,7 +165,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule studios</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">It&apos;s PC realisation of TV gameshow</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.2.363</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.2.364</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GNU GPLv3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

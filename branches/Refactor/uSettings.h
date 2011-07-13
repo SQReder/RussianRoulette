@@ -49,7 +49,7 @@ __published: // IDE-managed Components
     TLabeledEdit* edPlayer3;
     TLabeledEdit* edPlayer4;
     TButton* btnOK;
-    TPanel *pButtons;
+    TPanel* pButtons;
     TCheckBox* cbFullscreen;
     TCheckBox* cbWin7Features;
     TComboBox* cmbListOfBases;

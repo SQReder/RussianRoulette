@@ -1,7 +1,8 @@
 #ifndef GfxCacheH
 #define GfxCacheH
 #include <Graphics.hpp>
-//---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
 class sGfxCache {
 public:
     sGfxCache();
@@ -17,8 +18,8 @@ public:
     TPicture* PlaceRedZero;
 
     TPicture* rr_quest;
-    TPicture*  quest_correct;
-    TPicture*  quest_incorrect;
+    TPicture* quest_correct;
+    TPicture* quest_incorrect;
 
     // one moar for 1..4
     TPicture* Splash[5];
