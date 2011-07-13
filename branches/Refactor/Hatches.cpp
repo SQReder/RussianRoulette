@@ -1,32 +1,38 @@
-// ---------------------------------------------------------------------------
-// Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2011 Popovskiy Andrey
-// Copyright (C) 2010-2011 Boytsov Sergey
+ // ---------------------------------------------------------------------------
+    // Russian Roulette is PC version of popular television game show.
+    // Copyright (C) 2010-2011 Popovskiy Andrey
+    // Copyright (C) 2010-2011 Boytsov Sergey
 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+    // This program is free software: you can redistribute it and/or modify
+    // it under the terms of the GNU General Public License as published by
+    // the Free Software Foundation, either version 3 of the License, or
+    // (at your option) any later version.
 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
+    // This program is distributed in the hope that it will be useful,
+    // but WITHOUT ANY WARRANTY; without even the implied warranty of
+    // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    // GNU General Public License for more details.
 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// ---------------------------------------------------------------------------
+    // You should have received a copy of the GNU General Public License
+    // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    // ---------------------------------------------------------------------------
 #include <vcl.h>
 #include <winbase.h>
 #pragma hdrstop
 
+#define imgBlackHatch	"Data\\Black.png"	//state index 0
+#define imgBaseHatch	"Data\\Base.png"	//state index 1
+#define imgBlueHatch	"Data\\Blue.png"	//state index 2
+#define imgRedHatch		"Data\\Red.png"		//state index 3
+#define imgWhiteHatch	"Data\\White.png"	//state index 4
+#define imgGreyHatch	"Data\\Base.png"	//state index 5
+
 #include "Hatches.h"
 #include "GameLogic.h"
-#include "GfxCache.h"
-
 #pragma package(smart_init)
 using Graphics::TPicture;
 TPicture* hatch[6]; // указатели на изображения люков на форме
+TPicture* h_state_img[6]; // изображения состояний люков
 int h_state[6]; // текущее состояние люков
 int AnimationFrame; // определяет порядок анимации
 
@@ -62,8 +68,22 @@ inline void InitializeHatches() {
 }
 
 // ---------------------------------------------------------------------------
+inline void LoadHatchStateImages() {
+    for (int i = 0; i < 6; i++) { // конструктор изображений состояний люков
+        h_state_img[i] = new TPicture;
+    }
+
+    h_state_img[0]->LoadFromFile(imgBlackHatch); // и подгрузка из файлов на диске
+    h_state_img[1]->LoadFromFile(imgBaseHatch); // значения констант описаны
+    h_state_img[2]->LoadFromFile(imgBlueHatch); // в начале модуля
+    h_state_img[3]->LoadFromFile(imgRedHatch);
+    h_state_img[4]->LoadFromFile(imgWhiteHatch);
+    h_state_img[5]->LoadFromFile(imgGreyHatch);
+}
+
+// ---------------------------------------------------------------------------
 inline void LoadHatchImage(int index, int state) { // банальное копирование изображения состояния на форму
-    hatch[index]->Assign(gfx->h_state_img[state]);
+    hatch[index]->Assign(h_state_img[state]);
 }
 
 // ---------------------------------------------------------------------------
@@ -114,7 +134,9 @@ void OpenRandomHatches(const int OpenHatches, int ModeOfGame) {
 void Hatches() { // инициализация механизма
     randomize();
     InitializeHatches();
+    LoadHatchStateImages();
     MechanizmSetHatchesStates();
+
 };
 
 // ---------------------------------------------------------------------------
@@ -125,9 +147,9 @@ void ZeroRoundRotating() // установки для нулевого раунда
     for (int i = 0; i < 6; i++) {
         h_state[i] = 1;
     }
-    int RandomPlace = random(6);
-    h_state[RandomPlace] = 4;
-    CurrentHatch = RandomPlace;
+    int blah = random(6);
+    h_state[blah] = 4;
+    CurrentHatch = blah;
 }
 
 // ---------------------------------------------------------------------------
@@ -370,6 +392,7 @@ void SwitchesLights() {
     default:
         AnimationFrame = 3;
     }
+    // AnimationFrame = ++AnimationFrame % 2;
 }
 
 void OpenRndHatches() // открытие люков

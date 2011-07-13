@@ -1,31 +1,24 @@
 // ---------------------------------------------------------------------------
-// Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2011 Popovskiy Andrey
-// Copyright (C) 2010-2011 Boytsov Sergey
+//    Russian Roulette is PC version of popular television game show.
+//    Copyright (C) 2010-2011 Popovskiy Andrey
+//    Copyright (C) 2010-2011 Boytsov Sergey
 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
 #pragma hdrstop
 #include "GfxCache.h"
 #pragma package(smart_init)
-
-#define imgBlackHatch	"Data\\Black.png"	//state index 0
-#define imgBaseHatch	"Data\\Base.png"	//state index 1
-#define imgBlueHatch	"Data\\Blue.png"	//state index 2
-#define imgRedHatch		"Data\\Red.png"		//state index 3
-#define imgWhiteHatch	"Data\\White.png"	//state index 4
-#define imgGreyHatch	"Data\\Base.png"	//state index 5
 
 sGfxCache* gfx;
 
@@ -42,8 +35,8 @@ sGfxCache::sGfxCache() {
         Tick[i]->LoadFromFile("data\\" + Trim(IntToStr(i)) + "sec.png");
     }
 
-    for (int i = 0; i < 16; ++i) {
-        Liver[i] = new TPicture();
+	for (int i = 0; i < 16; ++i) {
+		Liver[i] = new TPicture();
         Liver[i]->LoadFromFile("Data\\рычаг_" + IntToStr(i) + ".png");
     }
 
@@ -69,18 +62,6 @@ sGfxCache::sGfxCache() {
 
     FinalSplash = new TPicture();
     FinalSplash->LoadFromFile("Data\\Final.png");
-
-    for (int i = 0; i < 6; i++) { // конструктор изображений состояний люков
-        h_state_img[i] = new TPicture;
-    }
-
-    h_state_img[0]->LoadFromFile(imgBlackHatch); // и подгрузка из файлов на диске
-    h_state_img[1]->LoadFromFile(imgBaseHatch); // значения констант описаны
-    h_state_img[2]->LoadFromFile(imgBlueHatch); // в начале модуля
-    h_state_img[3]->LoadFromFile(imgRedHatch);
-    h_state_img[4]->LoadFromFile(imgWhiteHatch);
-    h_state_img[5]->LoadFromFile(imgGreyHatch);
-
 }
 
 sGfxCache::~sGfxCache() {
@@ -107,9 +88,4 @@ sGfxCache::~sGfxCache() {
     delete quest_correct;
     delete quest_incorrect;
     delete FinalSplash;
-
-    for (int i = 0; i < 6; i++) {
-        delete h_state_img[i];
-    }
-
 }

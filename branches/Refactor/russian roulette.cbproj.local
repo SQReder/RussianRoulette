@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.117,E:\Projects\Roulette\branches\Refactor\Graphics.h=E:\Projects\Roulette\branches\Refactor\Unit1.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.117,E:\Projects\Roulette\branches\Refactor\Graphics.cpp=E:\Projects\Roulette\branches\Refactor\Unit1.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.870,E:\Projects\Roulette\branches\Refactor\Unit1.h=E:\Projects\Roulette\branches\Refactor\base.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.406,E:\Projects\C++ Builder\(001) Russian Roulette v1.2\uHostMode.h=E:\Projects\C++ Builder\(001) Russian Roulette v1.2\Unit1.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.935,E:\Projects\Roulette\branches\Refactor\GraphicsCache.h=E:\Projects\Roulette\branches\Refactor\Graphics.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.935,E:\Projects\Roulette\branches\Refactor\GraphicsCache.cpp=E:\Projects\Roulette\branches\Refactor\Graphics.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.452,E:\Projects\Roulette\branches\Refactor\GfxCache.h=E:\Projects\Roulette\branches\Refactor\GraphicsCache.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.935,E:\Projects\Roulette\branches\Refactor\Graphics.cpp=E:\Projects\Roulette\branches\Refactor\GraphicsCache.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.406,E:\Projects\C++ Builder\(001) Russian Roulette v1.2\Unit1.h=E:\Projects\C++ Builder\(001) Russian Roulette v1.2\uHostMode.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.117,E:\Projects\Roulette\branches\Refactor\Unit1.h=E:\Projects\Roulette\branches\Refactor\Graphics.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.935,E:\Projects\Roulette\branches\Refactor\Graphics.h=E:\Projects\Roulette\branches\Refactor\GraphicsCache.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.452,E:\Projects\Roulette\branches\Refactor\GraphicsCache.h=E:\Projects\Roulette\branches\Refactor\GfxCache.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.870,E:\Projects\Roulette\branches\Refactor\base.h=E:\Projects\Roulette\branches\Refactor\Unit1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.117,E:\Projects\Roulette\branches\Refactor\Unit1.cpp=E:\Projects\Roulette\branches\Refactor\Graphics.cpp</Transaction>
   </Transactions>
 </BorlandProject>
