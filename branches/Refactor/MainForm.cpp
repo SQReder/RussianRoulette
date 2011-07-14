@@ -44,13 +44,27 @@ enum {
     Off, Spining, Stoping
 } MechanizmState;
 
+typedef enum {
+    mRndQuestion,          // задаётся вопрос раунда
+    mRndChoosePlayer,      // задающий участник должен выбрать отвечающего игрока
+    mRndPlayerChoosen,     // отвечающий игрок выбран
+    mRndAnswering,         // ответы показны, игрок даёт ответ
+    mRndAnswerLocked,      // ответ принят, идёт проверка ответа
+    mRndShowCorrectAns,    // показ верного ответа, перечисление денег
+    mRndMomentOfTruth = 7, // «момент истины» для игрока после остановки механизма
+    mRndNoQuestions,       // вопросы раунда закончились, определяется явный лидер
+    mRndSuddenDeath,       // один из игроков (кроме спасённого) покидает игру
+    mRndEndOfCurrRound,    // конец текущего раунда
+    mRndNewRound,          // объявление нового раунда
+    mRndStartNewRound,     // начало нового раунда
+} ModesOfGame;
+ModesOfGame ModeOfGame;    // режимы игры (последовательность игровых действий)
+
 int SpeedOfRotation = _StartRotaingSpeed;
 bool SoundOn = true;
 int TimeOfQuestion; // время, данное на ответ игроку
 int MoneyTransferMode = 0;
 // режим начисления денег (1 - 1-ому игроку, 2 - 2-ому и т.д.; a - всем)
-int ModeOfGame;
-// режим игры (определяет порядок действий в GameLogic и tmrWaiting)
 int ModeOfFinalGame;
 // режим финальной игры (опр. порядок действий в tmrWaitingFinal)
 bool TransferAll = 1; // режим начисления денег всем игрокам
@@ -540,6 +554,9 @@ void __fastcall TF::tmrWaitingTimer(TObject* Sender) {
         if (Wait == 12) {
             tmrWaiting->Enabled = false;
             if (!Settings->HostMode) {
+                // сброс последнего выбранного ответа
+                answer = 255;
+                // и включение возможности ответить
                 CanAnswer = 1;
                 PlayMusic("rr_20sec.wav");
                 tmrTime->Enabled = True;
@@ -941,12 +958,9 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
         btnExitClick(NULL);
     }
 
-    // инвариация значения
-    answer = 255;
-
-    if (Screen->MonitorCount > 1 && Key == 'H') {
+    /*if (Screen->MonitorCount > 1 && Key == 'H') {
         initialize_host_mode();
-    }
+    }*/
 
     if (Key == VK_RIGHT && Settings->HostMode == true) {
         if (RoundOfGame >= 1 && RoundOfGame <= 4) {
@@ -967,13 +981,14 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
     }
     // выбор игрового места в финале
     if (FinalRoundOfGame > 0 && ModeOfGame == 0 && Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
-        for (int i = 1; i < 6; ++i) {
+        for (int i = 1; i <= 6; ++i) {
             if (strchr(KeyCode[i], Key) && imgHatch[i]->Enabled) {
                 HatchClick(imgHatch[i]);
             }
         }
     }
 
+    // выбор отвечающего игрока (1-4 раунды)
     if (ModeOfGame == 1 && Settings->PlayerType[CurrentHatch - 1] == bbHuman && CanChoose == 1) {
         for (int i = 1; i < 6; ++i) {
             if (strchr(KeyCode[i], Key) && ingame[i - 1] == true && CurrentHatch != i) {
@@ -981,10 +996,15 @@ void __fastcall TF::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
             }
         }
     }
+
+    // ответ на вопрос (1-4 раунды)
     if (ModeOfGame == 3 && CanAnswer == 1 && Settings->PlayerType[chooseplayer - 1] == bbHuman) {
+
         for (int i = 1; i < 6; ++i) {
-            if (strchr(KeyCode[i], Key) && ingame[i - 1] == true && CurrentHatch != i) {
+        //ShowMessage(answer);
+            if (strchr(KeyCode[i], Key) && ingame[i - 1] == true) {
                 answer = i - 1;
+                CanAnswer = 0;
             }
         }
 
