@@ -15,6 +15,7 @@ object f: Tf
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -265,8 +266,9 @@ object f: Tf
     Top = 285
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'TestButton'
     TabOrder = 5
+    Visible = False
     OnClick = Button1Click
   end
   object MainMenu: TMainMenu
@@ -293,6 +295,17 @@ object f: Tf
         Caption = 'Save as...'
         OnClick = mmSaveBaseAsClick
       end
+      object mSetPass: TMenuItem
+        Caption = 'Set password...'
+        OnClick = mSetPassClick
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object mImportBase: TMenuItem
+        Caption = 'Import old base...'
+        OnClick = mImportBaseClick
+      end
       object N1: TMenuItem
         Caption = '-'
       end
@@ -310,11 +323,14 @@ object f: Tf
   object dlgOpen: TOpenDialog
     Filter = 'Russian Roulette Base|*.rrb'
     InitialDir = '.'
-    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 488
     Top = 8
   end
   object dlgSave: TSaveDialog
+    Filter = 'Russian Roulette Base|*.rrb'
+    InitialDir = '.'
+    Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
     Left = 440
     Top = 8
   end

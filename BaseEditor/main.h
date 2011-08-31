@@ -46,6 +46,9 @@ __published: // IDE-managed Components
     TOpenDialog *dlgOpen;
     TSaveDialog *dlgSave;
     TMenuItem *N1;
+    TMenuItem *mSetPass;
+	TMenuItem *mImportBase;
+	TMenuItem *N2;
 
     void __fastcall FieldEnter(TObject* Sender);
     void __fastcall FieldExit(TObject* Sender);
@@ -69,6 +72,8 @@ __published: // IDE-managed Components
     void __fastcall mmSaveBaseClick(TObject* Sender);
     void __fastcall lstQuestionsKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
     void __fastcall mmSaveBaseAsClick(TObject *Sender);
+    void __fastcall mSetPassClick(TObject *Sender);
+	void __fastcall mImportBaseClick(TObject *Sender);
 
 private:
     void ExitAllFields();

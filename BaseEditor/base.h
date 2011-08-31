@@ -1,6 +1,6 @@
 #ifndef baseH
 #define baseH
-#include <list>
+#include <vector>
 #include "question.h"
 
 // ---------------------------------------------------------------------------
@@ -21,9 +21,14 @@ public:
     void save(UnicodeString filename);
     void load(UnicodeString filename);
 
+    unsigned __int32 pass_hash() const ;
+    void set_pass(AnsiString pass);
+
 private:
-    std::list <sQuestion *> questions;
-    std::list <bool> question_is_used;
+    std::vector <sQuestion *> questions;
+    std::vector <bool> question_is_used;
+
+    unsigned __int32 pass_crc;
 };
 // ---------------------------------------------------------------------------
 #endif

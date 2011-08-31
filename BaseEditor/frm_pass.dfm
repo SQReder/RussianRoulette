@@ -1,16 +1,40 @@
 object fpass: Tfpass
   Left = 0
   Top = 0
-  Caption = 'fpass'
-  ClientHeight = 202
-  ClientWidth = 447
+  BorderStyle = bsToolWindow
+  Caption = 'Enter password'
+  ClientHeight = 38
+  ClientWidth = 266
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
+  Position = poOwnerFormCenter
+  OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object edPass: TEdit
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 260
+    Height = 32
+    Align = alClient
+    Alignment = taCenter
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    PasswordChar = '*'
+    TabOrder = 0
+    ExplicitHeight = 27
+  end
 end

@@ -1,16 +1,23 @@
 // ---------------------------------------------------------------------------
-#include <algorithm>
+#include "pch.h"
 #pragma hdrstop
+#include <stdlib.h>
+
 #include "base.h"
 #include "crc32.cpp"
 #include "frm_pass.h"
+
 #pragma package(smart_init)
 extern HWND msg_hwnd;
+
+using std::remove;
+using std::find;
 
 // ---------------------------------------------------------------------------
 sBase::sBase() {
     questions.clear();
     question_is_used.clear();
+    pass_crc = 0;
 }
 
 sBase::~sBase() {
@@ -21,23 +28,18 @@ sBase::~sBase() {
 // ---------------------------------------------------------------------------
 void sBase::add(sQuestion* question) { questions.push_back(question); }
 
-void sBase::drop(sQuestion* question) { questions.remove(question); }
+void sBase::drop(sQuestion* question) {
+    questions.erase(remove(questions.begin(), questions.end(), question), questions.end()); }
 
 void sBase::replace(sQuestion* question) {
-    std::find(questions.begin(), questions.end(), question);
-    questions.remove(question);
+    questions.erase(remove(questions.begin(), questions.end(), question), questions.end());
+    questions.push_back(question);
 }
 // ---------------------------------------------------------------------------
 
 sQuestion* sBase::GetQuestionPointer(unsigned index) const {
     if (index < questions.size()) {
-        // get first element of list
-        std::list <sQuestion *> ::const_iterator it = questions.begin();
-
-        // and go for [index] steps
-        for (unsigned i = 0; i < index; ++i, ++it) { ;
-        }
-        return* it;
+        return questions[index];
     }
     return NULL;
 }
@@ -45,10 +47,8 @@ sQuestion* sBase::GetQuestionPointer(unsigned index) const {
 // ---------------------------------------------------------------------------
 const TStrings* sBase::GetQuestionsList() const {
     TStringList* list = new TStringList();
-    std::list <sQuestion *> ::const_iterator it;
-    for (it = questions.begin(); it != questions.end(); ++it) {
-        sQuestion* q = *it;
-        list->Add(q->question);
+    for (unsigned i = 0; i < questions.size(); ++i) {
+        list->Add(questions[i]->question);
     }
     return list;
 }
@@ -57,7 +57,6 @@ const TStrings* sBase::GetQuestionsList() const {
 
 // set default base signature and password
 const AnsiString signature = "rrb1";
-const AnsiString pass = ""; // "soooo strong password!!11";
 
 // stream for i|o base file
 TFileStream* stream;
@@ -65,25 +64,21 @@ TFileStream* stream;
 // templates for easy manipulate with some types in stream
 template <class T>
 void WriteString(T str) {
-    if (str != "") {
+    if (str.Length()) {
         stream->WriteBuffer(& str[1], str.Length()* sizeof(str[1]));
     }
 }
 
 AnsiString ReadStringA(unsigned length) {
     char* buff = new char[length + 1];
-    for (unsigned i = 0; i < length + 1; ++i) {
-        buff[i] = L'\0';
-    }
+    ZeroMemory(buff, sizeof(char)* (length + 1));
     stream->ReadBuffer(& buff[0], length* sizeof(char));
     return buff;
 };
 
 UnicodeString ReadStringW(unsigned length) {
     wchar_t* buff = new wchar_t[length + 1];
-    for (unsigned i = 0; i < length + 1; ++i) {
-        buff[i] = L'\0';
-    }
+    ZeroMemory(buff, sizeof(wchar_t)* (length + 1));
     stream->ReadBuffer(& buff[0], length* sizeof(wchar_t));
     return buff;
 };
@@ -113,13 +108,12 @@ void sBase::save(UnicodeString filename) {
     try {
         stream = new TFileStream(filename, fmCreate);
         WriteString(signature);
-        WriteN(Crc32(pass.c_str(), pass.Length()));
+        WriteN(pass_crc);
         WriteN(questions.size());
 
         // start writing questions
-        std::list <sQuestion *> ::iterator it;
-        for (it = questions.begin(); it != questions.end(); ++it) {
-            sQuestion* q = *it;
+        for (unsigned i = 0; i < questions.size(); ++i) {
+            sQuestion* q = questions[i];
             WriteChar(q->round);
             WriteChar(q->question.Length());
             WriteChar(q->comment.Length());
@@ -136,7 +130,7 @@ void sBase::save(UnicodeString filename) {
         }
     }
     catch (Exception&) {
-        MessageBoxA(msg_hwnd, "Неизвестная ошибка сохранения файла", "Base Loading Err", 0);
+        MessageBoxA(msg_hwnd, "Неизвестная ошибка сохранения файла", "Base Saving Err", 0);
     }
     stream->Free();
 }
@@ -145,26 +139,26 @@ void sBase::save(UnicodeString filename) {
 bool check_pass(unsigned __int32 hash) {
     if (hash) {
         fpass->ShowModal();
-        return true;
+        return Crc32(SomePass.c_str(), SomePass.Length()) == hash;
     } else {
         return true;
     }
 }
 
 void sBase::load(UnicodeString filename) {
+    questions.clear();
+    question_is_used.clear();
+
     try {
         stream = new TFileStream(filename, fmOpenRead);
     }
     catch (Exception&) {
-        MessageBoxA(msg_hwnd, "Невозможно открыть файл", "Base Loading Err", 0);
+        MessageBoxA(msg_hwnd, "Невозможно открыть файл", "Base Loading Err", MB_OK);
         return;
     }
     try {
         if (ReadStringA(4) == signature) {
-            unsigned __int32 pass_crc = ReadN <unsigned __int32> ();
-            if (!check_pass(pass_crc)) {
-                MessageBoxA(msg_hwnd, "Неверный пароль", "Base Loading Err", 0);
-            }
+            pass_crc = ReadN <unsigned __int32> ();
 
             // MessageBoxW(0, IntToStr((__int64)pass_crc).c_str(), L"Password CRC32", 0);
             unsigned q_count = ReadN <unsigned> ();
@@ -200,4 +194,12 @@ void sBase::load(UnicodeString filename) {
         MessageBoxA(msg_hwnd, "Ошибка загрузки базы вопросов: ошибка чтения файла", "Base Loading Err", 0);
     }
     stream->Free();
+}
+
+unsigned __int32 sBase::pass_hash() const{
+    return pass_crc;
+}
+
+void sBase::set_pass(AnsiString pass) {
+    pass_crc = Crc32(pass.c_str(), pass.Length());
 }

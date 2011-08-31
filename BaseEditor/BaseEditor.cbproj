@@ -23,6 +23,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BCC_PCHInject>pch.h</BCC_PCHInject>
 			<LinkPackageStatics>rtl.lib;vcl.lib;vclx.lib;VclSmp.lib</LinkPackageStatics>
 			<OutputExt>exe</OutputExt>
 			<PackageImports>rtl.bpi;vclimg.bpi;vcl.bpi;vclx.bpi;xmlrtl.bpi;vclactnband.bpi;VclSmp.bpi;svnui.bpi;svn.bpi</PackageImports>
@@ -86,10 +87,14 @@
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="main.cpp">
+				<BCC_PreventPCHInjection>True</BCC_PreventPCHInjection>
 				<Form>f</Form>
 				<DependentOn>main.h</DependentOn>
 				<BuildOrder>2</BuildOrder>
 			</CppCompile>
+			<None Include="pch.h">
+				<BuildOrder>9</BuildOrder>
+			</None>
 			<CppCompile Include="question.cpp">
 				<DependentOn>question.h</DependentOn>
 				<BuildOrder>4</BuildOrder>
