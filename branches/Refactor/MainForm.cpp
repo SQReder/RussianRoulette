@@ -45,18 +45,18 @@ enum {
 } MechanizmState;
 
 typedef enum {
-    mRndQuestion,          // задаётся вопрос раунда
-    mRndChoosePlayer,      // задающий участник должен выбрать отвечающего игрока
-    mRndPlayerChoosen,     // отвечающий игрок выбран
-    mRndAnswering,         // ответы показны, игрок даёт ответ
-    mRndAnswerLocked,      // ответ принят, идёт проверка ответа
-    mRndShowCorrectAns,    // показ верного ответа, перечисление денег
-    mRndMomentOfTruth = 7, // «момент истины» для игрока после остановки механизма
-    mRndNoQuestions,       // вопросы раунда закончились, определяется явный лидер
-    mRndSuddenDeath,       // один из игроков (кроме спасённого) покидает игру
-    mRndEndOfCurrRound,    // конец текущего раунда
-    mRndNewRound,          // объявление нового раунда
-    mRndStartNewRound,     // начало нового раунда
+    mRoundQuestion,          // задаётся вопрос раунда
+    mRoundChoosePlayer,      // задающий участник должен выбрать отвечающего игрока
+    mRoundPlayerChoosen,     // отвечающий игрок выбран
+    mRoundAnswering,         // ответы показны, игрок даёт ответ
+    mRoundAnswerLocked,      // ответ принят, идёт проверка ответа
+    mRoundShowCorrectAns,    // показ верного ответа, перечисление денег
+    mRoundMomentOfTruth = 7, // «момент истины» для игрока после остановки механизма
+    mRoundNoQuestions,       // вопросы раунда закончились, определяется явный лидер
+    mRoundSuddenDeath,       // один из игроков (кроме спасённого) покидает игру
+    mRoundEndOfCurrRound,    // конец текущего раунда
+    mRoundNewRound,          // объявление нового раунда
+    mRoundStartNewRound,     // начало нового раунда
 } ModesOfGame;
 ModesOfGame ModeOfGame;    // режимы игры (последовательность игровых действий)
 
