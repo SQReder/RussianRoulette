@@ -189,7 +189,7 @@ void LightHatchesW(int bright, int light) {
 
 // ---------------------------------------------------------------------------
 void ZeroRoundSpin() {
-    static const int frames[15][6] = {
+	static const int frames[15][6] = {
         { 1, 4, 1, 1, 1, 1 },
         { 1, 4, 1, 1, 1, 1 },
         { 1, 4, 4, 1, 1, 1 },
@@ -208,7 +208,7 @@ void ZeroRoundSpin() {
     };
 
     // copy one line of frames array to hatch states
-    memcpy(h_state, frames[AnimationFrame], sizeof(frames[AnimationFrame]));
+	memcpy(h_state, frames[AnimationFrame], sizeof(frames[AnimationFrame]));
 
     AnimationFrame = ++AnimationFrame % 15;
     CurrentHatch = 1 + AnimationFrame % 5;
@@ -389,10 +389,10 @@ void SwitchesLights() {
                 }
             }
         } break;
-    default:
-        AnimationFrame = 3;
-    }
-    // AnimationFrame = ++AnimationFrame % 2;
+	default:
+		;
+	}
+	AnimationFrame = ++AnimationFrame % 2;
 }
 
 void OpenRndHatches() // открытие люков
