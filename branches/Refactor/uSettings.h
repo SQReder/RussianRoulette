@@ -12,7 +12,6 @@
 
 class TSettings {
 public:
-    TSettings();
     TSettings(UnicodeString filename);
 
     UnicodeString PlayerNames[5];
@@ -28,7 +27,6 @@ public:
     int SoundVolume;
     bool MusicEnabled;
     int MusicVolume;
-    bool Win7Features;
     bool HostMode;
     String LastBase;
     TStringList* BaseNames;
@@ -51,7 +49,6 @@ __published: // IDE-managed Components
     TButton* btnOK;
     TPanel* pButtons;
     TCheckBox* cbFullscreen;
-    TCheckBox* cbWin7Features;
     TComboBox* cmbListOfBases;
     TComboBox* cmbPlayerType0;
     TComboBox* cmbPlayerType1;

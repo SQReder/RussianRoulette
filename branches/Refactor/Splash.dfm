@@ -14,7 +14,6 @@ object SplashForm: TSplashForm
   GlassFrame.SheetOfGlass = True
   OldCreateOrder = False
   Position = poScreenCenter
-  OnClick = FormClick
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -1060,6 +1059,7 @@ object SplashForm: TSplashForm
   end
   object tmrSplash: TTimer
     Enabled = False
+    Interval = 1
     OnTimer = tmrSplashTimer
     Left = 120
     Top = 256

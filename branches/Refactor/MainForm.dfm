@@ -25,8 +25,8 @@ object F: TF
   object imgBorder: TImage
     Left = 8
     Top = 637
-    Width = 1352
-    Height = 150
+    Width = 1280
+    Height = 143
     Align = alCustom
     AutoSize = True
     Picture.Data = {
@@ -1568,6 +1568,8 @@ object F: TF
       A74E9D3A75EAD4A953A74E9D264CFF1F963BF749CF3367B10000000049454E44
       AE426082}
     Visible = False
+    ExplicitWidth = 1352
+    ExplicitHeight = 150
   end
   object imgPlace: TImage
     Left = 248
@@ -5888,7 +5890,7 @@ object F: TF
   object MediaPlayer1: TMediaPlayer
     Left = 8
     Top = 406
-    Width = 253
+    Width = 268
     Height = 30
     Visible = False
     TabOrder = 5
@@ -5913,7 +5915,7 @@ object F: TF
     Left = 364
     Top = 670
     Width = 330
-    Height = 27
+    Height = 26
     Alignment = taCenter
     Color = clNone
     Font.Charset = RUSSIAN_CHARSET
@@ -5939,7 +5941,7 @@ object F: TF
   object MediaPlayer2: TMediaPlayer
     Left = 8
     Top = 477
-    Width = 253
+    Width = 268
     Height = 30
     Visible = False
     TabOrder = 9

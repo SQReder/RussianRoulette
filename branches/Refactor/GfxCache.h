@@ -1,6 +1,6 @@
 #ifndef GfxCacheH
 #define GfxCacheH
-#include <Graphics.hpp>
+#include "pch.h"
 
 // ---------------------------------------------------------------------------
 class sGfxCache {

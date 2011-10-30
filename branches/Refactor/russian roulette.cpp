@@ -16,39 +16,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#include <vcl.h>
-#pragma hdrstop
-#include <tchar.h>
+#include "pch.h"
 // ---------------------------------------------------------------------------
+USEFORM("MainMenu.cpp", MenuForm);
 USEFORM("uSettings.cpp", SettingsForm);
 USEFORM("Splash.cpp", SplashForm);
-USEFORM("MainMenu.cpp", MenuForm);
 USEFORM("About.cpp", AboutForm);
 USEFORM("MainForm.cpp", F);
 
 // ---------------------------------------------------------------------------
 WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
+    EZDBGONLYLOGGERSTREAM << endl << endl;
+    EZDBGONLYLOGGERSTREAM << "Started" << endl;
     try {
         Application->Initialize();
         Application->Title = "Русская рулетка";
-        Application->CreateForm(__classid(TSplashForm), & SplashForm);
-        Application->CreateForm(__classid(TMenuForm), & MenuForm);
-        Application->CreateForm(__classid(TSettingsForm), & SettingsForm);
-        Application->CreateForm(__classid(TAboutForm), & AboutForm);
-        Application->CreateForm(__classid(TF), & F);
+        Application->CreateForm(__classid(TSplashForm), &SplashForm);
+        Application->CreateForm(__classid(TMenuForm), &MenuForm);
+        Application->CreateForm(__classid(TSettingsForm), &SettingsForm);
+        Application->CreateForm(__classid(TAboutForm), &AboutForm);
+        Application->CreateForm(__classid(TF), &F);
         Application->Run();
     }
-    catch (Exception& exception) {
-        Application->ShowException(& exception);
+    catch (Exception &exception) {
+        Application->ShowException(&exception);
     }
     catch (...) {
         try {
             throw Exception("");
         }
-        catch (Exception& exception) {
-            Application->ShowException(& exception);
+        catch (Exception &exception) {
+            Application->ShowException(&exception);
         }
     }
+
+    EZDBGONLYLOGGERSTREAM << "Stopped" << endl;
     return 0;
 }
 // ---------------------------------------------------------------------------

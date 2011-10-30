@@ -7,7 +7,7 @@
 			<Base>True</Base>
 			<Platform>Win32</Platform>
 			<AppType>Application</AppType>
-			<FrameworkType>VCL</FrameworkType>
+			<FrameworkType>None</FrameworkType>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
 			<Base>true</Base>
@@ -23,6 +23,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BCC_PCHInject>pch.h</BCC_PCHInject>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<BCC_AsmToObj>true</BCC_AsmToObj>
 			<LinkPackageStatics>rtl.lib;vcl.lib;vclimg.lib;vclx.lib;Tee.lib;bcbie.lib</LinkPackageStatics>
@@ -32,7 +33,7 @@
 			<OutputExt>exe</OutputExt>
 			<AllPackageLibs>rtl.lib;vcl.lib;vclimg.lib;vclx.lib;Tee.lib;bcbie.lib</AllPackageLibs>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
-			<IncludePath>$(BDS)\include;$(BDS)\include\dinkumware;C:\Program Files (x86)\Embarcadero\RAD Studio\8.0\include\windows\vcl;$(IncludePath)</IncludePath>
+			<IncludePath>$(BDS)\include;$(BDS)\include\dinkumware;C:\Program Files (x86)\Embarcadero\RAD Studio\8.0\include\windows\vcl;.\ezlogger\;$(IncludePath)</IncludePath>
 			<BCC_wpar>false</BCC_wpar>
 			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
 			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
@@ -102,6 +103,9 @@
 				<DependentOn>MainMenu.h</DependentOn>
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
+			<None Include="pch.h">
+				<BuildOrder>14</BuildOrder>
+			</None>
 			<CppCompile Include="russian roulette.cpp">
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
@@ -123,9 +127,9 @@
 				<DependentOn>uSettings.h</DependentOn>
 				<BuildOrder>8</BuildOrder>
 			</CppCompile>
-			<FormResources Include="MainMenu.dfm"/>
 			<FormResources Include="uSettings.dfm"/>
 			<FormResources Include="Splash.dfm"/>
+			<FormResources Include="MainMenu.dfm"/>
 			<FormResources Include="About.dfm"/>
 			<FormResources Include="MainForm.dfm"/>
 			<BuildConfiguration Include="Release">
@@ -153,7 +157,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">2</VersionInfo>
-						<VersionInfo Name="Build">364</VersionInfo>
+						<VersionInfo Name="Build">373</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -165,7 +169,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule studios</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">It&apos;s PC realisation of TV gameshow</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.2.364</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.2.373</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GNU GPLv3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

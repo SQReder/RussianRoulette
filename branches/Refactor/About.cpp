@@ -16,10 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#include <vector>
-#include <vcl.h>
-#pragma hdrstop
-
 #include "About.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)

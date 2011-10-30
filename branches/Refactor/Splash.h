@@ -3,13 +3,13 @@
 #ifndef SplashH
 #define SplashH
 // ---------------------------------------------------------------------------
+#include "pch.h"
 #include <Classes.hpp>
+#include <ComCtrls.hpp>
 #include <Controls.hpp>
-#include <StdCtrls.hpp>
-#include <Forms.hpp>
 #include <ExtCtrls.hpp>
 #include <pngimage.hpp>
-#include <ComCtrls.hpp>
+#include <StdCtrls.hpp>
 
 // ---------------------------------------------------------------------------
 class TSplashForm : public TForm {
@@ -22,7 +22,6 @@ __published: // IDE-managed Components
     TLabel* lblLoadState;
 
     void __fastcall FormCreate(TObject* Sender);
-    void __fastcall FormClick(TObject* Sender);
     void __fastcall tmrSplashTimer(TObject* Sender);
     void __fastcall tmrOpenSplashTimer(TObject* Sender);
 

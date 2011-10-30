@@ -1,7 +1,8 @@
 // ---------------------------------------------------------------------------
-
 #ifndef GameLogicH
 #define GameLogicH
+#include "pch.h"
+
 void switchoffquestion();
 void switchonquestion();
 void showquestion();

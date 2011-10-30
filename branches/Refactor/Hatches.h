@@ -3,8 +3,7 @@
 #ifndef HatchesH
 #define HatchesH
 // ---------------------------------------------------------------------------
-#include <Classes.hpp>
-#include <Graphics.hpp>
+#include "pch.h"
 #include "MainForm.h"
 // ---------------------------------------------------------------------------
 void Hatches();

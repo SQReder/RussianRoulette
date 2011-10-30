@@ -16,8 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#include <vcl.h>
-#include <winbase.h>
 #pragma hdrstop
 
 #define imgBlackHatch	"Data\\Black.png"	//state index 0
@@ -30,9 +28,10 @@
 #include "Hatches.h"
 #include "GameLogic.h"
 #pragma package(smart_init)
+
 using Graphics::TPicture;
-TPicture* hatch[6]; // указатели на изображения люков на форме
-TPicture* h_state_img[6]; // изображения состояний люков
+TPicture *hatch[6]; // указатели на изображения люков на форме
+TPicture *h_state_img[6]; // изображения состояний люков
 int h_state[6]; // текущее состояние люков
 int AnimationFrame; // определяет порядок анимации
 
@@ -189,7 +188,7 @@ void LightHatchesW(int bright, int light) {
 
 // ---------------------------------------------------------------------------
 void ZeroRoundSpin() {
-	static const int frames[15][6] = {
+    static const int frames[15][6] = {
         { 1, 4, 1, 1, 1, 1 },
         { 1, 4, 1, 1, 1, 1 },
         { 1, 4, 4, 1, 1, 1 },
@@ -208,7 +207,7 @@ void ZeroRoundSpin() {
     };
 
     // copy one line of frames array to hatch states
-	memcpy(h_state, frames[AnimationFrame], sizeof(frames[AnimationFrame]));
+    memcpy(h_state, frames[AnimationFrame], sizeof(frames[AnimationFrame]));
 
     AnimationFrame = ++AnimationFrame % 15;
     CurrentHatch = 1 + AnimationFrame % 5;
@@ -389,10 +388,9 @@ void SwitchesLights() {
                 }
             }
         } break;
-	default:
-		;
-	}
-	AnimationFrame = ++AnimationFrame % 2;
+    default: ;
+    }
+    AnimationFrame = ++AnimationFrame % 2;
 }
 
 void OpenRndHatches() // открытие люков

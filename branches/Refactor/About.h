@@ -3,11 +3,10 @@
 #ifndef AboutH
 #define AboutH
 // ---------------------------------------------------------------------------
+#include "pch.h"
 #include <Classes.hpp>
 #include <Controls.hpp>
 #include <StdCtrls.hpp>
-#include <Forms.hpp>
-#include <ExtCtrls.hpp>
 
 // ---------------------------------------------------------------------------
 class TAboutForm : public TForm {

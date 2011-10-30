@@ -16,27 +16,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#include <vcl.h>
-#pragma hdrstop
-
 #include "Splash.h"
+
+#include <windows.h>
 #include "MainMenu.h"
 #include "MainForm.h"
-#include "inifiles.hpp"
-#include "classes.hpp"
-#include <windows.h>
 #include "uSettings.h"
 #include "GfxCache.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-TSplashForm* SplashForm;
+TSplashForm *SplashForm;
 bool FatalError = false;
 
 // ---------------------------------------------------------------------------
-TStringList* nonExisten;
+TStringList *nonExisten;
 
-__fastcall TSplashForm::TSplashForm(TComponent* Owner) : TForm(Owner) { }
+__fastcall TSplashForm::TSplashForm(TComponent *Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 inline void UpdPB() {
@@ -122,7 +118,7 @@ void ShowState(String state) { SplashForm->lblLoadState->Caption = state; }
 
 // ---------------------------------------------------------------------------
 void Loader() {
-    SplashForm->PBLoad->Max = 133;
+    SplashForm->PBLoad->Max = 132;
 
     ShowState("Load settings...");
     Settings = new TSettings(ExtractFilePath(Application->ExeName) + "settings.cfg");
@@ -139,14 +135,13 @@ void Loader() {
 
 // ---------------------------------------------------------------------------
 
-#define BUFSIZE 80
-
 BOOL OSIsWin7() {
+    EZDBGONLYLOGGERSTREAM << endl;
     OSVERSIONINFOEX osvi;
 
     // Пытаемся вызвать GetVersionEx используя структуру OSVERSIONINFOEX.
     // В случае ошибки пытаемся проделать тоже самое со структурой OSVERSIONINFO.
-    ZeroMemory(& osvi, sizeof(OSVERSIONINFOEX));
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
     if (!GetVersionEx((OSVERSIONINFO *) &osvi)) {
@@ -157,11 +152,16 @@ BOOL OSIsWin7() {
         }
     }
 
+    EZDBGONLYLOGGERSTREAM << "OS version " << osvi.dwMajorVersion << "." << osvi.dwMinorVersion << endl;
+    int ScreenWidth = Screen->Width;
+    int ScreenHeight = Screen->Height;
+    EZDBGONLYLOGGERSTREAM << "Desktop resolution " << ScreenWidth << "x" << ScreenHeight << endl;
+
     return osvi.dwMajorVersion >= 6;
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSplashForm::FormCreate(TObject* Sender) {
+void __fastcall TSplashForm::FormCreate(TObject *Sender) {
     if (OSIsWin7()) {
         BorderStyle = bsToolWindow;
     } else {
@@ -172,24 +172,20 @@ void __fastcall TSplashForm::FormCreate(TObject* Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSplashForm::FormClick(TObject* Sender) {
-    tmrSplash->Enabled = False;
-    MenuForm->Show();
-    imgSplash->Free();
-    tmrSplash->Enabled = False;
-    SplashForm->Hide();
-}
-// ---------------------------------------------------------------------------
-int CountDown = 2;
+int CountDown = 0;
 
-void __fastcall TSplashForm::tmrSplashTimer(TObject* Sender) {
+void __fastcall TSplashForm::tmrSplashTimer(TObject *Sender) {
     if (CountDown-- || FatalError) {
-        SplashForm->Click();
+        tmrSplash->Enabled = False;
+        MenuForm->Show();
+        imgSplash->Free();
+        tmrSplash->Enabled = False;
+        SplashForm->Hide();
     }
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSplashForm::tmrOpenSplashTimer(TObject* Sender) {
+void __fastcall TSplashForm::tmrOpenSplashTimer(TObject *Sender) {
     SplashForm->AlphaBlendValue += 15;
     if (SplashForm->AlphaBlendValue >= 255) {
         tmrOpenSplash->Enabled = False;

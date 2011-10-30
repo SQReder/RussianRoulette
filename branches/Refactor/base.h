@@ -1,6 +1,8 @@
 // ---------------------------------------------------------------------------
 #ifndef baseH
 #define baseH
+#include "pch.h"
+
 void LoadQuestionFromBase(String BaseFile);
 
 class QA {

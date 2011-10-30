@@ -31,7 +31,6 @@ object SettingsForm: TSettingsForm
     Align = alClient
     Caption = 'gbOptions'
     TabOrder = 4
-    ExplicitHeight = 197
     object lblSoundVolume: TLabel
       AlignWithMargins = True
       Left = 5
@@ -86,15 +85,6 @@ object SettingsForm: TSettingsForm
       TabOrder = 3
       OnClick = cbSoundOnOffClick
     end
-    object cbWin7Features: TCheckBox
-      Left = 11
-      Top = 140
-      Width = 97
-      Height = 17
-      Caption = 'cbWin7Features'
-      TabOrder = 4
-      Visible = False
-    end
   end
   object gbChooseQuestionBase: TGroupBox
     Left = 3
@@ -104,8 +94,6 @@ object SettingsForm: TSettingsForm
     Align = alTop
     Caption = 'gbChooseQuestionBase'
     TabOrder = 3
-    ExplicitLeft = 6
-    ExplicitWidth = 331
     object addBase: TButton
       AlignWithMargins = True
       Left = 217
@@ -116,9 +104,6 @@ object SettingsForm: TSettingsForm
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1073#1072#1079#1091
       TabOrder = 0
       OnClick = addBaseClick
-      ExplicitLeft = 214
-      ExplicitTop = 17
-      ExplicitWidth = 109
     end
     object cmbListOfBases: TComboBox
       AlignWithMargins = True
@@ -139,8 +124,6 @@ object SettingsForm: TSettingsForm
     Align = alTop
     Caption = 'gbPlayerNames'
     TabOrder = 0
-    ExplicitLeft = 6
-    ExplicitWidth = 331
     object edPlayer0: TLabeledEdit
       Left = 9
       Top = 36
@@ -162,7 +145,7 @@ object SettingsForm: TSettingsForm
       TabOrder = 1
     end
     object edPlayer2: TLabeledEdit
-      Left = 5
+      Left = 11
       Top = 116
       Width = 147
       Height = 21
@@ -285,8 +268,6 @@ object SettingsForm: TSettingsForm
     Align = alBottom
     BevelEdges = [beTop]
     TabOrder = 1
-    ExplicitLeft = 0
-    ExplicitTop = 451
     object btnCancel: TButton
       AlignWithMargins = True
       Left = 164
@@ -298,9 +279,6 @@ object SettingsForm: TSettingsForm
       Caption = 'btnCancel'
       TabOrder = 0
       OnClick = btnCancelClick
-      ExplicitTop = -8
-      ExplicitWidth = 156
-      ExplicitHeight = 25
     end
     object btnOK: TButton
       AlignWithMargins = True
@@ -313,9 +291,6 @@ object SettingsForm: TSettingsForm
       Caption = 'btnOK'
       TabOrder = 1
       OnClick = btnOKClick
-      ExplicitLeft = 11
-      ExplicitTop = -8
-      ExplicitHeight = 25
     end
   end
   object tbSoundVolume: TTrackBar

@@ -33,35 +33,6 @@ TSettingsForm* SettingsForm;
 std::map <String, String> BaseFiles;
 
 // ---------------------------------------------------------------------------
-TSettings::TSettings() {
-    for (int i = 0; i < 5; ++i) {
-        PlayerNames[i] = "Игрок № ";
-        PlayerNames[i][8] = 49 + i; // generate number 1..5. char 49 is '1'
-        PlayerType[i] = bbHuman;
-    }
-
-    Fullscreen = True;
-
-    FormsTop = 0;
-    FormsLeft = 0;
-    FormsWidth = 1024;
-    FormsHeight = 768;
-
-    MinWidth = 1024;
-    MinHeight = 768;
-
-    SoundEnabled = True;
-    SoundVolume = 100;
-    MusicEnabled = True;
-    MusicVolume = 100;
-
-    Win7Features = False;
-
-    LastBase = "main.dat";
-
-    BaseNames = new TStringList();
-    HostMode = false;
-};
 
 TSettings::TSettings(UnicodeString filename) {
     TIniFile* ini = new TIniFile(filename);
@@ -164,7 +135,6 @@ void __fastcall TSettingsForm::FormShow(TObject* Sender) {
     cbMusicOnOff->Checked = Settings->MusicEnabled;
     cbFullscreen->Checked = Settings->Fullscreen;
 
-    cbWin7Features->Checked = Settings->Win7Features;
     tbSoundVolume->Position = Settings->SoundVolume;
     tbMusicVolume->Position = Settings->MusicVolume;
 
@@ -223,9 +193,6 @@ void SaveSettings() {
         ini->WriteInteger("Players", "PlayerType" + IntToStr(i), (int) Settings->PlayerType[i - 1]);
     }
 
-    // SettingsForm->FileListBox1->Directory = ExtractFileDir(Application->ExeName) + "\\base\\";
-    // SettingsForm->FileListBox1->Update();
-
     int i = 0;
     for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
         ini->WriteString("Bases", "basename" + IntToStr(i), it->first);
@@ -255,7 +222,6 @@ void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
     Settings->MusicEnabled = cbMusicOnOff->Checked;
     Settings->MusicVolume = tbMusicVolume->Position;
     Settings->Fullscreen = cbFullscreen->Checked;
-    Settings->Win7Features = cbWin7Features->Checked;
     Settings->HostMode = cbHostModeOnOff->Checked;
 
     Settings->LastBase = BaseFiles[cmbListOfBases->Items->Strings[cmbListOfBases->ItemIndex]];
@@ -353,3 +319,4 @@ void SwitchFullscreen(TForm* form) {
     Settings->Fullscreen = !Settings->Fullscreen;
     LoadFormPosition(form);
 }
+
