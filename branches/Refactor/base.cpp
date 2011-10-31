@@ -20,9 +20,7 @@
 #include "base.h"
 #pragma package(smart_init)
 
-extern void ShowError(int);
-
-QA* base;
+QA *base;
 int qcount;
 
 String FillChars(String str, int count);
@@ -30,7 +28,7 @@ String ClearStr(String str);
 String GetStr(String str, int begin, int size);
 // ---------------------------------------------------------------------------
 
-const char* BaseDir = "base\\";
+const char *BaseDir = "base\\";
 
 void LoadQuestionFromBase(String BaseFile) {
     /*
@@ -45,11 +43,11 @@ void LoadQuestionFromBase(String BaseFile) {
 
     // открываем базу
     try {
-        TFileStream* stream = new TFileStream(BaseDir + BaseFile, fmOpenRead);
+        TFileStream *stream = new TFileStream(BaseDir + BaseFile, fmOpenRead);
         // подготавливаем строку и считываем в нее количество вопросов в базе
         String tstr = "     "; // длина строки = количеству считываемых символов
         // считываем строку длиной в 10 байт, ибо юникод, а символов 5 =/
-        stream->Read(& tstr[1], 10);
+        stream->Read(&tstr[1], 10);
 
         tstr = ClearStr(tstr); // теперя тута храниццо кол-во вопросов в базе =^__^=
         qcount = StrToInt(tstr);
@@ -60,7 +58,7 @@ void LoadQuestionFromBase(String BaseFile) {
             String str = "";
             // ну тут все ясно =)
             str = FillChars(str, 457); // подготавливаем память для загрузки
-            stream->ReadBuffer(& str[1], 457* 2);
+            stream->ReadBuffer(&str[1], 457 *2);
             // и считываем блок данных
 
             for (int i = 1; i < str.Length(); i++) // расшифровываем
@@ -85,7 +83,8 @@ void LoadQuestionFromBase(String BaseFile) {
         stream->Free();
     }
     catch (...) {
-        ShowError(2);
+        ShowMessage("Ошибка загрузки базы вопросов: база с именем '" + BaseFile + "' не существует!");
+        exit(1);
     }
 }
 

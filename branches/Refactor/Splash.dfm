@@ -1027,8 +1027,8 @@ object SplashForm: TSplashForm
       FB9AFF54A2C74BF57590D754BFDFFA6F81DE032E5DF833BDE61FAFF9587FEDF3
       9A0400100002000060745A6DF745D91C62FCD58D3F48F92A45000080A5F37F17
       3EC1F7BEEBD1090000000049454E44AE426082}
-    ExplicitWidth = 1280
-    ExplicitHeight = 205
+    ExplicitLeft = 48
+    ExplicitTop = 56
   end
   object lblLoadState: TLabel
     AlignWithMargins = True
@@ -1059,7 +1059,7 @@ object SplashForm: TSplashForm
   end
   object tmrSplash: TTimer
     Enabled = False
-    Interval = 1
+    Interval = 100
     OnTimer = tmrSplashTimer
     Left = 120
     Top = 256

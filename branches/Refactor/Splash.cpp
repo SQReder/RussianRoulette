@@ -21,7 +21,7 @@
 #include <windows.h>
 #include "MainMenu.h"
 #include "MainForm.h"
-#include "uSettings.h"
+#include "fSettings.h"
 #include "GfxCache.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -121,7 +121,7 @@ void Loader() {
     SplashForm->PBLoad->Max = 132;
 
     ShowState("Load settings...");
-    Settings = new TSettings(ExtractFilePath(Application->ExeName) + "settings.cfg");
+    TSettings::Instance()->LoadFromFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
     UpdPB();
     ShowState("Checking system integrity...");
     CheckSystemIntegrity();

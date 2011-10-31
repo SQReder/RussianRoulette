@@ -25,7 +25,7 @@
 #include "GameLogic.h"
 #include "Splash.h"
 #include "AI.h"
-#include "uSettings.h"
+#include "fSettings.h"
 #include "uHostMode.h"
 #include "base.h"
 #include "GfxCache.h"
@@ -93,6 +93,7 @@ void __fastcall TF::LoadGraphic() {
     tmrWaiting->Enabled = false;
     imgTotalPrize->Visible = false;
 
+    TSettings *Settings = TSettings::Instance();
     F->Constraints->MinWidth = Settings->MinWidth;
     F->Constraints->MinHeight = Settings->MinHeight;
 
@@ -157,7 +158,8 @@ void TF::CreateLabel(TLabel **type, int index, int top, int left, int width, int
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::PlaySound(String path) {
-    if (Settings->SoundEnabled) {
+
+    if (TSettings::Instance()->SoundEnabled) {
 
         MediaPlayer1->FileName = "sounds\\" + path;
         MediaPlayer1->Open();
@@ -167,7 +169,7 @@ void __fastcall TF::PlaySound(String path) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::PlayMusic(String path) {
-    if (Settings->MusicEnabled) {
+    if (TSettings::Instance()->MusicEnabled) {
         MediaPlayer2->FileName = "sounds\\" + path;
         MediaPlayer2->Open();
         MediaPlayer2->Play();
@@ -177,9 +179,6 @@ void __fastcall TF::PlayMusic(String path) {
 
 // ---------------------------------------------------------------------------
 __fastcall TF::TF(TComponent *Owner) : TForm(Owner) { }
-
-// ---------------------------------------------------------------------------
-void __fastcall TF::Button1Click(TObject *Sender) { DumpMemory(0); }
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::FormCreate(TObject *Sender) {
@@ -351,7 +350,7 @@ void __fastcall TF::tmrRotatorTimer(TObject *Sender) {
             PlayMusic("rr_endround.wav");
             switchonquestion();
             ModeOfGame = mRoundQuestion;
-            if (Settings->HostMode == false) {
+            if (TSettings::Instance()->HostMode == false) {
                 tmrWaiting->Enabled = True;
                 Wait = 0;
             }
@@ -362,6 +361,7 @@ void __fastcall TF::tmrRotatorTimer(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
+    TSettings *Settings = TSettings::Instance();
     Wait++ ;
     switch (ModeOfGame) {
     case mRoundQuestion: // показ вопроса
@@ -933,6 +933,8 @@ void __fastcall TF::HatchClick(TObject *Sender) {
 const char *KeyCode[6] = { "6f", "1a", "2b", "3c", "4d", "5e" };
 
 void __fastcall TF::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift) {
+    TSettings *Settings = TSettings::Instance();
+
     TCHAR ch[] = "\0\0";
     ch[0] = Key;
 
@@ -1103,7 +1105,7 @@ void TF::TransferMoney() {
         Reward = 0;
         if (answer == RandomPlace) {
             ModeOfGame = mRoundQuestion;
-            if (!Settings->HostMode) {
+            if (!TSettings::Instance()->HostMode) {
                 Wait = 0;
                 tmrWaiting->Enabled = true;
             } else {
@@ -1144,6 +1146,8 @@ void TF::ResetForm() // возвращает форму в исходное положение
 
 void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
     // финальный раунд игры "Русская рулетка"
+    TSettings *Settings = TSettings::Instance();
+
     Wait++ ;
     switch (ModeOfGame) {
     case mFinalStartNewRound: {
@@ -1263,7 +1267,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 edFinalAnswer->Top = imgQuestion->Top + imgQuestion->Height - 30 - edFinalAnswer->Height;
                 edFinalAnswer->Left = (int)(imgQuestion->Left + (imgQuestion->Width - edFinalAnswer->Width) / 2.);
                 edFinalAnswer->Visible = True;
-                if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
+                if (TSettings::Instance()->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
                     edFinalAnswer->Enabled = true;
                 } else {
                     edFinalAnswer->Enabled = false;
@@ -1586,7 +1590,7 @@ void ResetPlayers() {
     RoundOfGame = -1; // указывается номер текущего раунда (влияет на механизм)
 
     for (int i = 0; i < 5; i++) {
-        bot[i] = new TBot(Settings->PlayerType[i]);
+        bot[i] = new TBot(TSettings::Instance()->PlayerType[i]);
     }
 }
 // ---------------------------------------------------------------------------
@@ -1640,15 +1644,14 @@ void __fastcall TF::FormShow(TObject *Sender) {
     switchoffquestion();
 
     for (int i = 0; i < 5; i++) {
-        lblPlayer[i]->Caption = Settings->PlayerNames[i];
+        lblPlayer[i]->Caption = TSettings::Instance()->PlayerNames[i];
     }
 
     SetQuestionsMaximum(1, 1, 1, 1);
 
     for (int i = 0; i < 5; ++i) {
-        int j = i + 1;
-        imgPlayer[i]->Top = int(imgHatch[j]->Top + (imgHatch[j]->Height - imgNumber[i]->Height) / 2 - 5);
-        imgPlayer[i]->Left = int(imgHatch[j]->Left + (imgHatch[j]->Width - imgNumber[i]->Width) / 2 - 5);
+        imgPlayer[i]->Top = int(imgHatch[i + 1]->Top + (imgHatch[i + 1]->Height - imgNumber[i]->Height) / 2 - 5);
+        imgPlayer[i]->Left = int(imgHatch[i + 1]->Left + (imgHatch[i + 1]->Width - imgNumber[i]->Width) / 2 - 5);
     }
 
     tmrPulseAnimation->Enabled = True;
@@ -1735,7 +1738,7 @@ void __fastcall TF::FormResize(TObject *Sender) {
     // Создаем лейблочки для имен игроков и денег
     int offcet = 0;
     for (int i = 0; i < 5; ++i) {
-        CreateLabel(lblPlayer, i, 15 + offcet, imgPlayers->Left + 67, 201, 20, Settings->PlayerNames[i]);
+        CreateLabel(lblPlayer, i, 15 + offcet, imgPlayers->Left + 67, 201, 20, TSettings::Instance()->PlayerNames[i]);
         CreateLabel(lblMoney, i, 43 + offcet, imgPlayers->Left + 80, 176, 25, money[i]);
         offcet += 83;
     }
@@ -1759,10 +1762,9 @@ void __fastcall TF::FormResize(TObject *Sender) {
     imgSplash->BringToFront();
 
     for (int i = 0; i < 5; ++i) {
-        int j = i + 1;
-        imgPlayer[i]->Top = int(imgHatch[j]->Top + (imgHatch[j]->Height - imgNumber[i]->Height) / 2 - 5);
-        imgPlayer[i]->Left = int(imgHatch[j]->Left + (imgHatch[j]->Width - imgNumber[i]->Width) / 2 - 5);
-//        imgPlayer[i]->Visible = True;
+        imgPlayer[i]->Top = int(imgHatch[i + 1]->Top + (imgHatch[i + 1]->Height - imgNumber[i]->Height) / 2 - 5);
+        imgPlayer[i]->Left = int(imgHatch[i + 1]->Left + (imgHatch[i + 1]->Width - imgNumber[i]->Width) / 2 - 5);
+        // imgPlayer[i]->Visible = True;
     }
 
     imgSplash->Center = true;
@@ -1812,52 +1814,6 @@ void __fastcall TF::tmrSplashTimer(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void ShowError(int errcode) {
-    switch (errcode) {
-    case 1:
-        ShowMessage("Ошибка загрузки базы вопросов: имя базы не указано!");
-        exit(1);
-    case 2:
-        F->FatalError = 1;
-        ShowMessage("Ошибка загрузки базы вопросов: база с именем '" + Settings->LastBase + "' не существует!");
-        exit(1);
-    }
-}
-
-// ---------------------------------------------------------------------------
-void DumpMemory(int errcode) {
-    TFileStream *stream = new TFileStream("crash.dat", fmCreate);
-
-    AnsiString str = "";
-
-    str = "LastBase = " + Settings->LastBase + "\n\r";
-    stream->Write(&str[1], str.Length());
-
-    int n = F->NumberOfQuestion;
-
-    str = "Number of question = " + IntToStr(n) + "\n\r";
-    stream->Write(&str[1], str.Length());
-
-    str = "Question = " + IntToStr(base[n].Round) + ". " + base[n].Question + "\n\r";
-    stream->Write(&str[1], str.Length());
-
-    str = "Ingame = [";
-    for (int i = 0; i < 5; i++) {
-        str += BoolToStr(F->ingame[i]) + ",";
-    }
-    str += "]\n\r";
-    stream->Write(&str[1], str.Length());
-
-    str = "opened_now = [";
-    for (int i = 0; i < 6; i++) {
-        str += BoolToStr(opened_now[i]) + ",";
-    }
-    str += "]\n\r";
-    stream->Write(&str[1], str.Length());
-
-    stream->Free();
-}
-
 void __fastcall TF::tmrDecidedTimer(TObject *Sender) {
     Wait++ ;
     if (Wait == TimeToDecide) {
@@ -1982,6 +1938,8 @@ void __fastcall TF::tmrLightAnimationTimer(TObject *Sender) {
 // ----------------------------------------------------------------------------
 
 void __fastcall TF::ControlLabelClick(TObject *Sender) {
+    TSettings *Settings = TSettings::Instance();
+
     if (ModeOfGame == mRoundAnswering && CanAnswer == 1 && Settings->PlayerType[chooseplayer - 1] == bbHuman) {
         F->Reward = 1000 * RoundOfGame;
 

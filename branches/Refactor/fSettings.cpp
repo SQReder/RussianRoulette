@@ -18,69 +18,15 @@
 // ---------------------------------------------------------------------------
 #include <map>
 #include <vector>
-#include <vcl.h>
-#include <system.hpp>
-#include "inifiles.hpp"
 #pragma hdrstop
 
-#include "uSettings.h"
+#include "fSettings.h"
 #include "MainForm.h"
-TSettings* Settings;
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TSettingsForm* SettingsForm;
 std::map <String, String> BaseFiles;
-
-// ---------------------------------------------------------------------------
-
-TSettings::TSettings(UnicodeString filename) {
-    TIniFile* ini = new TIniFile(filename);
-
-    Fullscreen = ini->ReadBool("Global", "FullScreen", False);
-    FormsWidth = ini->ReadInteger("Global", "Width", 1024);
-    FormsHeight = ini->ReadInteger("Global", "Height", 1024);
-    FormsLeft = ini->ReadInteger("Global", "Left", 0);
-    FormsTop = ini->ReadInteger("Global", "Top", 0);
-    SoundEnabled = ini->ReadBool("Global", "Sound", False);
-    SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
-    MusicEnabled = ini->ReadBool("Global", "Music", False);
-    MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
-    HostMode = ini->ReadBool("Global", "HostMode", False);
-
-    MinWidth = 1024;
-    MinHeight = 768;
-
-    for (int i = 1; i <= 5; i++) {
-        PlayerNames[i - 1] = ini->ReadString("Players", "Player" + IntToStr(i), "FUUUUuuuuu...");
-        PlayerType[i - 1] = (TBotType)ini->ReadInteger("Players", "PlayerType" + IntToStr(i), 0);
-    }
-
-    LastBase = ini->ReadString("Global", "LastBase", "");
-    if (LastBase == "") {
-        if (FileExists("base\\main.dat")) {
-            LastBase = "main.dat";
-        } else {
-            MessageBox(Application->Handle,
-                "Ошибка загрузки последней базы вопросов\n" "Попытка загрузить base\\main.dat также провалилась - файла не существует.",
-                "Критическая ошибка", MB_YESNO);
-            MB_YESNO;
-        }
-    }
-
-    int i = 0;
-    BaseNames = new TStringList;
-    while (1) {
-        String str = ini->ReadString("Bases", "basename" + IntToStr(i++), "");
-        if (str != "") {
-            BaseNames->Add(str);
-        } else {
-            break;
-        }
-    }
-
-    ini->Free();
-}
 
 // ---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner) : TForm(Owner) { }
@@ -107,6 +53,7 @@ void __fastcall TSettingsForm::FormShow(TObject* Sender) {
     ini->Free();
     // ->
 
+    TSettings* Settings = TSettings::Instance();
     cmbListOfBases->Items->Assign(Settings->BaseNames);
 
     for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
@@ -125,11 +72,11 @@ void __fastcall TSettingsForm::FormShow(TObject* Sender) {
     edPlayer3->Text = Settings->PlayerNames[3];
     edPlayer4->Text = Settings->PlayerNames[4];
 
-    cmbPlayerType0->ItemIndex = (int)Settings->PlayerType[0];
-    cmbPlayerType1->ItemIndex = (int)Settings->PlayerType[1];
-    cmbPlayerType2->ItemIndex = (int)Settings->PlayerType[2];
-    cmbPlayerType3->ItemIndex = (int)Settings->PlayerType[3];
-    cmbPlayerType4->ItemIndex = (int)Settings->PlayerType[4];
+    cmbPlayerType0->ItemIndex = (int)(Settings->PlayerType[0]);
+    cmbPlayerType1->ItemIndex = (int)(Settings->PlayerType[1]);
+    cmbPlayerType2->ItemIndex = (int)(Settings->PlayerType[2]);
+    cmbPlayerType3->ItemIndex = (int)(Settings->PlayerType[3]);
+    cmbPlayerType4->ItemIndex = (int)(Settings->PlayerType[4]);
 
     cbSoundOnOff->Checked = Settings->SoundEnabled;
     cbMusicOnOff->Checked = Settings->MusicEnabled;
@@ -175,7 +122,9 @@ void __fastcall TSettingsForm::btnCancelClick(TObject* Sender) {
 
 // ---------------------------------------------------------------------------
 void SaveSettings() {
+    TSettings* Settings = TSettings::Instance();
     TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
+
     ini->WriteBool("Global", "FullScreen", Settings->Fullscreen);
     ini->WriteInteger("Global", "Width", Settings->FormsWidth);
     ini->WriteInteger("Global", "Height", Settings->FormsHeight);
@@ -205,6 +154,7 @@ void SaveSettings() {
 
 // -----------------------------------------------------------------------------
 void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
+    TSettings* Settings = TSettings::Instance();
     Settings->PlayerNames[0] = edPlayer0->Text;
     Settings->PlayerNames[1] = edPlayer1->Text;
     Settings->PlayerNames[2] = edPlayer2->Text;
@@ -274,6 +224,8 @@ void __fastcall TSettingsForm::addBaseClick(TObject* Sender) {
 
 // ---------------------------------------------------------------------------
 void LoadFormPosition(TForm* form) {
+    TSettings* Settings = TSettings::Instance();
+
     if (Settings->Fullscreen) {
         form->BorderStyle = bsNone;
         form->Width = Screen->Width;
@@ -290,6 +242,8 @@ void LoadFormPosition(TForm* form) {
 }
 
 void SaveFormPosition(TForm* form) {
+    TSettings* Settings = TSettings::Instance();
+
     if (!Settings->Fullscreen) {
         Settings->FormsWidth = form->Width;
         Settings->FormsHeight = form->Height;
@@ -316,6 +270,8 @@ void CoolPositionFix(TForm* form) {
 // ---------------------------------------------------------------------------
 
 void SwitchFullscreen(TForm* form) {
+    TSettings* Settings = TSettings::Instance();
+
     Settings->Fullscreen = !Settings->Fullscreen;
     LoadFormPosition(form);
 }

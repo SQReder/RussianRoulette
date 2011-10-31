@@ -5936,7 +5936,6 @@ object F: TF
     Caption = 'MemoryDump'
     TabOrder = 8
     Visible = False
-    OnClick = Button1Click
   end
   object MediaPlayer2: TMediaPlayer
     Left = 8

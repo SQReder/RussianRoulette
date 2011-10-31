@@ -1,38 +1,14 @@
 // ---------------------------------------------------------------------------
-#ifndef uSettingsH
-#define uSettingsH
+#ifndef fSettingsH
+#define fSettingsH
+#include "pch.h"
 #include <Classes.hpp>
-#include <Controls.hpp>
-#include <StdCtrls.hpp>
-#include <Forms.hpp>
-#include <ExtCtrls.hpp>
-#include "AI.h"
 #include <ComCtrls.hpp>
+#include <Controls.hpp>
 #include <Dialogs.hpp>
-
-class TSettings {
-public:
-    TSettings(UnicodeString filename);
-
-    UnicodeString PlayerNames[5];
-    TBotType PlayerType[5];
-    bool Fullscreen;
-    int FormsWidth;
-    int FormsHeight;
-    int FormsTop;
-    int FormsLeft;
-    int MinWidth;
-    int MinHeight;
-    bool SoundEnabled;
-    int SoundVolume;
-    bool MusicEnabled;
-    int MusicVolume;
-    bool HostMode;
-    String LastBase;
-    TStringList* BaseNames;
-};
-
-extern TSettings* Settings;
+#include <ExtCtrls.hpp>
+#include <StdCtrls.hpp>
+#include "settings_impl.h"
 
 // ---------------------------------------------------------------------------
 class TSettingsForm : public TForm {

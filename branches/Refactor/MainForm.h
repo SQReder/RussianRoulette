@@ -73,7 +73,6 @@ __published: // IDE-managed Components
     TLabel *ControlLabel;
 
     void __fastcall tmrPulseAnimationTimer(TObject *Sender);
-    void __fastcall Button1Click(TObject *Sender);
     void __fastcall FormCreate(TObject *Sender);
     void __fastcall LoadGraphic();
     void __fastcall btnMechStartClick(TObject *Sender);
@@ -175,8 +174,6 @@ public: // User declarations
 };
 
 void LoadQuestionFromBase(String BaseName);
-void ShowError(int errcode);
-void DumpMemory(int errcode);
 // ---------------------------------------------------------------------------
 extern PACKAGE TF *F;
 // ---------------------------------------------------------------------------
