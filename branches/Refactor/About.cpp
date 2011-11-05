@@ -20,10 +20,10 @@
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-TAboutForm* AboutForm;
+TAboutForm *AboutForm;
 
 // ---------------------------------------------------------------------------
-__fastcall TAboutForm::TAboutForm(TComponent* Owner) : TForm(Owner) { }
+__fastcall TAboutForm::TAboutForm(TComponent *Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 typedef enum {
@@ -34,8 +34,8 @@ const int padding = 4;
 const int main_offcet = 8;
 const int tiny_offcet = 2;
 
-TLabel* new_label(String caption, int top, align al, bool bold = false) {
-    TLabel* lbl = new TLabel(AboutForm);
+TLabel *new_label(String caption, int top, align al, bool bold = false) {
+    TLabel *lbl = new TLabel(AboutForm);
     lbl->Parent = AboutForm;
 
     lbl->Caption = caption;
@@ -53,7 +53,7 @@ TLabel* new_label(String caption, int top, align al, bool bold = false) {
     return lbl;
 }
 
-const char* licence =
+const char *licence =
     "Russian Roulette это PC версия популярного телешоу.\nCopyright (C) 2010-2011 Popovskiy Andrey\n" "Copyright (C) 2010-2011 Boytsov Sergey\n\nЭто свободная программа; вы можете повторно рас-\n"
     "пространять её и/или модифицировать её в соответ-\nствии с Стандартной Общественной Лицензий GNU,\n" "опубликованной Фондом Свободного ПО; либо вер-\nсии 3, либо (по вашему выбору) любой более позд-\n"
     "ней версии.\n\n" "Эта программа распространяется в надежде, что\n"
@@ -65,7 +65,7 @@ const char* licence =
 String sversion = "1.0.2.3a";
 
 #define dev_count 2
-const char* sdevelopers[dev_count] = {
+const char *sdevelopers[dev_count] = {
     "Сергей Бойцов",
     "Андрей Поповский"
 };
@@ -73,7 +73,7 @@ const char* sdevelopers[dev_count] = {
 String scomposer = "Сергей Чекрыжов";
 
 #define tnx_count 6
-const char* sthank_list[tnx_count] = {
+const char *sthank_list[tnx_count] = {
     "Денису Колобаеву",
     "Павлу Кашлакову",
     "Ирине Матысик",
@@ -83,7 +83,7 @@ const char* sthank_list[tnx_count] = {
 };
 
 #define qautors_count 6
-const char* squestions_by[qautors_count] = {
+const char *squestions_by[qautors_count] = {
     "Сергей Бойцов",
     "Андрей Поповский",
     "Владимир Крупин",
@@ -94,12 +94,12 @@ const char* squestions_by[qautors_count] = {
 // end people list
 
 std::vector <TLabel *> lbl_dev, lbl_tnx, lbl_qa;
-TLabel* lblversion;
-TLabel* lbldev;
-TLabel* lblcomposer, *lblcompo, *tnx_title, *qa_title;
-TLabel* mLicence;
+TLabel *lblversion;
+TLabel *lbldev;
+TLabel *lblcomposer, *lblcompo, *tnx_title, *qa_title;
+TLabel *mLicence;
 
-void __fastcall TAboutForm::FormCreate(TObject* Sender) {
+void __fastcall TAboutForm::FormCreate(TObject *Sender) {
     AboutForm->Hide();
     GlassFrame->Enabled = true;
 
@@ -141,7 +141,7 @@ void __fastcall TAboutForm::FormCreate(TObject* Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TAboutForm::lblLicenceClick(TObject* Sender) {
+void __fastcall TAboutForm::lblLicenceClick(TObject *Sender) {
     mLicence->Visible = !mLicence->Visible;
 
     lblversion->Visible = !lblversion->Visible;
@@ -164,7 +164,7 @@ void __fastcall TAboutForm::lblLicenceClick(TObject* Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TAboutForm::FormKeyDown(TObject* Sender, WORD& Key, TShiftState Shift) {
+void __fastcall TAboutForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift) {
     if (Shift.Empty()) {
         if (Key == 32) {
             lblLicenceClick(NULL);

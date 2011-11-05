@@ -22,6 +22,7 @@
 #include "MainForm.h"
 #include "Hatches.h"
 #include "base.h"
+#include "audio.h"
 // ---------------------------------------------------------------------------
 
 #pragma package(smart_init)
@@ -73,7 +74,7 @@ void showquestion() {
     F->LabelQuestion->Visible = True;
     F->tmrWaiting->Enabled = True;
     base[F->NumberOfQuestion].Round = '0';
-    F->PlayMusic("rr_question.wav");
+    PlaySound(rr_question);
     // считать вопрос из файла; для начала заранее с помощью отдельной программы
 }
 
@@ -113,7 +114,7 @@ void choosenplayer(int chooseplayer) {
 // -----------------------------------------------------------------------------
 /* 2.2. Затем игрок должен дать ответ (обработка клавиши) */
 void Proverka() {
-    F->PlayMusic(F->answer == F->RandomPlace ? "rr_true.wav" : "rr_false.wav");
+    PlaySound(F->answer == F->RandomPlace ? rr_true : rr_false);
     F->LabelMoney->Visible = False;
     F->tmrWaiting->Enabled = true;
 }

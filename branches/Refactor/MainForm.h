@@ -79,8 +79,6 @@ __published: // IDE-managed Components
     void __fastcall btnExitClick(TObject *Sender);
     void __fastcall btnMechStopClick(TObject *Sender);
     void __fastcall tmrRotatorTimer(TObject *Sender);
-    void __fastcall PlaySound(String path);
-    void __fastcall PlayMusic(String path);
     void __fastcall tmrWaitingTimer(TObject *Sender);
     void __fastcall tmrMoneyTimer(TObject *Sender);
     void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);

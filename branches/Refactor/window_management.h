@@ -16,25 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-
-#ifndef pch_H
-#define pch_H
-#include <tchar.h>
-#include <map>
-#include <vector>
-#include <algorithm>
-#include <boost\shared_ptr.hpp>
-#include <vcl.h>
-
-#include "ezlogger\ezlogger_headers.hpp"
-using std::endl;
-
-#include <inifiles.hpp>
-#include <pngimage.hpp>
-#include <MPlayer.hpp>
-#include <Classes.hpp>
-#include <ComCtrls.hpp>
-#include <Controls.hpp>
-#include <ExtCtrls.hpp>
-#include <StdCtrls.hpp>
+#ifndef window_managementH
+#define window_managementH
+#include <System.Classes.hpp>
+void LoadFormPosition(TForm *form);
+void SaveFormPosition(TForm *form);
+void CoolPositionFix(TForm *form);
+void SwitchFullscreen(TForm *form);
 #endif

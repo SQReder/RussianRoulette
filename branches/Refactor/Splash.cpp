@@ -23,6 +23,7 @@
 #include "MainForm.h"
 #include "fSettings.h"
 #include "GfxCache.h"
+#include "audio.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -78,30 +79,30 @@ void CheckSystemIntegrity() {
     CheckFile("data\\place.png");
     CheckFile("data\\place_red_zero.png");
 
-    CheckFile("sounds\\question_clear.wav");
-    CheckFile("sounds\\rr_20sec.wav");
-    CheckFile("sounds\\rr_bg2.wav");
-    CheckFile("sounds\\rr_bg3.wav");
-    CheckFile("sounds\\rr_bg4.wav");
-    CheckFile("sounds\\rr_choosen.wav");
-    CheckFile("sounds\\rr_closing.wav");
-    CheckFile("sounds\\rr_endround.wav");
-    CheckFile("sounds\\rr_fall.wav");
-    CheckFile("sounds\\rr_fall_with_host.wav");
-    CheckFile("sounds\\rr_false.wav");
-    CheckFile("sounds\\rr_final.wav");
-    CheckFile("sounds\\rr_intro Take 2.wav");
-    CheckFile("sounds\\rr_intro.wav");
-    CheckFile("sounds\\rr_mexclose.wav");
-    CheckFile("sounds\\rr_mexopen.wav");
-    CheckFile("sounds\\rr_money.wav");
-    CheckFile("sounds\\rr_openhole.wav");
-    CheckFile("sounds\\rr_openround.wav");
-    CheckFile("sounds\\rr_players.wav");
-    CheckFile("sounds\\rr_question.wav");
-    CheckFile("sounds\\rr_round.wav");
-    CheckFile("sounds\\rr_save.wav");
-    CheckFile("sounds\\rr_true.wav");
+    CheckFile("sounds\\question_clear.ogg");
+    CheckFile("sounds\\rr_20sec.ogg");
+    CheckFile("sounds\\rr_bg2.ogg");
+    CheckFile("sounds\\rr_bg3.ogg");
+    CheckFile("sounds\\rr_bg4.ogg");
+    CheckFile("sounds\\rr_choosen.ogg");
+    CheckFile("sounds\\rr_closing.ogg");
+    CheckFile("sounds\\rr_endround.ogg");
+    CheckFile("sounds\\rr_fall.ogg");
+    CheckFile("sounds\\rr_fall_with_host.ogg");
+    CheckFile("sounds\\rr_false.ogg");
+    CheckFile("sounds\\rr_final.ogg");
+    CheckFile("sounds\\rr_intro_Take_2.ogg");
+    CheckFile("sounds\\rr_intro.ogg");
+    CheckFile("sounds\\rr_mexclose.ogg");
+    CheckFile("sounds\\rr_mexopen.ogg");
+    CheckFile("sounds\\rr_money.ogg");
+    CheckFile("sounds\\rr_openhole.ogg");
+    CheckFile("sounds\\rr_openround.ogg");
+    CheckFile("sounds\\rr_players.ogg");
+    CheckFile("sounds\\rr_question.ogg");
+    CheckFile("sounds\\rr_round.ogg");
+    CheckFile("sounds\\rr_save.ogg");
+    CheckFile("sounds\\rr_true.ogg");
 
     if (nonExisten->Count > 0) {
         FatalError = true;
@@ -128,6 +129,7 @@ void Loader() {
     UpdPB();
     ShowState("Load graphics...");
     gfx = new sGfxCache;
+    init_audio(Application->Handle);
     UpdPB();
     ShowState("Load complete");
     SplashForm->tmrSplash->Enabled = true;

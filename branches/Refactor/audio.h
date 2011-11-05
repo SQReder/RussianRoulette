@@ -17,24 +17,45 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
 
-#ifndef pch_H
-#define pch_H
-#include <tchar.h>
-#include <map>
-#include <vector>
-#include <algorithm>
-#include <boost\shared_ptr.hpp>
-#include <vcl.h>
+#ifndef audioH
+#define audioH
+typedef enum {
+    Next_Question,
+    question_clear,
+    rr_20sec,
+    rr_bg1,
+    rr_bg2,
+    rr_bg3,
+    rr_bg4,
+    rr_bg5,
+    rr_choosen,
+    rr_closing,
+    rr_endround,
+    rr_fall,
+    rr_fall_with_host,
+    rr_false,
+    rr_final,
+    rr_intro_Take_2,
+    rr_intro,
+    rr_mexclose,
+    rr_mexopen,
+    rr_money,
+    rr_nextq,
+    rr_notfall,
+    rr_openhole,
+    rr_openround,
+    rr_players,
+    rr_question,
+    rr_round,
+    rr_save,
+    rr_true
+} rrSoundEvent;
 
-#include "ezlogger\ezlogger_headers.hpp"
-using std::endl;
+void init_audio(HWND hwnd);
+void free_audio();
 
-#include <inifiles.hpp>
-#include <pngimage.hpp>
-#include <MPlayer.hpp>
-#include <Classes.hpp>
-#include <ComCtrls.hpp>
-#include <Controls.hpp>
-#include <ExtCtrls.hpp>
-#include <StdCtrls.hpp>
+void SetVolumeAll(float volume);
+
+void PlaySound(rrSoundEvent sound_event);
 #endif
+

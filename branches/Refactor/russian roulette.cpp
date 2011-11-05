@@ -18,24 +18,23 @@
 // ---------------------------------------------------------------------------
 #include "pch.h"
 // ---------------------------------------------------------------------------
-USEFORM("fSettings.cpp", SettingsForm);
-USEFORM("Splash.cpp", SplashForm);
 USEFORM("MainMenu.cpp", MenuForm);
+USEFORM("Splash.cpp", SplashForm);
+USEFORM("fSettings.cpp", SettingsForm);
 USEFORM("About.cpp", AboutForm);
 USEFORM("MainForm.cpp", F);
-//---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
 WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
-    EZDBGONLYLOGGERSTREAM << endl << endl;
-    EZDBGONLYLOGGERSTREAM << "Started" << endl;
     try {
         Application->Initialize();
         Application->Title = "Русская рулетка";
         Application->CreateForm(__classid(TSplashForm), &SplashForm);
-         Application->CreateForm(__classid(TMenuForm), &MenuForm);
-         Application->CreateForm(__classid(TSettingsForm), &SettingsForm);
-         Application->CreateForm(__classid(TAboutForm), &AboutForm);
-         Application->CreateForm(__classid(TF), &F);
-         Application->Run();
+        Application->CreateForm(__classid(TMenuForm), &MenuForm);
+        Application->CreateForm(__classid(TSettingsForm), &SettingsForm);
+        Application->CreateForm(__classid(TAboutForm), &AboutForm);
+        Application->CreateForm(__classid(TF), &F);
+        Application->Run();
     }
     catch (Exception &exception) {
         Application->ShowException(&exception);
@@ -49,7 +48,6 @@ WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
         }
     }
 
-    EZDBGONLYLOGGERSTREAM << "Stopped" << endl;
     return 0;
 }
 // ---------------------------------------------------------------------------

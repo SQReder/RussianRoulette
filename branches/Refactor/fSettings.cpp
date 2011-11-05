@@ -22,19 +22,20 @@
 
 #include "fSettings.h"
 #include "MainForm.h"
+#include "audio.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-TSettingsForm* SettingsForm;
+TSettingsForm *SettingsForm;
 std::map <String, String> BaseFiles;
 
 // ---------------------------------------------------------------------------
-__fastcall TSettingsForm::TSettingsForm(TComponent* Owner) : TForm(Owner) { }
+__fastcall TSettingsForm::TSettingsForm(TComponent *Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSettingsForm::FormShow(TObject* Sender) {
+void __fastcall TSettingsForm::FormShow(TObject *Sender) {
     // <- Загрузка соответствий файлов баз данных их именам
-    TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
+    TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
 
     int i = 0;
     BaseFiles.clear();
@@ -53,7 +54,7 @@ void __fastcall TSettingsForm::FormShow(TObject* Sender) {
     ini->Free();
     // ->
 
-    TSettings* Settings = TSettings::Instance();
+    TSettings *Settings = TSettings::Instance();
     cmbListOfBases->Items->Assign(Settings->BaseNames);
 
     for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
@@ -98,7 +99,7 @@ void __fastcall TSettingsForm::FormShow(TObject* Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
+void __fastcall TSettingsForm::FormCreate(TObject *Sender) {
     btnCancel->Caption = "Cancel";
     btnOK->Caption = "OK";
     gbPlayerNames->Caption = "Имена игроков";
@@ -115,15 +116,15 @@ void __fastcall TSettingsForm::FormCreate(TObject* Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::btnCancelClick(TObject* Sender) {
+void __fastcall TSettingsForm::btnCancelClick(TObject *Sender) {
     SettingsForm->Hide();
     SettingsForm->Close();
 }
 
 // ---------------------------------------------------------------------------
 void SaveSettings() {
-    TSettings* Settings = TSettings::Instance();
-    TIniFile* ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
+    TSettings *Settings = TSettings::Instance();
+    TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
 
     ini->WriteBool("Global", "FullScreen", Settings->Fullscreen);
     ini->WriteInteger("Global", "Width", Settings->FormsWidth);
@@ -153,8 +154,8 @@ void SaveSettings() {
 }
 
 // -----------------------------------------------------------------------------
-void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
-    TSettings* Settings = TSettings::Instance();
+void __fastcall TSettingsForm::btnOKClick(TObject *Sender) {
+    TSettings *Settings = TSettings::Instance();
     Settings->PlayerNames[0] = edPlayer0->Text;
     Settings->PlayerNames[1] = edPlayer1->Text;
     Settings->PlayerNames[2] = edPlayer2->Text;
@@ -169,6 +170,7 @@ void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
 
     Settings->SoundEnabled = cbSoundOnOff->Checked;
     Settings->SoundVolume = tbSoundVolume->Position;
+    SetVolumeAll(tbSoundVolume->Position / (float) tbSoundVolume->Max);
     Settings->MusicEnabled = cbMusicOnOff->Checked;
     Settings->MusicVolume = tbMusicVolume->Position;
     Settings->Fullscreen = cbFullscreen->Checked;
@@ -182,30 +184,30 @@ void __fastcall TSettingsForm::btnOKClick(TObject* Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::tbSoundVolumeChange(TObject* Sender) {
+void __fastcall TSettingsForm::tbSoundVolumeChange(TObject *Sender) {
     lblSoundVolume->Caption = "Громкость звука: " + IntToStr(tbSoundVolume->Position) + "%"; }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::tbMusicVolumeChange(TObject* Sender) {
+void __fastcall TSettingsForm::tbMusicVolumeChange(TObject *Sender) {
     lblMusicVolume->Caption = "Громкость музыки: " + IntToStr(tbMusicVolume->Position) + "%"; }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::cbSoundOnOffClick(TObject* Sender) {
+void __fastcall TSettingsForm::cbSoundOnOffClick(TObject *Sender) {
     tbSoundVolume->Enabled = cbSoundOnOff->Checked;
     lblSoundVolume->Enabled = cbSoundOnOff->Checked;
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::cbMusicOnOffClick(TObject* Sender) {
+void __fastcall TSettingsForm::cbMusicOnOffClick(TObject *Sender) {
     tbMusicVolume->Enabled = cbMusicOnOff->Checked;
     lblMusicVolume->Enabled = cbMusicOnOff->Checked;
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::addBaseClick(TObject* Sender) {
+void __fastcall TSettingsForm::addBaseClick(TObject *Sender) {
     if (OpenDialog1->Execute()) {
-        WCHAR* from = (OpenDialog1->FileName).w_str();
-        WCHAR* to = (ExtractFilePath(Application->ExeName) + "Base\\" + ExtractFileName(OpenDialog1->FileName)).w_str();
+        WCHAR *from = (OpenDialog1->FileName).w_str();
+        WCHAR *to = (ExtractFilePath(Application->ExeName) + "Base\\" + ExtractFileName(OpenDialog1->FileName)).w_str();
         if (CopyFileW(from, to, 0)) {
             String name = InputBox("Русская рулетка :: Добавить базу", "Введите имя новой базы",
                 ExtractFileName(OpenDialog1->FileName));
@@ -223,8 +225,8 @@ void __fastcall TSettingsForm::addBaseClick(TObject* Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void LoadFormPosition(TForm* form) {
-    TSettings* Settings = TSettings::Instance();
+void LoadFormPosition(TForm *form) {
+    TSettings *Settings = TSettings::Instance();
 
     if (Settings->Fullscreen) {
         form->BorderStyle = bsNone;
@@ -241,8 +243,8 @@ void LoadFormPosition(TForm* form) {
     }
 }
 
-void SaveFormPosition(TForm* form) {
-    TSettings* Settings = TSettings::Instance();
+void SaveFormPosition(TForm *form) {
+    TSettings *Settings = TSettings::Instance();
 
     if (!Settings->Fullscreen) {
         Settings->FormsWidth = form->Width;
@@ -253,7 +255,7 @@ void SaveFormPosition(TForm* form) {
 }
 // ---------------------------------------------------------------------------
 
-void CoolPositionFix(TForm* form) {
+void CoolPositionFix(TForm *form) {
     /* АЦЦКИЙ КОСТЫЛЬ
      суть в том, что после перевода формы в состояние Borderless
      она самопроизвольно сдвигается влево, что не есть гут
@@ -269,10 +271,9 @@ void CoolPositionFix(TForm* form) {
 }
 // ---------------------------------------------------------------------------
 
-void SwitchFullscreen(TForm* form) {
-    TSettings* Settings = TSettings::Instance();
+void SwitchFullscreen(TForm *form) {
+    TSettings *Settings = TSettings::Instance();
 
     Settings->Fullscreen = !Settings->Fullscreen;
     LoadFormPosition(form);
 }
-

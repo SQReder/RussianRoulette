@@ -24,6 +24,7 @@
 #include "fSettings.h"
 #include "About.h"
 #include "GfxCache.h"
+#include "audio.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
