@@ -17,12 +17,19 @@
 			<CfgParent>Base</CfgParent>
 			<Base>true</Base>
 		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug_with_NDEBUG' or '$(Cfg_3)'!=''">
+			<Cfg_3>true</Cfg_3>
+			<CfgParent>Cfg_1</CfgParent>
+			<Cfg_1>true</Cfg_1>
+			<Base>true</Base>
+		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
 			<Cfg_2>true</Cfg_2>
 			<CfgParent>Base</CfgParent>
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BCC_PCHCache>true</BCC_PCHCache>
 			<BCC_PCHInject>pch.h</BCC_PCHInject>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<BCC_AsmToObj>true</BCC_AsmToObj>
@@ -40,6 +47,10 @@
 			<ILINK_TranslatedLibraryPath>$(BDS)\lib\$(LANGDIR)</ILINK_TranslatedLibraryPath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<BCC_MonitorGlobalAndStackData>true</BCC_MonitorGlobalAndStackData>
+			<BCC_AllCodeguardOptions>true</BCC_AllCodeguardOptions>
+			<BCC_MonitorThis>true</BCC_MonitorThis>
+			<BCC_MonitorInlinePtrAccess>true</BCC_MonitorInlinePtrAccess>
 			<DynamicRTL>false</DynamicRTL>
 			<BCC_AsmToObj>false</BCC_AsmToObj>
 			<BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
@@ -57,6 +68,9 @@
 			<ILINK_FullDebugInfo>true</ILINK_FullDebugInfo>
 			<TASM_Debugging>Full</TASM_Debugging>
 			<ILINK_TranslatedLibraryPath>$(BDS)\lib\$(LANGDIR)\debug;$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_3)'!=''">
+			<Defines>NDEBUG</Defines>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<BCC_AsmToObj>false</BCC_AsmToObj>
@@ -144,6 +158,10 @@
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
 			</BuildConfiguration>
+			<BuildConfiguration Include="Debug_with_NDEBUG">
+				<Key>Cfg_3</Key>
+				<CfgParent>Cfg_1</CfgParent>
+			</BuildConfiguration>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -165,7 +183,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">2</VersionInfo>
-						<VersionInfo Name="Build">390</VersionInfo>
+						<VersionInfo Name="Build">409</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -177,7 +195,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule studios</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">It&apos;s PC realisation of TV gameshow</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.0.2.390</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.2.409</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GNU GPLv3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
@@ -207,36 +225,30 @@
 						<Source Name="MainSource">russian roulette.cpp</Source>
 					</Source>
 					<Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclIntraweb_110_150.bpl">VCL for the Web 11.0 Design Package for Embarcadero RAD Studio XE</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\bcbie150.bpl">Embarcadero C++Builder Internet Explorer Components Package</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dcltee9150.bpl">TeeChart Standard 9 Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\applet150.bpl">Embarcadero Control Panel Applet Package</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dcl31w150.bpl">Delphi 1.0 Compatibility Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclact150.bpl">Embarcadero ActionBar Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclbde150.bpl">Embarcadero BDE DB Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclemacsedit150.bpl">Embarcadero Editor Emacs Enhancements</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclmlwiz150.bpl">Embarcadero Markup Language Wizards</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclsmpedit150.bpl">Embarcadero Editor Script Enhancements</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dcltouch150.bpl">Embarcadero Touch Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclmcn150.bpl">Embarcadero DataSnap Connection Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclado150.bpl">Embarcadero ADO DB Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclIndyProtocols150.bpl">Indy 10 Protocols Design Time</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclie150.bpl">Internet Explorer Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclwebsnap150.bpl">Embarcadero WebSnap Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclsoap150.bpl">Embarcadero SOAP Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapIndy10ServerTransport150.bpl">Embarcadero DBExpress DataSnap Server Transport Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapProviderClient150.bpl">Embarcadero DBExpress DataSnap Provider Client Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclbde150.bpl">Embarcadero BDE DB Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\bcbie150.bpl">Embarcadero C++Builder Internet Explorer Components Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\applet150.bpl">Embarcadero Control Panel Applet Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclmcn150.bpl">Embarcadero DataSnap Connection Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapClient150.bpl">Embarcadero DBExpress DataSnap Client Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapProviderClient150.bpl">Embarcadero DBExpress DataSnap Provider Client Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapServer150.bpl">Embarcadero DBExpress DataSnap Server Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclWindowsAzureManagement150.bpl">Embarcadero Windows Azure management components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclDataSnapIndy10ServerTransport150.bpl">Embarcadero DBExpress DataSnap Server Transport Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclDeployCloud150.bpl">Embarcadero Deploy to the Cloud</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclDBXDrivers150.bpl">Embarcadero Driver Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclemacsedit150.bpl">Embarcadero Editor Emacs Enhancements</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclsmpedit150.bpl">Embarcadero Editor Script Enhancements</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclDBXDriversEnt150.bpl">Embarcadero Enterprise Driver Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclmlwiz150.bpl">Embarcadero Markup Language Wizards</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dcldbxcds150.bpl">Embarcadero SimpleDataset Component (DBX)</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\bcboffice2k150.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\bcbofficexp150.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dcloffice2k150.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclofficexp150.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcltouch150.bpl">Embarcadero Touch Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclwebsnap150.bpl">Embarcadero WebSnap Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclWindowsAzureManagement150.bpl">Embarcadero Windows Azure management components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclIndyProtocols150.bpl">Indy 10 Protocols Design Time</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclie150.bpl">Internet Explorer Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcltee9150.bpl">TeeChart Standard 9 Components</Excluded_Packages>
 					</Excluded_Packages>
 				</CPlusPlusBuilder.Personality>
 				<ModelSupport>False</ModelSupport>

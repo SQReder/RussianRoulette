@@ -3550,13 +3550,13 @@ object F: TF
       7CA4E2E2621D8B3B5BB7A9D7871E2CFCD7CAA988F761C7BDC37F02BE9F789D57
       5BA989FE01CB4B45E48E633B7E0000000049454E44AE426082}
   end
-  object imgMechanizm: TImage
+  object imgLiver: TImage
     Left = 154
     Top = 251
     Width = 105
     Height = 105
     AutoSize = True
-    OnClick = imgMechanizmClick
+    OnClick = imgLiverClick
   end
   object imgSplash: TImage
     Left = 197
@@ -5887,14 +5887,6 @@ object F: TF
     Visible = False
     OnClick = btnExitClick
   end
-  object MediaPlayer1: TMediaPlayer
-    Left = 8
-    Top = 406
-    Width = 268
-    Height = 30
-    Visible = False
-    TabOrder = 5
-  end
   object mlog: TMemo
     Left = 639
     Top = 20
@@ -5908,14 +5900,14 @@ object F: TF
     Lines.Strings = (
       'mlog')
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 5
     Visible = False
   end
   object edFinalAnswer: TEdit
     Left = 364
     Top = 670
     Width = 330
-    Height = 26
+    Height = 27
     Alignment = taCenter
     Color = clNone
     Font.Charset = RUSSIAN_CHARSET
@@ -5924,7 +5916,7 @@ object F: TF
     Font.Name = 'Arial'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 6
     Text = 'edFinalAnswer'
     OnKeyPress = edFinalAnswerKeyPress
   end
@@ -5934,16 +5926,8 @@ object F: TF
     Width = 114
     Height = 25
     Caption = 'MemoryDump'
-    TabOrder = 8
+    TabOrder = 7
     Visible = False
-  end
-  object MediaPlayer2: TMediaPlayer
-    Left = 8
-    Top = 477
-    Width = 268
-    Height = 30
-    Visible = False
-    TabOrder = 9
   end
   object tmrRotator: TTimer
     Enabled = False

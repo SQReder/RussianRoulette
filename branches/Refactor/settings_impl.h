@@ -24,7 +24,7 @@
 // ---------------------------------------------------------------------------
 class TSettings {
 public:
-    UnicodeString PlayerNames[5];
+    String PlayerNames[5];
     TBotType PlayerType[5];
     bool Fullscreen;
     int FormsWidth;
@@ -41,7 +41,6 @@ public:
     String LastBase;
     TStringList *BaseNames;
 
-    TSettings(UnicodeString filename);
     ~TSettings();
 
     static TSettings *Instance() {
@@ -51,7 +50,7 @@ public:
         return SingleInstance;
     }
 
-    void LoadFromFile(UnicodeString filename);
+    void LoadFromFile(String filename);
 
 private:
     TSettings() { };

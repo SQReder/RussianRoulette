@@ -16,7 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#pragma hdrstop
 #include "base.h"
 #pragma package(smart_init)
 
@@ -84,7 +83,7 @@ void LoadQuestionFromBase(String BaseFile) {
     }
     catch (...) {
         ShowMessage("Ошибка загрузки базы вопросов: база с именем '" + BaseFile + "' не существует!");
-        exit(1);
+        Application->Terminate();
     }
 }
 

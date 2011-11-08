@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
 #include "AI.h"
-#include "stdlib.h"
-
+#include "pch.h"
 const int BotBrain[6] = {
     0, 30, 33, 70, 8, 100
 };
@@ -27,30 +26,27 @@ const int BotIdent[6] = {
 };
 
 // -----------------------------------------------------------------------------
-TBot::TBot(TBotType BotType) {
+TBot::TBot() {
+    bBrain = 0;
+    bIdentity = 0;
+}
+
+// -----------------------------------------------------------------------------
+void TBot::SetBotType(TBotType BotType) {
     bBrain = BotBrain[BotType];
     bIdentity = BotIdent[BotType];
 };
 
 // -----------------------------------------------------------------------------
 bool TBot::Get_Answer() {
-    // если бот не знает ответ на вопрос, ...
-    if (random(100) <= bBrain) {
-        return true;
+    bool answer = false;
+    // если бот знает ответ на вопрос, или ему помогла интуиция
+    if (random(100) <= bBrain || random(100) <= bIdentity) {
+        // отвечает верно
+        answer = true;
     }
-    // ...то он пытается выбрать ответ интуитивно.
-    if (random(100) <= bIdentity) {
-        return true;
-    }
-    return false;
-}
-// -----------------------------------------------------------------------------
 
-int TBot::ChooseAnyPlayer(bool players_state[6], int _ch) {
-    int s = random(5);
-    while (s == _ch - 1 || players_state[s] == 0) {
-        s = random(5);
-    }
-    return s + 1;
+    // иначе ошибается
+    return answer;
 }
 // -----------------------------------------------------------------------------

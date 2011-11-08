@@ -19,15 +19,19 @@
 
 #ifndef pch_H
 #define pch_H
+#include <stdlib.h>
 #include <tchar.h>
 #include <map>
 #include <vector>
 #include <algorithm>
+using namespace std;
+
 #include <boost\shared_ptr.hpp>
+using namespace boost;
+
 #include <vcl.h>
 
 #include "ezlogger\ezlogger_headers.hpp"
-using std::endl;
 
 #include <inifiles.hpp>
 #include <pngimage.hpp>
@@ -37,4 +41,7 @@ using std::endl;
 #include <Controls.hpp>
 #include <ExtCtrls.hpp>
 #include <StdCtrls.hpp>
+
+#include <assert.h>
+
 #endif

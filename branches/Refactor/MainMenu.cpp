@@ -16,9 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#include <vcl.h>
-#pragma hdrstop
-
+#include "pch.h"
 #include "MainMenu.h"
 #include "MainForm.h"
 #include "fSettings.h"
@@ -46,12 +44,16 @@ void __fastcall TMenuForm::FormCreate(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::FormClose(TObject *Sender, TCloseAction &Action) { exit(0); }
+void __fastcall TMenuForm::FormClose(TObject *Sender, TCloseAction &Action) {
+    delete TSettings::Instance();
+    delete gfx;
+    Application->Terminate();
+}
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnBblNTuHaxepClick(TObject *Sender) {
-    delete gfx;
-    exit(0);
+    TCloseAction ca = caFree;
+    FormClose(NULL, ca);
 }
 
 // ---------------------------------------------------------------------------
@@ -122,17 +124,13 @@ void __fastcall TMenuForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState S
         SwitchFullscreen(MenuForm);
     } else if (Shift.Empty()) {
         switch (Key) {
-        case 'N':
-            btnNewGameClick(NULL);
+        case 'N': btnNewGameClick(NULL);
             break;
-        case 27:
-            btnBblNTuHaxepClick(NULL);
+        case 27: btnBblNTuHaxepClick(NULL);
             break;
-        case 'S':
-            btnShowSettingsClick(NULL);
+        case 'S': btnShowSettingsClick(NULL);
             break;
-        case 'A':
-            btnAboutClick(NULL);
+        case 'A': btnAboutClick(NULL);
             break;
         }
     }

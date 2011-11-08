@@ -55,11 +55,11 @@ object AboutForm: TAboutForm
     Font.Color = clSilver
     Font.Height = -13
     Font.Name = 'Verdana'
-    Font.Style = []
+    Font.Style = [fsItalic]
     ParentFont = False
     OnClick = lblLicenceClick
-    ExplicitLeft = 35
-    ExplicitWidth = 340
+    ExplicitLeft = 37
+    ExplicitWidth = 338
   end
   object Label22: TLabel
     AlignWithMargins = True

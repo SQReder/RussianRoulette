@@ -16,8 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-
-#pragma hdrstop
 #include "GameLogic.h"
 #include "MainForm.h"
 #include "Hatches.h"
@@ -32,9 +30,9 @@ extern int RoundOfGame;
 // -----------------------------------------------------------------------------
 /* 1. Здесь нужно временно отключить форму вопроса и labels... */
 void switchoffquestion() {
-    F->imgQuestion->Visible = False;
-    F->LabelMoney->Visible = False;
-    F->LabelQuestion->Visible = False;
+    F->imgQuestion->Visible = false;
+    F->LabelMoney->Visible = false;
+    F->LabelQuestion->Visible = false;
 }
 
 // -----------------------------------------------------------------------------
@@ -42,8 +40,8 @@ void switchoffquestion() {
  отобразить их; включить звук */
 // -----------------------------------------------------------------------------
 void switchonquestion() {
-    F->imgQuestion->Visible = True;
-    F->imgBorder->Visible = True;
+    F->imgQuestion->Visible = true;
+    F->imgBorder->Visible = true;
 }
 // -----------------------------------------------------------------------------
 
@@ -71,8 +69,8 @@ void showquestion() {
     }
 
     F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
-    F->LabelQuestion->Visible = True;
-    F->tmrWaiting->Enabled = True;
+    F->LabelQuestion->Visible = true;
+    F->tmrWaiting->Enabled = true;
     base[F->NumberOfQuestion].Round = '0';
     PlaySound(rr_question);
     // считать вопрос из файла; для начала заранее с помощью отдельной программы
@@ -81,41 +79,34 @@ void showquestion() {
 // -----------------------------------------------------------------------------
 /* 2.1. После этого дать возможность выбрать игрока для ответа
  (если компьютер, выбор случаен) */
-void activatedplayers() {
-    if ((CurrentHatch != 1) && (F->ingame[0] == true)) {
-        F->imgHatch1->Enabled = True;
-        F->imgNumber1->Enabled = True;
+void GiveHumanChooseOpponent() {
+    if ((CurrentHatch != 1) && (F->isPlayerInGame[0] == true)) {
+        F->imgHatch1->Enabled = true;
+        F->imgNumber1->Enabled = true;
     }
-    if ((CurrentHatch != 2) && (F->ingame[1] == true)) {
-        F->imgHatch2->Enabled = True;
-        F->imgNumber2->Enabled = True;
+    if ((CurrentHatch != 2) && (F->isPlayerInGame[1] == true)) {
+        F->imgHatch2->Enabled = true;
+        F->imgNumber2->Enabled = true;
     }
-    if ((CurrentHatch != 3) && (F->ingame[2] == true)) {
-        F->imgHatch3->Enabled = True;
-        F->imgNumber3->Enabled = True;
+    if ((CurrentHatch != 3) && (F->isPlayerInGame[2] == true)) {
+        F->imgHatch3->Enabled = true;
+        F->imgNumber3->Enabled = true;
     }
-    if ((CurrentHatch != 4) && (F->ingame[3] == true)) {
-        F->imgHatch4->Enabled = True;
-        F->imgNumber4->Enabled = True;
+    if ((CurrentHatch != 4) && (F->isPlayerInGame[3] == true)) {
+        F->imgHatch4->Enabled = true;
+        F->imgNumber4->Enabled = true;
     }
-    if ((CurrentHatch != 5) && (F->ingame[4] == true)) {
-        F->imgHatch5->Enabled = True;
-        F->imgNumber5->Enabled = True;
+    if ((CurrentHatch != 5) && (F->isPlayerInGame[4] == true)) {
+        F->imgHatch5->Enabled = true;
+        F->imgNumber5->Enabled = true;
     }
-}
-
-// -----------------------------------------------------------------------------
-void choosenplayer(int chooseplayer) {
-    F->LabelMoney->Caption = F->lblMoney[chooseplayer - 1]->Caption;
-    F->LabelMoney->Visible = True;
-    F->imgTotalPrize->Visible = True;
 }
 
 // -----------------------------------------------------------------------------
 /* 2.2. Затем игрок должен дать ответ (обработка клавиши) */
 void Proverka() {
     PlaySound(F->answer == F->RandomPlace ? rr_true : rr_false);
-    F->LabelMoney->Visible = False;
+    F->LabelMoney->Visible = false;
     F->tmrWaiting->Enabled = true;
 }
 
@@ -158,7 +149,7 @@ void load_final_question() {
     }
 
     F->LabelQuestion->Left = F->imgQuestion->Left + (int)(F->imgQuestion->Width - F->LabelQuestion->Width) / 2.;
-    F->LabelQuestion->Visible = True;
+    F->LabelQuestion->Visible = true;
     F->LabelMoney->Visible = true;
     F->imgTotalPrize->Visible = true;
     F->imgPulseBar->Visible = true;
@@ -167,111 +158,15 @@ void load_final_question() {
 }
 
 // -----------------------------------------------------------------------------
-UnicodeString myLowerCase(UnicodeString str) {
-    str = LowerCase(str);
-    for (int i = 1; i < str.Length(); i++) {
-        WCHAR ch = str[i];
-        switch (ch) {
-        case L'А':
-            str[i] = L'а';
-            break;
-        case L'Б':
-            str[i] = L'б';
-            break;
-        case L'В':
-            str[i] = L'в';
-            break;
-        case L'Г':
-            str[i] = L'г';
-            break;
-        case L'Д':
-            str[i] = L'д';
-            break;
-        case L'Е':
-            str[i] = L'е';
-            break;
-        case L'Ё':
-            str[i] = L'ё';
-            break;
-        case L'Ж':
-            str[i] = L'ж';
-            break;
-        case L'З':
-            str[i] = L'з';
-            break;
-        case L'И':
-            str[i] = L'и';
-            break;
-        case L'Й':
-            str[i] = L'й';
-            break;
-        case L'К':
-            str[i] = L'к';
-            break;
-        case L'Л':
-            str[i] = L'л';
-            break;
-        case L'М':
-            str[i] = L'м';
-            break;
-        case L'Н':
-            str[i] = L'н';
-            break;
-        case L'О':
-            str[i] = L'о';
-            break;
-        case L'П':
-            str[i] = L'п';
-            break;
-        case L'Р':
-            str[i] = L'р';
-            break;
-        case L'С':
-            str[i] = L'с';
-            break;
-        case L'Т':
-            str[i] = L'т';
-            break;
-        case L'У':
-            str[i] = L'у';
-            break;
-        case L'Ф':
-            str[i] = L'ф';
-            break;
-        case L'Х':
-            str[i] = L'х';
-            break;
-        case L'Ц':
-            str[i] = L'ц';
-            break;
-        case L'Ч':
-            str[i] = L'ч';
-            break;
-        case L'Ш':
-            str[i] = L'ш';
-            break;
-        case L'Щ':
-            str[i] = L'щ';
-            break;
-        case L'Ъ':
-            str[i] = L'ъ';
-            break;
-        case L'Ы':
-            str[i] = L'ы';
-            break;
-        case L'Ь':
-            str[i] = L'ь';
-            break;
-        case L'Э':
-            str[i] = L'э';
-            break;
-        case L'Ю':
-            str[i] = L'ю';
-            break;
-        case L'Я':
-            str[i] = L'я';
-            break;
+String myLowerCase(String str) {
+    const wchar_t upper[33] = L"АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+    const wchar_t lower[33] = L"абвгдеёжзиклмнопрстуфхцчшщъыьэюя";
+    wchar_t *ptr;
 
+    for (int i = 1; i <= str.Length(); i++) {
+        ptr = wcschr(upper, str[i]);
+        if (ptr) {
+            str[i] = lower[ptr - upper];
         }
     }
 
@@ -279,12 +174,12 @@ UnicodeString myLowerCase(UnicodeString str) {
 }
 
 // -----------------------------------------------------------------------------
-bool TF::_Parse(UnicodeString ans) {
+bool CheckAnswerAtFinalRound(String ans, int NumberOfQuestion) {
     ans = Trim(ans);
     ans = myLowerCase(ans);
-    UnicodeString trueans[5];
+    String trueans[5];
     for (int i = 0; i < 5; i++) {
-        trueans[i] = base[F->NumberOfQuestion].Answers[i];
+        trueans[i] = base[NumberOfQuestion].Answers[i];
         trueans[i] = myLowerCase(trueans[i]);
     }
     // удаление двойных пробелов

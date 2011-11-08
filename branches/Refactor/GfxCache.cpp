@@ -16,11 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#pragma hdrstop
 #include "GfxCache.h"
 #pragma package(smart_init)
 
-sGfxCache* gfx;
+sGfxCache *gfx;
 
 sGfxCache::sGfxCache() {
     PulseFramesCount = 56;
@@ -68,7 +67,7 @@ sGfxCache::~sGfxCache() {
     for (int i = 0; i < PulseFramesCount; i++) {
         delete PulseFrames[i];
     }
-    delete PulseFrames;
+    delete[]PulseFrames;
 
     for (int i = 0; i < 21; ++i) {
         delete Tick[i];

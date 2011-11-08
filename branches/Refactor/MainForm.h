@@ -1,12 +1,27 @@
 // ---------------------------------------------------------------------------
+// Russian Roulette is PC version of popular television game show.
+// Copyright (C) 2010-2011 Popovskiy Andrey
+// Copyright (C) 2010-2011 Boytsov Sergey
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// ---------------------------------------------------------------------------
 #ifndef MainFormH
 #define MainFormH
 // ---------------------------------------------------------------------------
-#include "pch.h"
 #include <Classes.hpp>
 #include <Controls.hpp>
 #include <ExtCtrls.hpp>
-#include <MPlayer.hpp>
 #include <pngimage.hpp>
 #include <StdCtrls.hpp>
 
@@ -28,7 +43,6 @@ __published: // IDE-managed Components
     TButton *btnContinueGame;
     TButton *btnExit;
     TTimer *tmrRotator;
-    TMediaPlayer *MediaPlayer1;
     TLabel *LabelQuestion;
     TLabel *LabelMoney;
     TTimer *tmrWaiting;
@@ -56,7 +70,7 @@ __published: // IDE-managed Components
     TImage *imgPlayer3;
     TImage *imgPlayer4;
     TImage *imgPlayer5;
-    TImage *imgMechanizm;
+    TImage *imgLiver;
     TTimer *tmrMechamizm;
     TImage *imgSplash;
     TTimer *tmrSplash;
@@ -67,7 +81,6 @@ __published: // IDE-managed Components
     TImage *imgBorder;
     TTimer *tmrDecided;
     TTimer *tmrLightAnimation;
-    TMediaPlayer *MediaPlayer2;
     TImage *imgChAnsLeft;
     TImage *imgChAnsRight;
     TLabel *ControlLabel;
@@ -91,7 +104,7 @@ __published: // IDE-managed Components
     void __fastcall btnGetMoneyClick(TObject *Sender);
     void __fastcall FormResize(TObject *Sender);
     void __fastcall tmrMechamizmTimer(TObject *Sender);
-    void __fastcall imgMechanizmClick(TObject *Sender);
+    void __fastcall imgLiverClick(TObject *Sender);
     void __fastcall tmrSplashTimer(TObject *Sender);
     void __fastcall tmrDecidedTimer(TObject *Sender);
     void __fastcall tmrLightAnimationTimer(TObject *Sender);
@@ -100,7 +113,7 @@ __published: // IDE-managed Components
     void __fastcall HatchClick(TObject *Sender);
 
 private: // User declarations
-    void CreateLabel(TLabel **, int, int, int, int, int, UnicodeString);
+    void SetLabel(TLabel **, int, int, int, int, int, String);
 
 public: // User declarations
     __fastcall TF(TComponent *Owner);
@@ -133,18 +146,15 @@ public: // User declarations
     ModesOfGame;
     ModesOfGame ModeOfGame; // режимы игры (последовательность игровых действий)
 
-    TLabel *lblMoney[5];
-    // лейблы и конструктор для отображения денег на панели игроков.
-    TLabel *lblPlayer[5];
-    TLabel *lblAnswers[5];
+#define COUNT_PLAYERS 5
 
     int answer;
     int Reward;
 
     void TransferMoney();
 
-    int money[5]; // деньги игроков
-    int pulse[5]; // Пульсации кровяного давления
+    int money[COUNT_PLAYERS]; // деньги игроков
+    int pulse[COUNT_PLAYERS]; // Пульсации кровяного давления
 
     int NumberOfQuestion;
     int Wait;
@@ -152,10 +162,9 @@ public: // User declarations
 
     void ResetForm();
 
-    bool _Parse(UnicodeString ans);
     void TransferMoneyFinal();
 
-    bool ingame[5]; // массив, определяющий наличие игрока в игре
+    bool isPlayerInGame[COUNT_PLAYERS]; // массив, определяющий наличие игрока в игре
     char FinalRound; // указывается номер финальной части раунда
     int FinalRoundOfGame;
     // финальный раунд игры (определяет стоимость финального вопроса)

@@ -44970,6 +44970,7 @@ object MenuForm: TMenuForm
     AutoSize = False
     Caption = 'btnNewGame'
     GlowSize = 20
+    Transparent = True
     OnClick = btnNewGameClick
   end
   object btnShowSettings: TLabel
@@ -44981,6 +44982,7 @@ object MenuForm: TMenuForm
     AutoSize = False
     Caption = 'btnShowSettings'
     GlowSize = 20
+    Transparent = True
     OnClick = btnShowSettingsClick
   end
   object btnGameRules: TLabel
@@ -44992,6 +44994,7 @@ object MenuForm: TMenuForm
     AutoSize = False
     Caption = 'btnGameRules'
     GlowSize = 20
+    Transparent = True
   end
   object btnAbout: TLabel
     Left = 0
@@ -45002,6 +45005,7 @@ object MenuForm: TMenuForm
     AutoSize = False
     Caption = 'btnAbout'
     GlowSize = 20
+    Transparent = True
     OnClick = btnAboutClick
   end
   object btnBblNTuHaxep: TLabel
@@ -45013,6 +45017,7 @@ object MenuForm: TMenuForm
     AutoSize = False
     Caption = 'btnBblNTuHaxep'
     GlowSize = 20
+    Transparent = True
     OnClick = btnBblNTuHaxepClick
   end
 end

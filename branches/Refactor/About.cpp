@@ -62,7 +62,7 @@ const char *licence =
     "мой; если нет,смотрите\n" "                            http://www.gnu.org/licenses/";
 
 // Peolpe who works with project
-String sversion = "1.0.2.3a";
+String sversion = "1.0.2.4";
 
 #define dev_count 2
 const char *sdevelopers[dev_count] = {
@@ -104,7 +104,7 @@ void __fastcall TAboutForm::FormCreate(TObject *Sender) {
     GlassFrame->Enabled = true;
 
     lblversion = new_label("Версия игры: " + sversion, lblProjTitle->Top + lblProjTitle->Height + main_offcet, l, true);
-    lbldev = new_label("Разработчики", lblversion->Top + lblversion->Height + main_offcet, l, true);
+    lbldev = new_label("Разработчики:", lblversion->Top + lblversion->Height + main_offcet, l, true);
 
     int offcet = lbldev->Top;
     for (int i = 0; i < dev_count; ++i) {

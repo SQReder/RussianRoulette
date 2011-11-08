@@ -8,14 +8,16 @@ enum TBotType {
 
 class TBot { // класс ботов
 
+public:
+    TBot();
+    void SetBotType(TBotType bottype);
+
+    bool Get_Answer();
+
 private:
     int bBrain;
     int bIdentity;
 
-public:
-    bool Get_Answer();
-    int ChooseAnyPlayer(bool players_state[6], int _ch);
-    TBot(TBotType bottype);
 };
 // -----------------------------------------------------------------------------
 #endif

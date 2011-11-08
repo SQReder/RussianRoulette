@@ -16,14 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#pragma hdrstop
-
-#define imgBlackHatch	"Data\\Black.png"	//state index 0
-#define imgBaseHatch	"Data\\Base.png"	//state index 1
-#define imgBlueHatch	"Data\\Blue.png"	//state index 2
-#define imgRedHatch		"Data\\Red.png"		//state index 3
-#define imgWhiteHatch	"Data\\White.png"	//state index 4
-#define imgGreyHatch	"Data\\Base.png"	//state index 5
+#define imgBlackHatch   "Data\\Black.png"   //state index 0
+#define imgBaseHatch    "Data\\Base.png"    //state index 1
+#define imgBlueHatch    "Data\\Blue.png"    //state index 2
+#define imgRedHatch     "Data\\Red.png"     //state index 3
+#define imgWhiteHatch   "Data\\White.png"   //state index 4
+#define imgGreyHatch    "Data\\Base.png"    //state index 5
 
 #include "Hatches.h"
 #include "GameLogic.h"
@@ -113,7 +111,7 @@ void OpenRandomHatches(const int OpenHatches, int ModeOfGame) {
 
         // закрываем люки, которые не могут открываться
         for (int i = 0; i < 5; i++) { // те, что уже не в игре
-            if (!F->ingame[i] && ModeOfGame == 8) {
+            if (!F->isPlayerInGame[i] && ModeOfGame == 8) {
                 opened_now[i + 1] = 0;
             }
         }
@@ -158,15 +156,12 @@ void FirstRoundRotating() {
     }
 
     switch (AnimationFrame++ % 2) {
-    case 0:
-        h_state[CurrentHatch] = 4;
+    case 0: h_state[CurrentHatch] = 4;
         break;
-    case 1:
-        h_state[CurrentHatch] = 3;
+    case 1: h_state[CurrentHatch] = 3;
         CurrentHatch++ ;
         break;
-    default:
-        AnimationFrame = 0;
+    default: AnimationFrame = 0;
         break;
     }
     CurrentHatch = CurrentHatch % 6;
@@ -175,7 +170,7 @@ void FirstRoundRotating() {
 // ---------------------------------------------------------------------------
 void LightHatchesW(int bright, int light) {
     // если 255 то заливаем все вторым цветом
-    if (bright == 255)
+    if (bright == LIGHT_ALL_HATCHES_BLUE)
         for (int i = 0; i < 6; i++) {
             h_state[i] = light;
         } else
@@ -376,14 +371,14 @@ void SwitchesLights() {
     switch (AnimationFrame) {
     case 0: {
             for (int i = 0; i < 5; i++) {
-                if ((F->ingame[i]) && (CantFall != i)) {
+                if ((F->isPlayerInGame[i]) && (CantFall != i)) {
                     h_state[i + 1] = 4;
                 }
             }
         } break;
     case 1: {
             for (int i = 0; i < 5; i++) {
-                if ((F->ingame[i]) && (CantFall != i)) {
+                if ((F->isPlayerInGame[i]) && (CantFall != i)) {
                     h_state[i + 1] = 5;
                 }
             }

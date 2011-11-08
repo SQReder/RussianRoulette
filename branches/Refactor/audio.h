@@ -52,10 +52,9 @@ typedef enum {
 } rrSoundEvent;
 
 void init_audio(HWND hwnd);
-void free_audio();
 
 void SetVolumeAll(float volume);
 
 void PlaySound(rrSoundEvent sound_event);
+void StopSoundAll();
 #endif
-

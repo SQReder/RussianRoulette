@@ -98,65 +98,37 @@ void init_audio(HWND hwnd) {
 
 void PlaySound(rrSoundEvent event) {
     switch (event) {
-    case Next_Question:
-        break;
-    case question_clear:
-        break;
-    case rr_20sec:
-        break;
-    case rr_bg1:
-        break;
-    case rr_bg2:
-        break;
-    case rr_bg3:
-        break;
-    case rr_bg4:
-        break;
-    case rr_bg5:
-        break;
-    case rr_choosen:
-        break;
-    case rr_closing:
-        break;
-    case rr_endround:
-        break;
-    case rr_fall:
-        break;
-    case rr_fall_with_host:
-        break;
-    case rr_false:
-        break;
-    case rr_final:
-        break;
-    case rr_intro_Take_2:
-        break;
-    case rr_intro:
-        break;
+    case Next_Question: break;
+    case question_clear: break;
+    case rr_20sec: break;
+    case rr_bg1: break;
+    case rr_bg2: break;
+    case rr_bg3: break;
+    case rr_bg4: break;
+    case rr_bg5: break;
+    case rr_choosen: break;
+    case rr_closing: break;
+    case rr_endround: break;
+    case rr_fall: break;
+    case rr_fall_with_host: break;
+    case rr_false: break;
+    case rr_final: break;
+    case rr_intro_Take_2: break;
+    case rr_intro: break;
     case rr_mexclose:
         event_map[rr_mexopen]->Stop();
         break;
-    case rr_mexopen:
-        break;
-    case rr_money:
-        break;
-    case rr_nextq:
-        break;
-    case rr_notfall:
-        break;
-    case rr_openhole:
-        break;
-    case rr_openround:
-        break;
-    case rr_players:
-        break;
-    case rr_question:
-        break;
-    case rr_round:
-        break;
-    case rr_save:
-        break;
-    case rr_true:
-        break;
+    case rr_mexopen: break;
+    case rr_money: break;
+    case rr_nextq: break;
+    case rr_notfall: break;
+    case rr_openhole: break;
+    case rr_openround: break;
+    case rr_players: break;
+    case rr_question: break;
+    case rr_round: break;
+    case rr_save: break;
+    case rr_true: break;
     }
     event_map[event]->Play();
 }
@@ -169,9 +141,16 @@ void SetVolumeAll(float volume) {
     } else if (volume > 1) {
         volume = 1;
     }
-    
+
     map <rrSoundEvent, shared_ptr <Sound> > ::iterator it;
     for (it = event_map.begin(); it != event_map.end(); ++it) {
         it->second->SetVolume(volume);
+    }
+}
+
+void StopSoundAll() {
+    map <rrSoundEvent, shared_ptr <Sound> > ::iterator it;
+    for (it = event_map.begin(); it != event_map.end(); ++it) {
+        it->second->Stop();
     }
 }

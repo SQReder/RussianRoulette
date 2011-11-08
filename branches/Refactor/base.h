@@ -11,12 +11,12 @@ public:
 
     char Round;
     int TrueAnswer;
-    UnicodeString Question;
-    UnicodeString Answers[5];
+    String Question;
+    String Answers[5];
 
 };
 
-extern QA* base;
+extern QA *base;
 extern int qcount;
 
 #endif

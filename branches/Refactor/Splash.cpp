@@ -16,9 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#include "Splash.h"
+#include "pch.h"
 
-#include <windows.h>
+#include "Splash.h"
 #include "MainMenu.h"
 #include "MainForm.h"
 #include "fSettings.h"
@@ -42,7 +42,7 @@ inline void UpdPB() {
     SplashForm->Update();
 }
 
-void CheckFile(UnicodeString filename) {
+void CheckFile(String filename) {
     UpdPB();
     if (!FileExists(filename)) {
         nonExisten->Add(filename);
@@ -109,7 +109,7 @@ void CheckSystemIntegrity() {
         nonExisten->SaveToFile("nonExistent.txt");
         MessageDlg("ЕГГОГ! Некоторых файлов, необходимых для запуска игры, нет на своих местах.\n"
             "Подробности в файле nonExistent.txt", mtError, TMsgDlgButtons() << mbOK, 0);
-        std::exit(1);
+        Application->Terminate();
     }
 
     nonExisten->Free();
@@ -119,7 +119,7 @@ void ShowState(String state) { SplashForm->lblLoadState->Caption = state; }
 
 // ---------------------------------------------------------------------------
 void Loader() {
-    SplashForm->PBLoad->Max = 132;
+    SplashForm->PBLoad->Max = 133;
 
     ShowState("Load settings...");
     TSettings::Instance()->LoadFromFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
@@ -129,6 +129,8 @@ void Loader() {
     UpdPB();
     ShowState("Load graphics...");
     gfx = new sGfxCache;
+    UpdPB();
+    ShowState("Load audio...");
     init_audio(Application->Handle);
     UpdPB();
     ShowState("Load complete");
@@ -178,10 +180,10 @@ int CountDown = 0;
 
 void __fastcall TSplashForm::tmrSplashTimer(TObject *Sender) {
     if (CountDown-- || FatalError) {
-        tmrSplash->Enabled = False;
+        tmrSplash->Enabled = false;
         MenuForm->Show();
         imgSplash->Free();
-        tmrSplash->Enabled = False;
+        tmrSplash->Enabled = false;
         SplashForm->Hide();
     }
 }
@@ -190,7 +192,7 @@ void __fastcall TSplashForm::tmrSplashTimer(TObject *Sender) {
 void __fastcall TSplashForm::tmrOpenSplashTimer(TObject *Sender) {
     SplashForm->AlphaBlendValue += 15;
     if (SplashForm->AlphaBlendValue >= 255) {
-        tmrOpenSplash->Enabled = False;
+        tmrOpenSplash->Enabled = false;
         Loader();
     }
 }

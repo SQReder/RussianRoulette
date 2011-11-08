@@ -17,23 +17,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
 #include "settings_impl.h"
+#include "pch.h"
 #pragma package(smart_init)
 
-TSettings* TSettings::SingleInstance = NULL;
+TSettings *TSettings::SingleInstance = NULL;
 
-void TSettings::LoadFromFile(UnicodeString filename) {
+void TSettings::LoadFromFile(String filename) {
     TIniFile *ini = new TIniFile(filename);
 
-    Fullscreen = ini->ReadBool("Global", "FullScreen", False);
+    Fullscreen = ini->ReadBool("Global", "FullScreen", false);
     FormsWidth = ini->ReadInteger("Global", "Width", 1024);
     FormsHeight = ini->ReadInteger("Global", "Height", 1024);
     FormsLeft = ini->ReadInteger("Global", "Left", 0);
     FormsTop = ini->ReadInteger("Global", "Top", 0);
-    SoundEnabled = ini->ReadBool("Global", "Sound", False);
+    SoundEnabled = ini->ReadBool("Global", "Sound", false);
     SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
-    MusicEnabled = ini->ReadBool("Global", "Music", False);
+    MusicEnabled = ini->ReadBool("Global", "Music", false);
     MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
-    HostMode = ini->ReadBool("Global", "HostMode", False);
+    HostMode = ini->ReadBool("Global", "HostMode", false);
 
     MinWidth = 1024;
     MinHeight = 768;
@@ -51,7 +52,7 @@ void TSettings::LoadFromFile(UnicodeString filename) {
             MessageBox(Application->Handle,
                 "Ошибка загрузки последней базы вопросов\n" "Попытка загрузить base\\main.dat также провалилась - файла не существует.",
                 "Критическая ошибка", MB_OK | MB_ICONSTOP);
-            std::exit(1);
+            Application->Terminate();
         }
     }
 

@@ -9,6 +9,8 @@
 void Hatches();
 void MechanizmSetHatchesStates();
 void ShiftHatches();
+
+#define LIGHT_ALL_HATCHES_BLUE 255
 void LightHatchesW(int, int);
 void ZeroRoundRotating();
 void FirstRoundRotating();
