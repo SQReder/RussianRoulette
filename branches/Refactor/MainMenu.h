@@ -8,7 +8,6 @@
 #include <StdCtrls.hpp>
 #include <Forms.hpp>
 #include <ExtCtrls.hpp>
-#include <pngimage.hpp>
 
 // ---------------------------------------------------------------------------
 class TMenuForm : public TForm {

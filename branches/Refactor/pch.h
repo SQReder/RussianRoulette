@@ -35,6 +35,7 @@ using namespace boost;
 
 #include <inifiles.hpp>
 #include <pngimage.hpp>
+#include <jpeg.hpp>
 #include <MPlayer.hpp>
 #include <Classes.hpp>
 #include <ComCtrls.hpp>

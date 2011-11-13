@@ -18,9 +18,19 @@
 // ---------------------------------------------------------------------------
 #include "settings_impl.h"
 #include "pch.h"
+#include "audio.h"
 #pragma package(smart_init)
 
+// ---------------------------------------------------------------------------
 TSettings *TSettings::SingleInstance = NULL;
+
+TSettings *TSettings::Instance() {
+    if (SingleInstance == NULL) {
+        SingleInstance = new TSettings();
+    }
+    return SingleInstance;
+}
+// ---------------------------------------------------------------------------
 
 void TSettings::LoadFromFile(String filename) {
     TIniFile *ini = new TIniFile(filename);
@@ -32,6 +42,7 @@ void TSettings::LoadFromFile(String filename) {
     FormsTop = ini->ReadInteger("Global", "Top", 0);
     SoundEnabled = ini->ReadBool("Global", "Sound", false);
     SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
+    SetVolumeAll(SoundVolume/100.);
     MusicEnabled = ini->ReadBool("Global", "Music", false);
     MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
     HostMode = ini->ReadBool("Global", "HostMode", false);
@@ -57,17 +68,55 @@ void TSettings::LoadFromFile(String filename) {
     }
 
     int i = 0;
+    BaseFiles.clear();
     BaseNames = new TStringList;
     while (1) {
-        String str = ini->ReadString("Bases", "basename" + IntToStr(i++), "");
-        if (str != "") {
-            BaseNames->Add(str);
+        String name = ini->ReadString("Bases", "basename" + IntToStr(i), "");
+        String file = ini->ReadString("Bases", "base" + IntToStr(i), "");
+        if ((name != "") && (file != "")) {
+            BaseFiles[name] = file;
+            BaseNames->Add(name);
         } else {
             break;
         }
+        i++ ;
     }
 
     ini->Free();
 }
+// ---------------------------------------------------------------------------
+
+void TSettings::SaveToFile() {
+    TSettings *Settings = TSettings::Instance();
+    TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
+
+    ini->WriteBool("Global", "FullScreen", Settings->Fullscreen);
+    ini->WriteInteger("Global", "Width", Settings->FormsWidth);
+    ini->WriteInteger("Global", "Height", Settings->FormsHeight);
+    ini->WriteInteger("Global", "Left", Settings->FormsLeft);
+    ini->WriteInteger("Global", "Top", Settings->FormsTop);
+    ini->WriteBool("Global", "Sound", Settings->SoundEnabled);
+    ini->WriteInteger("Global", "SoundVolume", Settings->SoundVolume);
+    ini->WriteBool("Global", "Music", Settings->MusicEnabled);
+    ini->WriteInteger("Global", "MusicVolume", Settings->MusicVolume);
+    ini->WriteBool("Global", "HostMode", Settings->HostMode);
+    ini->WriteString("Global", "LastBase", Settings->LastBase);
+
+    for (int i = 1; i <= 5; i++) {
+        ini->WriteString("Players", "Player" + IntToStr(i), Settings->PlayerNames[i - 1]);
+        ini->WriteInteger("Players", "PlayerType" + IntToStr(i), (int) Settings->PlayerType[i - 1]);
+    }
+
+    int i = 0;
+    for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
+        ini->WriteString("Bases", "basename" + IntToStr(i), it->first);
+        ini->WriteString("Bases", "base" + IntToStr(i), ExtractFileName(it->second));
+        ++i;
+    }
+    ini->Free();
+
+}
+// ---------------------------------------------------------------------------
 
 TSettings::~TSettings() { delete BaseNames; }
+// ---------------------------------------------------------------------------

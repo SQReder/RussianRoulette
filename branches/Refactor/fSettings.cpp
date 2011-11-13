@@ -24,41 +24,22 @@
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TSettingsForm *SettingsForm;
-std::map <String, String> BaseFiles;
 
 // ---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent *Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
 void __fastcall TSettingsForm::FormShow(TObject *Sender) {
-    // <- Загрузка соответствий файлов баз данных их именам
-    TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
-
-    int i = 0;
-    BaseFiles.clear();
-    while (1) {
-        String name = ini->ReadString("Bases", "basename" + IntToStr(i), "");
-        String file = ini->ReadString("Bases", "base" + IntToStr(i), "");
-        if ((name != "") && (file != "")) {
-            BaseFiles[name] = file;
-            cmbListOfBases->Items->Add(name);
-        } else {
-            break;
-        }
-        i++ ;
-    }
-
-    ini->Free();
-    // ->
-
     TSettings *Settings = TSettings::Instance();
     cmbListOfBases->Items->Assign(Settings->BaseNames);
 
-    for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
+    std::map <String, String> ::iterator it;
+    for (it = Settings->BaseFiles.begin(); it != Settings->BaseFiles.end(); ++it) {
         if (it->second == Settings->LastBase) {
             for (int i = 0; i < cmbListOfBases->Items->Count; ++i) {
                 if (it->first == cmbListOfBases->Items->Strings[i]) {
                     cmbListOfBases->ItemIndex = i;
+                    break;
                 }
             }
         }
@@ -118,38 +99,6 @@ void __fastcall TSettingsForm::btnCancelClick(TObject *Sender) {
     SettingsForm->Close();
 }
 
-// ---------------------------------------------------------------------------
-void SaveSettings() {
-    TSettings *Settings = TSettings::Instance();
-    TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
-
-    ini->WriteBool("Global", "FullScreen", Settings->Fullscreen);
-    ini->WriteInteger("Global", "Width", Settings->FormsWidth);
-    ini->WriteInteger("Global", "Height", Settings->FormsHeight);
-    ini->WriteInteger("Global", "Left", Settings->FormsLeft);
-    ini->WriteInteger("Global", "Top", Settings->FormsTop);
-    ini->WriteBool("Global", "Sound", Settings->SoundEnabled);
-    ini->WriteInteger("Global", "SoundVolume", Settings->SoundVolume);
-    ini->WriteBool("Global", "Music", Settings->MusicEnabled);
-    ini->WriteInteger("Global", "MusicVolume", Settings->MusicVolume);
-    ini->WriteBool("Global", "HostMode", Settings->HostMode);
-    ini->WriteString("Global", "LastBase", Settings->LastBase);
-
-    for (int i = 1; i <= 5; i++) {
-        ini->WriteString("Players", "Player" + IntToStr(i), Settings->PlayerNames[i - 1]);
-        ini->WriteInteger("Players", "PlayerType" + IntToStr(i), (int) Settings->PlayerType[i - 1]);
-    }
-
-    int i = 0;
-    for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
-        ini->WriteString("Bases", "basename" + IntToStr(i), it->first);
-        ini->WriteString("Bases", "base" + IntToStr(i), ExtractFileName(it->second));
-        ++i;
-    }
-    ini->Free();
-
-}
-
 // -----------------------------------------------------------------------------
 void __fastcall TSettingsForm::btnOKClick(TObject *Sender) {
     TSettings *Settings = TSettings::Instance();
@@ -173,9 +122,9 @@ void __fastcall TSettingsForm::btnOKClick(TObject *Sender) {
     Settings->Fullscreen = cbFullscreen->Checked;
     Settings->HostMode = cbHostModeOnOff->Checked;
 
-    Settings->LastBase = BaseFiles[cmbListOfBases->Items->Strings[cmbListOfBases->ItemIndex]];
+    Settings->LastBase = Settings->BaseFiles[cmbListOfBases->Items->Strings[cmbListOfBases->ItemIndex]];
+    Settings->SaveToFile();
 
-    SaveSettings();
     SettingsForm->Hide();
     SettingsForm->Close();
 }
@@ -208,10 +157,13 @@ void __fastcall TSettingsForm::addBaseClick(TObject *Sender) {
         if (CopyFileW(from, to, 0)) {
             String name = InputBox("Русская рулетка :: Добавить базу", "Введите имя новой базы",
                 ExtractFileName(OpenDialog1->FileName));
-            BaseFiles[name] = OpenDialog1->FileName;
+            TSettings *Settings = TSettings::Instance();
+            Settings->BaseFiles[name] = OpenDialog1->FileName;
 
             cmbListOfBases->Clear();
-            for (std::map <String, String> ::iterator it = BaseFiles.begin(); it != BaseFiles.end(); ++it) {
+
+            std::map <String, String> ::iterator it;
+            for (it = Settings->BaseFiles.begin(); it != Settings->BaseFiles.end(); ++it) {
                 cmbListOfBases->Items->Add(it->first);
             }
             cmbListOfBases->ItemIndex = cmbListOfBases->Items->Count - 1;

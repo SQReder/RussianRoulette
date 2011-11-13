@@ -92,10 +92,7 @@ void MechanizmSetHatchesStates() { // приведение изображений на форме в соответс
 
 // ---------------------------------------------------------------------------
 void OpenRandomHatches(const int OpenHatches, int ModeOfGame) {
-    if (OpenHatches > 6) {
-        ShowMessage("ј фигли так много люков открываем?!");
-        exit(1);
-    }
+    assert(OpenHatches <= 6);
 
     // F->RndHatch = 0;
     for (int i = 0; i < 6; i++) {
@@ -226,6 +223,7 @@ void SecondRoundRotating() {
         CurrentHatch++ ;
         break;
     default:
+        assert(false);
         AnimationFrame = 0;
         break;
     }

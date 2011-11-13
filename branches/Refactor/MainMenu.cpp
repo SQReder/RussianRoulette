@@ -115,6 +115,8 @@ void __fastcall TMenuForm::FormShow(TObject *Sender) {
     MenuForm->Constraints->MinWidth = Settings->MinWidth;
     MenuForm->Constraints->MinHeight = Settings->MinHeight;
 
+    Background->Picture->Assign(gfx->Menu_bg);
+
     LoadFormPosition(MenuForm);
 }
 

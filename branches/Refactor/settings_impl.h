@@ -38,19 +38,17 @@ public:
     bool MusicEnabled;
     int MusicVolume;
     bool HostMode;
-    String LastBase;
+
     TStringList *BaseNames;
+    map <String, String> BaseFiles;
+    String LastBase;
 
     ~TSettings();
 
-    static TSettings *Instance() {
-        if (SingleInstance == NULL) {
-            SingleInstance = new TSettings();
-        }
-        return SingleInstance;
-    }
+    static TSettings *Instance();
 
     void LoadFromFile(String filename);
+    void SaveToFile();
 
 private:
     TSettings() { };

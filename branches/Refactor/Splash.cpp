@@ -78,6 +78,7 @@ void CheckSystemIntegrity() {
     CheckFile("data\\black.png");
     CheckFile("data\\place.png");
     CheckFile("data\\place_red_zero.png");
+    CheckFile("data\\menu_bg.jpg");
 
     CheckFile("sounds\\question_clear.ogg");
     CheckFile("sounds\\rr_20sec.ogg");
@@ -121,9 +122,6 @@ void ShowState(String state) { SplashForm->lblLoadState->Caption = state; }
 void Loader() {
     SplashForm->PBLoad->Max = 133;
 
-    ShowState("Load settings...");
-    TSettings::Instance()->LoadFromFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
-    UpdPB();
     ShowState("Checking system integrity...");
     CheckSystemIntegrity();
     UpdPB();
@@ -132,6 +130,9 @@ void Loader() {
     UpdPB();
     ShowState("Load audio...");
     init_audio(Application->Handle);
+    UpdPB();
+    ShowState("Load settings...");
+    TSettings::Instance()->LoadFromFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
     UpdPB();
     ShowState("Load complete");
     SplashForm->tmrSplash->Enabled = true;

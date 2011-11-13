@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 116
   BorderStyle = bsDialog
   Caption = #1056#1091#1089#1089#1082#1072#1103' '#1056#1091#1083#1077#1090#1082#1072': '#1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 449
+  ClientHeight = 450
   ClientWidth = 340
   Color = clBtnFace
   TransparentColorValue = clGreen
@@ -27,10 +27,11 @@ object SettingsForm: TSettingsForm
     Left = 3
     Top = 270
     Width = 334
-    Height = 142
+    Height = 143
     Align = alClient
     Caption = 'gbOptions'
     TabOrder = 4
+    ExplicitHeight = 142
     object lblSoundVolume: TLabel
       AlignWithMargins = True
       Left = 5
@@ -145,7 +146,7 @@ object SettingsForm: TSettingsForm
       TabOrder = 1
     end
     object edPlayer2: TLabeledEdit
-      Left = 11
+      Left = 9
       Top = 116
       Width = 147
       Height = 21
@@ -262,12 +263,13 @@ object SettingsForm: TSettingsForm
   end
   object pButtons: TPanel
     Left = 3
-    Top = 412
+    Top = 413
     Width = 334
     Height = 34
     Align = alBottom
     BevelEdges = [beTop]
     TabOrder = 1
+    ExplicitTop = 412
     object btnCancel: TButton
       AlignWithMargins = True
       Left = 164
@@ -289,6 +291,7 @@ object SettingsForm: TSettingsForm
       Align = alLeft
       Cancel = True
       Caption = 'btnOK'
+      Default = True
       TabOrder = 1
       OnClick = btnOKClick
     end

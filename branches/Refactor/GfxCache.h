@@ -24,6 +24,7 @@ public:
     // one moar for 1..4
     TPicture *Splash[5];
     TPicture *FinalSplash;
+    TPicture *Menu_bg;
 };
 
 extern sGfxCache *gfx;

@@ -61,6 +61,9 @@ sGfxCache::sGfxCache() {
 
     FinalSplash = new TPicture();
     FinalSplash->LoadFromFile("Data\\Final.png");
+
+    Menu_bg = new TPicture();
+    Menu_bg->LoadFromFile("Data\\menu_bg.jpg");
 }
 
 sGfxCache::~sGfxCache() {
