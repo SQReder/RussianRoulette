@@ -88,7 +88,7 @@ void TSettings::LoadFromFile(String filename) {
 
 void TSettings::SaveToFile() {
     TSettings *Settings = TSettings::Instance();
-    TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
+    TIniFile *ini = new TIniFile(".\\settings.cfg");
 
     ini->WriteBool("Global", "FullScreen", Settings->Fullscreen);
     ini->WriteInteger("Global", "Width", Settings->FormsWidth);

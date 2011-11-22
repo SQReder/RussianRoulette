@@ -23,10 +23,11 @@ sGfxCache *gfx;
 
 sGfxCache::sGfxCache() {
     PulseFramesCount = 56;
-    PulseFrames = new TPicture *[PulseFramesCount];
     for (int i = 0; i < PulseFramesCount; i++) {
-        PulseFrames[i] = new TPicture();
-        PulseFrames[i]->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
+        TPicture *pic = new TPicture();
+        pic->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
+
+        PulseFrames.push_back(shared_ptr <TPicture> (pic));
     }
 
     for (int i = 0; i < 21; ++i) {
@@ -67,11 +68,6 @@ sGfxCache::sGfxCache() {
 }
 
 sGfxCache::~sGfxCache() {
-    for (int i = 0; i < PulseFramesCount; i++) {
-        delete PulseFrames[i];
-    }
-    delete[]PulseFrames;
-
     for (int i = 0; i < 21; ++i) {
         delete Tick[i];
     }

@@ -195,7 +195,7 @@ void __fastcall TF::FormCreate(TObject *Sender) {
 
 void __fastcall TF::tmrPulseAnimationTimer(TObject *Sender) {
     static frame = 0;
-    imgPulse->Picture->Assign(gfx->PulseFrames[frame]);
+    imgPulse->Picture->Assign(gfx->PulseFrames[frame]->Bitmap);
     frame = ++frame % gfx->PulseFramesCount;
 }
 

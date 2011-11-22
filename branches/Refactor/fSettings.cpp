@@ -153,7 +153,7 @@ void __fastcall TSettingsForm::cbMusicOnOffClick(TObject *Sender) {
 void __fastcall TSettingsForm::addBaseClick(TObject *Sender) {
     if (OpenDialog1->Execute()) {
         WCHAR *from = (OpenDialog1->FileName).w_str();
-        WCHAR *to = (ExtractFilePath(Application->ExeName) + "Base\\" + ExtractFileName(OpenDialog1->FileName)).w_str();
+        WCHAR *to = (".\\Base\\" + ExtractFileName(OpenDialog1->FileName)).w_str();
         if (CopyFileW(from, to, 0)) {
             String name = InputBox("Русская рулетка :: Добавить базу", "Введите имя новой базы",
                 ExtractFileName(OpenDialog1->FileName));

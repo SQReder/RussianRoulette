@@ -132,7 +132,7 @@ void Loader() {
     init_audio(Application->Handle);
     UpdPB();
     ShowState("Load settings...");
-    TSettings::Instance()->LoadFromFile(ExtractFilePath(Application->ExeName) + "settings.cfg");
+    TSettings::Instance()->LoadFromFile(".\\settings.cfg");
     UpdPB();
     ShowState("Load complete");
     SplashForm->tmrSplash->Enabled = true;
