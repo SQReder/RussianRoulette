@@ -56,5 +56,6 @@ void init_audio(HWND hwnd);
 void SetVolumeAll(float volume);
 
 void PlaySound(rrSoundEvent sound_event);
+void StopSound(rrSoundEvent sound_event);
 void StopSoundAll();
 #endif

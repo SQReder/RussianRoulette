@@ -534,6 +534,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
     case mRoundAnswerLocked: // проверка ответа
         if (Wait == 2) {
             CanAnswer = 0;
+            StopSound(rr_20sec);
             if (answer == RandomPlace) {
                 imgQuestion->Picture->Assign(gfx->quest_correct);
                 if (!Settings->HostMode) {
@@ -1021,7 +1022,8 @@ void __fastcall TF::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift) {
 void __fastcall TF::tmrTimeTimer(TObject *Sender) {
     TimeOfQuestion-- ;
     if (RoundOfGame < 5) {
-        if (TimeOfQuestion == (20 - TimeToDecide)) {
+        if (TimeOfQuestion == (20 - TimeToDecide)
+         && TSettings::Instance()->PlayerType[chooseplayer - 1] != bbHuman) {
             if (bot[chooseplayer - 1].Get_Answer()) {
                 answer = RandomPlace;
                 Reward = RoundOfGame * 1000;
@@ -1036,7 +1038,8 @@ void __fastcall TF::tmrTimeTimer(TObject *Sender) {
             tmrTime->Enabled = false;
         }
     } else {
-        if (TimeOfQuestion == (10 - TimeToDecide)) {
+        if (TimeOfQuestion == (10 - TimeToDecide)
+        && TSettings::Instance()->PlayerType[LeaderPlayerAtFinal] != bbHuman) {
             if (bot[LeaderPlayerAtFinal].Get_Answer()) {
                 String q = base[NumberOfQuestion].Answers[0];
                 edFinalAnswer->Text = q;
@@ -1191,6 +1194,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 imgQuestion->Visible = false;
                 LabelQuestion->Visible = false;
                 lblRightAnswer->Visible = false;
+                PlaySound(rr_nextq);
                 if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
                     btnMechStart->Enabled = true;
                     imgLiver->Enabled = true;
@@ -1273,6 +1277,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
         } break;
     case mFinalAnswerLocked: { // игрок даёт ответ
             edFinalAnswer->Visible = false;
+            StopSound(rr_20sec);
             if (CheckAnswerAtFinalRound(edFinalAnswer->Text, NumberOfQuestion)) {
                 PlaySound(rr_true);
                 lblRightAnswer->Top = imgQuestion->Top + 160;
@@ -1327,6 +1332,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
         } break;
     case mFinalGiveMoney: {
             if (Wait == 8) {
+                PlaySound(rr_bg3);
                 MoneyTransferMode = 0;
                 tmrMoney->Enabled = true;
             }
@@ -1638,7 +1644,7 @@ void __fastcall TF::FormShow(TObject *Sender) {
 #ifdef _DEBUG
     SetQuestionsMaximum(1, 1, 1, 1);
 #else
-    SetQuestionsMaximum(7, 7, 6, 5);
+    SetQuestionsMaximum(8, 7, 7, 4);
 #endif
 
     tmrPulseAnimation->Enabled = true;

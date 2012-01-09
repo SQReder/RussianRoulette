@@ -100,16 +100,32 @@ void PlaySound(rrSoundEvent event) {
     switch (event) {
     case Next_Question: break;
     case question_clear: break;
-    case rr_20sec: break;
+    case rr_20sec:
+        event_map[rr_choosen]->Stop();
+        event_map[rr_question]->Stop();
+        break;
     case rr_bg1: break;
     case rr_bg2: break;
     case rr_bg3: break;
     case rr_bg4: break;
     case rr_bg5: break;
-    case rr_choosen: break;
-    case rr_closing: break;
-    case rr_endround: break;
-    case rr_fall: break;
+    case rr_choosen:
+        event_map[rr_question]->Stop();
+        break;
+    case rr_closing:
+    case rr_endround:
+    case rr_mexopen:
+        {
+            event_map[rr_bg1]->Stop();
+            event_map[rr_bg2]->Stop();
+            event_map[rr_bg3]->Stop();
+            event_map[rr_bg4]->Stop();
+            event_map[rr_bg5]->Stop();
+        }
+        break;
+    case rr_fall:
+        event_map[rr_mexclose]->Stop();
+        break;
     case rr_fall_with_host: break;
     case rr_false: break;
     case rr_final: break;
@@ -118,16 +134,26 @@ void PlaySound(rrSoundEvent event) {
     case rr_mexclose:
         event_map[rr_mexopen]->Stop();
         break;
-    case rr_mexopen: break;
     case rr_money: break;
     case rr_nextq: break;
     case rr_notfall: break;
     case rr_openhole: break;
     case rr_openround: break;
     case rr_players: break;
-    case rr_question: break;
+    case rr_question:
+        {
+            event_map[rr_bg1]->Stop();
+            event_map[rr_bg2]->Stop();
+            event_map[rr_bg3]->Stop();
+            event_map[rr_bg4]->Stop();
+            event_map[rr_bg5]->Stop();
+            event_map[rr_mexclose]->Stop();
+        }
+        break;
     case rr_round: break;
-    case rr_save: break;
+    case rr_save:
+        event_map[rr_mexclose]->Stop();
+        break;
     case rr_true: break;
     }
     event_map[event]->Play();
