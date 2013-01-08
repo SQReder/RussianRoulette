@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2011 Popovskiy Andrey
-// Copyright (C) 2010-2011 Boytsov Sergey
+// Copyright (C) 2010-2012 Popovskiy Andrey
+// Copyright (C) 2010-2012 Boytsov Sergey
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -122,19 +122,19 @@ void ShowState(String state) { SplashForm->lblLoadState->Caption = state; }
 void Loader() {
     SplashForm->PBLoad->Max = 133;
 
-    ShowState("Checking system integrity...");
+    ShowState("Проверка ресурсов игры…");
     CheckSystemIntegrity();
     UpdPB();
-    ShowState("Load graphics...");
+    ShowState("Загрузка графики…");
     gfx = new sGfxCache;
     UpdPB();
-    ShowState("Load audio...");
+    ShowState("Загрузка аудио…");
     init_audio(Application->Handle);
     UpdPB();
-    ShowState("Load settings...");
+    ShowState("Загрузка настроек игры…");
     TSettings::Instance()->LoadFromFile(".\\settings.cfg");
     UpdPB();
-    ShowState("Load complete");
+    ShowState("Загрузка завершена!");
     SplashForm->tmrSplash->Enabled = true;
 }
 

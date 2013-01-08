@@ -90,7 +90,7 @@ object AboutForm: TAboutForm
     Margins.Bottom = 0
     Align = alBottom
     Alignment = taRightJustify
-    Caption = 'Copyright '#169' 2010-2011 QWERule Studios'
+    Caption = 'Copyright '#169' 2010-2012 QWERule Studios'
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clSilver
     Font.Height = -13

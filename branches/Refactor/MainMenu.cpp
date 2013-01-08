@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2011 Popovskiy Andrey
-// Copyright (C) 2010-2011 Boytsov Sergey
+// Copyright (C) 2010-2012 Popovskiy Andrey
+// Copyright (C) 2010-2012 Boytsov Sergey
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ __fastcall TMenuForm::TMenuForm(TComponent *Owner) : TForm(Owner) { }
 void __fastcall TMenuForm::FormCreate(TObject *Sender) {
     Color = clBlack;
 
-    btnNewGame->Caption = "Новая Игра";
+    btnNewGame->Caption = "Новая игра";
     btnShowSettings->Caption = "Настройки";
     btnGameRules->Caption = "Правила игры";
     btnBblNTuHaxep->Caption = "Выйти";

@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2011 Popovskiy Andrey
-// Copyright (C) 2010-2011 Boytsov Sergey
+// Copyright (C) 2010-2012 Popovskiy Andrey
+// Copyright (C) 2010-2012 Boytsov Sergey
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -353,19 +353,18 @@ int ChooseAnyPlayer() {
             continue;
         }
 
-        bool notCurrentPlayer = ChosenOne != CurrentHatch - 1;
-        bool isActualyInGame = F->isPlayerInGame[ChosenOne] != 0;
-        if (notCurrentPlayer && isActualyInGame) {
-
-            return ChosenOne + 1;
-        }
-    }
+		bool notCurrentPlayer = ChosenOne != CurrentHatch - 1;
+		bool isActualyInGame = F->isPlayerInGame[ChosenOne] != 0;
+		if (notCurrentPlayer && isActualyInGame) {
+			return ChosenOne + 1;
+		}
+	}
 }
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
-    TSettings *Settings = TSettings::Instance();
-    Wait++ ;
+	TSettings *Settings = TSettings::Instance();
+	Wait++ ;
     switch (ModeOfGame) {
     case mRoundQuestion: // показ вопроса
         if (Wait == 5) {
@@ -875,10 +874,11 @@ void __fastcall TF::tmrMoneyTimer(TObject *Sender) {
                     money[i] = money[i] + Reward;
                     lblMoney[i]->Caption = IntToStr(money[i]);
 
-                    if ((money[i] % 1000 == 998) || (money[i] % 1000 == 999)) {
-                        money[i] = 1000;
-                    }
-                    lblMoney[i]->Caption = IntToStr(money[i]);
+					int inaccuracy = money[i] % 100;
+					if (inaccuracy == 99 || inaccuracy == 98) {
+						money[i] += 100 - inaccuracy;
+					}
+					lblMoney[i]->Caption = IntToStr(money[i]);
                 }
             tmrMoney->Enabled = false;
         }
@@ -1478,14 +1478,14 @@ void __fastcall TF::edFinalAnswerKeyPress(TObject *Sender, wchar_t &Key) {
 
 // ---------------------------------------------------------------------------
 void TF::TransferMoneyFinal() {
-    int pos;
+	int pos;
     for (int i = 0; i < COUNT_PLAYERS; i++) {
         if (isPlayerInGame[i]) {
             pos = i;
-        }
+		}
     }
-    if (Reward > 6666) {
-        money[pos] += 6666;
+	if (Reward > 6666) {
+		money[pos] += 6666;
         Reward -= 6666;
     } else {
         money[pos] += Reward;

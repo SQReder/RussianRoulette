@@ -54,15 +54,15 @@ TLabel *new_label(String caption, int top, align al, bool bold = false) {
 }
 
 const char *licence =
-    "Russian Roulette это PC версия популярного телешоу.\nCopyright (C) 2010-2011 Popovskiy Andrey\n" "Copyright (C) 2010-2011 Boytsov Sergey\n\nЭто свободная программа; вы можете повторно рас-\n"
+    "Russian Roulette это PC версия популярного телешоу.\nCopyright © 2010-2012 Popovskiy Andrey\n" "Copyright © 2010-2012 Boytsov Sergey\n\nЭто свободная программа; вы можете повторно рас-\n"
     "пространять её и/или модифицировать её в соответ-\nствии с Стандартной Общественной Лицензий GNU,\n" "опубликованной Фондом Свободного ПО; либо вер-\nсии 3, либо (по вашему выбору) любой более позд-\n"
     "ней версии.\n\n" "Эта программа распространяется в надежде, что\n"
     "она будет полезной, но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ;\nдаже без подразумеваемых гарантий КОММЕРЧЕ-\n" "СКОЙ ЦЕННОСТИ или ПРИГОДНОСТИ ДЛЯ\nКОНКРЕТНОЙ ЦЕЛИ. Для получения подробных\n"
     "сведений смотрите Стандартную Общественную\nЛицензию GNU.\n\n" "Вы должны были получить копию Стандартной Об-\nщественной Лицензии GNU вместе с этой програм-\n"
     "мой; если нет,смотрите\n" "                            http://www.gnu.org/licenses/";
 
-// Peolpe who works with project
-String sversion = "1.0.2.4";
+// People who works with project
+String sversion = "1.5 alpha";
 
 #define dev_count 2
 const char *sdevelopers[dev_count] = {
