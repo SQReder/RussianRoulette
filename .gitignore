@@ -1,0 +1,12 @@
+*.local
+*.#*
+__history/
+*.ilc
+*.ild
+*.ilf
+*.ils
+*.obj
+*.map
+*.pch
+*.tds
+*.exe

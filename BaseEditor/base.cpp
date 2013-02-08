@@ -120,11 +120,11 @@ void sBase::save(UnicodeString filename) {
             WriteString(q->question);
             WriteString(q->comment);
 
-            TStringList* answers = const_cast <TStringList *> (q->GetAnswersList());
-            WriteChar((char)answers->Count);
-            for (int i = 0; i < answers->Count; ++i) {
-                WriteChar(answers->Strings[i].Length());
-                WriteString(answers->Strings[i]);
+            WriteChar((char)q->GetAnswersCount());
+            for (int i = 0; i < q->GetAnswersCount(); ++i) {
+                const String answer = q->GetAnswer(i);
+                WriteChar(answer.Length());
+                WriteString(answer);
             }
             WriteChar(q->true_answer);
         }

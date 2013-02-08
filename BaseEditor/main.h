@@ -22,8 +22,6 @@ __published: // IDE-managed Components
     TListBox* lstQuestions;
     TMemo* mQuestion;
     TButton* btnAddQuestionToBase;
-    TSpinButton* SpinRound;
-    TEdit* edRound;
     TPanel* pTop;
     TPanel* pAnswers;
     TPanel* pQuestions;
@@ -49,19 +47,17 @@ __published: // IDE-managed Components
     TMenuItem *mSetPass;
 	TMenuItem *mImportBase;
 	TMenuItem *N2;
+	TComboBox *edRound;
 
     void __fastcall FieldEnter(TObject* Sender);
     void __fastcall FieldExit(TObject* Sender);
 
     void __fastcall Button1Click(TObject* Sender);
     void __fastcall FormCreate(TObject* Sender);
-    void __fastcall SpinRoundDownClick(TObject* Sender);
-    void __fastcall SpinRoundUpClick(TObject* Sender);
     void __fastcall btnAddAnswerClick(TObject* Sender);
     void __fastcall btnAddQuestionToBaseClick(TObject* Sender);
     void __fastcall btnClearSearchFieldClick(TObject* Sender);
     void __fastcall mAnswerKeyDown(TObject* Sender, WORD& Key, TShiftState Shift);
-    void __fastcall edRoundChange(TObject* Sender);
     void __fastcall edSearchChange(TObject* Sender);
     void __fastcall lstAnswersClickCheck(TObject* Sender);
     void __fastcall lstAnswersDblClick(TObject* Sender);
@@ -74,6 +70,7 @@ __published: // IDE-managed Components
     void __fastcall mmSaveBaseAsClick(TObject *Sender);
     void __fastcall mSetPassClick(TObject *Sender);
 	void __fastcall mImportBaseClick(TObject *Sender);
+    void __fastcall edRoundChange(TObject *Sender);
 
 private:
     void ExitAllFields();

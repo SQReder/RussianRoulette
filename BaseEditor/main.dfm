@@ -2,8 +2,8 @@ object f: Tf
   Left = 0
   Top = 0
   Caption = 'Russian Roulette Base Editor v0.0.0.0.0.0(.0)'
-  ClientHeight = 371
-  ClientWidth = 618
+  ClientHeight = 472
+  ClientWidth = 777
   Color = clBtnFace
   Constraints.MinHeight = 300
   Constraints.MinWidth = 600
@@ -22,13 +22,13 @@ object f: Tf
   object pTop: TPanel
     Left = 0
     Top = 0
-    Width = 618
+    Width = 777
     Height = 57
     Align = alTop
     TabOrder = 0
     object btnAddQuestionToBase: TButton
       AlignWithMargins = True
-      Left = 579
+      Left = 738
       Top = 4
       Width = 35
       Height = 49
@@ -45,82 +45,56 @@ object f: Tf
       TabOrder = 0
       OnClick = btnAddQuestionToBaseClick
     end
-    object edRound: TEdit
-      AlignWithMargins = True
-      Left = 4
-      Top = 4
-      Width = 49
-      Height = 49
-      Margins.Right = 0
-      Align = alLeft
-      Alignment = taCenter
-      AutoSize = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -35
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      MaxLength = 1
-      NumbersOnly = True
-      ParentFont = False
-      TabOrder = 1
-      Text = '0'
-      OnChange = edRoundChange
-    end
     object mQuestion: TMemo
       AlignWithMargins = True
-      Left = 74
+      Left = 63
       Top = 4
-      Width = 505
+      Width = 675
       Height = 49
       Margins.Right = 0
       Align = alClient
       Lines.Strings = (
         'Some question')
       MaxLength = 255
-      TabOrder = 2
+      TabOrder = 1
       WantReturns = False
       OnEnter = FieldEnter
       OnExit = FieldExit
     end
-    object SpinRound: TSpinButton
+    object edRound: TComboBox
       AlignWithMargins = True
-      Left = 53
+      Left = 4
       Top = 4
-      Width = 15
-      Height = 49
-      Margins.Left = 0
+      Width = 53
+      Height = 48
       Align = alLeft
-      DownGlyph.Data = {
-        0E010000424D0E01000000000000360000002800000009000000060000000100
-        200000000000D800000000000000000000000000000000000000008080000080
-        8000008080000080800000808000008080000080800000808000008080000080
-        8000008080000080800000808000000000000080800000808000008080000080
-        8000008080000080800000808000000000000000000000000000008080000080
-        8000008080000080800000808000000000000000000000000000000000000000
-        0000008080000080800000808000000000000000000000000000000000000000
-        0000000000000000000000808000008080000080800000808000008080000080
-        800000808000008080000080800000808000}
-      TabOrder = 3
-      UpGlyph.Data = {
-        0E010000424D0E01000000000000360000002800000009000000060000000100
-        200000000000D800000000000000000000000000000000000000008080000080
-        8000008080000080800000808000008080000080800000808000008080000080
-        8000000000000000000000000000000000000000000000000000000000000080
-        8000008080000080800000000000000000000000000000000000000000000080
-        8000008080000080800000808000008080000000000000000000000000000080
-        8000008080000080800000808000008080000080800000808000000000000080
-        8000008080000080800000808000008080000080800000808000008080000080
-        800000808000008080000080800000808000}
-      OnDownClick = SpinRoundDownClick
-      OnUpClick = SpinRoundUpClick
+      AutoCloseUp = True
+      Style = csDropDownList
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -33
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ItemIndex = 0
+      ParentFont = False
+      Sorted = True
+      TabOrder = 2
+      Text = '1'
+      OnChange = edRoundChange
+      Items.Strings = (
+        '1'
+        '2'
+        '3'
+        '4'
+        'Final')
+      ExplicitTop = 7
     end
   end
   object pAnswers: TPanel
     Left = 0
     Top = 57
     Width = 289
-    Height = 256
+    Height = 357
     Align = alLeft
     TabOrder = 1
     object lstAnswers: TCheckListBox
@@ -128,7 +102,7 @@ object f: Tf
       Left = 4
       Top = 36
       Width = 281
-      Height = 216
+      Height = 317
       Margins.Top = 0
       OnClickCheck = lstAnswersClickCheck
       Align = alClient
@@ -183,16 +157,16 @@ object f: Tf
   object pQuestions: TPanel
     Left = 289
     Top = 57
-    Width = 329
-    Height = 256
+    Width = 488
+    Height = 357
     Align = alClient
     TabOrder = 2
     object lstQuestions: TListBox
       AlignWithMargins = True
       Left = 4
       Top = 36
-      Width = 321
-      Height = 216
+      Width = 480
+      Height = 317
       Align = alClient
       ItemHeight = 13
       TabOrder = 0
@@ -202,13 +176,13 @@ object f: Tf
     object Panel1: TPanel
       Left = 1
       Top = 1
-      Width = 327
+      Width = 486
       Height = 32
       Align = alTop
       TabOrder = 1
       object btnClearSearchField: TButton
         AlignWithMargins = True
-        Left = 284
+        Left = 443
         Top = 4
         Width = 39
         Height = 24
@@ -222,7 +196,7 @@ object f: Tf
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 277
+        Width = 436
         Height = 24
         Align = alClient
         Lines.Strings = (
@@ -237,8 +211,8 @@ object f: Tf
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 352
-    Width = 618
+    Top = 453
+    Width = 777
     Height = 19
     BiDiMode = bdLeftToRight
     Panels = <
@@ -251,8 +225,8 @@ object f: Tf
   object mComment: TMemo
     AlignWithMargins = True
     Left = 3
-    Top = 316
-    Width = 612
+    Top = 417
+    Width = 771
     Height = 33
     Align = alBottom
     MaxLength = 255

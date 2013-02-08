@@ -21,7 +21,7 @@ void sQuestion::SetTrue(int new_value) {
     }
 }
 
-void sQuestion::SetRound(unsigned new_value) {
+void sQuestion::SetRound(int new_value) {
     if (new_value > 0 || new_value < 5) {
         _round = new_value;
     }
@@ -29,7 +29,16 @@ void sQuestion::SetRound(unsigned new_value) {
 // ------------------------------------------------------------------
 
 void sQuestion::AssignAnswersList(const TStrings *answers_list) { answers->Assign(answers_list); }
+// ------------------------------------------------------------------
 
+const int sQuestion::GetAnswersCount() const {
+    return answers->Count;
+}
+// ------------------------------------------------------------------
+const String sQuestion::GetAnswer(int i) const {
+    return (i < 0 || i > answers->Count) ? throw : answers->Strings[i];
+}
+// ------------------------------------------------------------------
 // sQuestion inbase structure
 // 1 byte        round
 // 2 byte        lengths

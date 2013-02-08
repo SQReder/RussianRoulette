@@ -138,41 +138,6 @@ void __fastcall Tf::lstAnswersClickCheck(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall Tf::edRoundChange(TObject *Sender) {
-    UnicodeString text = edRound->Text;
-    if (text == "") {
-        text = "1";
-    } else {
-        if (text[1] > '5') {
-            text = "5";
-        }
-        if (text[1] < '1') {
-            text = "1";
-        }
-    }
-    edRound->Text = text;
-    QuestionRound = StrToInt(text);
-    edRound->SelectAll();
-}
-
-// ---------------------------------------------------------------------------
-
-void __fastcall Tf::SpinRoundUpClick(TObject *Sender) {
-    if (++QuestionRound > 5) {
-        QuestionRound = 5;
-    }
-    edRound->Text = IntToStr((int)QuestionRound);
-}
-// ---------------------------------------------------------------------------
-
-void __fastcall Tf::SpinRoundDownClick(TObject *Sender) {
-    if (--QuestionRound == 0) {
-        QuestionRound = 1;
-    }
-    edRound->Text = IntToStr((int)QuestionRound);
-}
-// ---------------------------------------------------------------------------
-
 void __fastcall Tf::FormCreate(TObject *Sender) {
     QuestionRound = 1;
     edRound->Text = "1";
@@ -269,7 +234,10 @@ void __fastcall Tf::lstQuestionsDblClick(TObject *Sender) {
     mAnswer->Clear();
 
     // show answers in list
-    lstAnswers->Items->Assign(EditQuestion->GetAnswersList());
+    lstAnswers->Clear();
+    for (int i = 0; i < EditQuestion->GetAnswersCount(); ++i) {
+        lstAnswers->Items->Add(EditQuestion->GetAnswer(i));
+    }
 
     QuestionRound = EditQuestion->round;
     edRound->Text = IntToStr(QuestionRound);
@@ -550,7 +518,7 @@ void __fastcall Tf::mImportBaseClick(TObject *Sender) {
 
                 TStringList *answers = new TStringList;
                 int acount = (q->round == 5) ? 5 : q->round + 1;
-                for (unsigned i = 0; i < acount; ++i) {
+                for (int i = 0; i < acount; ++i) {
                     answers->Add(old_q.Answers[i]);
                 }
 
@@ -571,3 +539,9 @@ void __fastcall Tf::mImportBaseClick(TObject *Sender) {
     }
 }
 // ---------------------------------------------------------------------------
+void __fastcall Tf::edRoundChange(TObject *Sender)
+{
+    QuestionRound = edRound->ItemIndex + 1;
+}
+//---------------------------------------------------------------------------
+
