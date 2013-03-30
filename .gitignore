@@ -10,3 +10,9 @@ __history/
 *.pch
 *.tds
 *.exe
+*.clg
+*_debuglog.txt
+*.bak
+*.log
+[Bb]in
+[Dd]ebug*/
