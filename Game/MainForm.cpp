@@ -77,6 +77,8 @@ int TempRoundOfGame;
 int chooseplayer;
 int CantFall;
 
+int curbot = -1; // переменная показывает порядковый номер бота среди игроков
+
 #define COUNT_HATCHES 6
 #define COUNT_ANSWERS 5
 
@@ -194,9 +196,9 @@ void __fastcall TF::FormCreate(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::tmrPulseAnimationTimer(TObject *Sender) {
-    static frame = 0;
-    imgPulse->Picture->Assign(gfx->PulseFrames[frame]->Bitmap);
-    frame = ++frame % gfx->PulseFramesCount;
+	static frame = 0;
+	imgPulse->Picture->Assign(gfx->PulseFrames[frame]->Bitmap);
+	frame = ++frame % gfx->PulseFramesCount;
 }
 
 // ---------------------------------------------------------------------------
@@ -496,7 +498,8 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
 
             // --[ 3. Запись вариантов ответа, согласно индексам]--
             TimeOfQuestion = 20;
-            imgPulse->Visible = true;
+			imgPulse->Visible = true;
+			tmrPulseAnimation->Enabled = true;
             imgPulseBar->Visible = true;
             imgTicker->Visible = true;
             imgTimer->Picture->Assign(gfx->Tick[TimeOfQuestion]);
@@ -603,7 +606,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
 #ifdef _DEBUG
                 TimeToDecide = 1;
 #else
-                switch (Settings->PlayerType[chooseplayer - 1]) {
+				switch (Settings->PlayerType[chooseplayer - 1]) {
                 case bbFoooool: TimeToDecide = 10 + random(31);
                     break;
                 case bbFooly: TimeToDecide = 10 + random(21);
@@ -616,7 +619,8 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                     break;
                 }
 #endif
-                imgLiverClick(imgLiver);
+				imgLiverClick(imgLiver);
+				curbot = chooseplayer - 1;
                 tmrDecided->Enabled = true;
             }
             Wait = 0;
@@ -640,7 +644,8 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                         }
                     }
 
-                    imgPulse->Visible = false;
+					imgPulse->Visible = false;
+					tmrPulseAnimation->Enabled = false;
                     LabelMoney->Visible = false;
                     lblPlayer[chooseplayer - 1]->Visible = false;
                     lblMoney[chooseplayer - 1]->Visible = false;
@@ -709,15 +714,37 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                 for (int i = 0; i < COUNT_PLAYERS; i++) {
                     if (money[i] == MaximalSumm) {
                         MaximalSummCount++ ;
-                        CantFall = i;
+						CantFall = i;
                     }
                 }
                 if (MaximalSummCount > 1 || RoundOfGame == 4) {
-                    CantFall = -1;
+					CantFall = -1;
                 }
                 tmrWaiting->Enabled = false;
-                btnMechStart->Enabled = 1;
-                imgLiver->Enabled = 1;
+				if (Settings->PlayerType[CantFall] == bbHuman) {
+					btnMechStart->Enabled = 1;
+					imgLiver->Enabled = 1;
+				} else {
+#ifdef _DEBUG
+					TimeToDecide = 1;
+#else
+					switch (Settings->PlayerType[CantFall]) {
+						case bbFoooool: TimeToDecide = 10 + random(31);
+							break;
+						case bbFooly: TimeToDecide = 10 + random(21);
+							break;
+						case bbNormal: TimeToDecide = 5 + random(16);
+							break;
+						case bbHard: TimeToDecide = 5 + random(11);
+							break;
+						case bbVeryHard: TimeToDecide = 1 + random(11);
+							break;
+					}
+#endif
+					imgLiverClick(imgLiver);
+					curbot = CantFall;
+					tmrDecided->Enabled = true;
+				}
                 // btnMechStart->SetFocus();
             }
         } break;
@@ -1197,9 +1224,10 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 PlaySound(rr_nextq);
                 if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
                     btnMechStart->Enabled = true;
-                    imgLiver->Enabled = true;
+					imgLiver->Enabled = true;
+					hatches_enable_state(true);
                 } else {
-                    switch (Settings->PlayerType[LeaderPlayerAtFinal]) {
+					switch (Settings->PlayerType[LeaderPlayerAtFinal]) {
                     case bbFoooool: TimeToDecide = 5 + random(41);
                         break;
                     case bbFooly: TimeToDecide = 5 + random(31);
@@ -1215,13 +1243,15 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                     TimeToDecide = 1;
 #endif
 
-                    imgLiverClick(imgLiver);
+					imgLiverClick(imgLiver);
+					curbot = LeaderPlayerAtFinal;
+					bot[curbot].bAction = baStoppingMech;
                     Wait = 0;
-                    tmrDecided->Enabled = true;
+					tmrDecided->Enabled = true;
+					hatches_enable_state(false);
                 }
                 RoundOfGame = -1;
-                chooseplayer = 255;
-                hatches_enable_state(true);
+				chooseplayer = 255;
                 tmrWaitingFinal->Enabled = false;
             }
             if (Wait == 19) {
@@ -1237,7 +1267,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 imgBorder->Visible = true;
                 imgPulseBar->Visible = true;
                 imgTicker->Visible = true;
-                imgPulse->Visible = true;
+				imgPulse->Visible = true;
                 imgTotalPrize->Visible = true;
                 if (FinalRoundOfGame == 1) {
                     LabelMoney->Caption = "50000";
@@ -1434,7 +1464,8 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 } else {
                     LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 1);
                     MechanizmSetHatchesStates();
-                    Wait = 10;
+					Wait = 10;
+					PlaySound(rr_bg5);
                     ModeOfGame = mFinalStartNewRound;
                 }
             }
@@ -1669,10 +1700,10 @@ void __fastcall TF::FormResize(TObject *Sender) {
     imgBorder->Left = (ClientWidth - imgBorder->Width) / 2;
     imgBorder->Top = ClientHeight - imgBorder->Height;
 
-    imgPlace->Left = int((ClientWidth - imgPlace->Width) / 2 - 1 / Width * 80);
+	imgPlace->Left = int((ClientWidth - imgPlace->Width) / 2 - 1 / Width * 80);
     imgPlace->Top = 50;
 
-    imgPlayers->Top = 0;
+	imgPlayers->Top = 0;
     imgPlayers->Left = ClientWidth - imgPlayers->Width;
 
     imgTotalPrize->Top = imgQuestion->Top - 28;
@@ -1807,17 +1838,35 @@ void __fastcall TF::tmrSplashTimer(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrDecidedTimer(TObject *Sender) {
-    Wait++ ;
+	Wait++ ;
     if (Wait == TimeToDecide) {
-        imgLiverClick(imgLiver);
-        tmrDecided->Enabled = false;
-        if (FinalRoundOfGame > 0) {
-            Wait = 18;
-        }
-        if (RoundOfGame >= 1 && RoundOfGame <= 4) {
-            Wait = 0;
-        }
-    }
+		if (curbot == -1) {
+            imgLiverClick(imgLiver);
+			tmrDecided->Enabled = false;
+			if (RoundOfGame >= 1 && RoundOfGame <= 4) {
+				Wait = 0;
+			}
+		}
+		else {
+			if (bot[curbot].bAction == baStoppingMech) {
+				imgLiverClick(imgLiver);
+				if (FinalRoundOfGame > 0) {
+					Wait = 0;
+					TimeToDecide = 2 + random(3);
+					bot[curbot].bAction = baChoosingHatch;
+				}
+				if (RoundOfGame >= 1 && RoundOfGame <= 4) {
+					Wait = 0;
+					tmrDecided->Enabled = false;
+				}
+			}
+			else if (bot[curbot].bAction == baChoosingHatch) {
+				Wait = 18;
+				tmrDecided->Enabled = false;
+				HatchClick(imgHatch[random(6)]);
+			}
+		}
+	}
 }
 
 // ---------------------------------------------------------------------------
@@ -2106,3 +2155,4 @@ void __fastcall TF::FormHide(TObject *Sender) {
     StopSoundAll();
 }
 // ---------------------------------------------------------------------------
+
