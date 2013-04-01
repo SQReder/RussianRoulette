@@ -1039,6 +1039,14 @@ object SplashForm: TSplashForm
     Align = alBottom
     Alignment = taRightJustify
     Caption = 'lblLoadState'
+    Color = clBlack
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
     ExplicitLeft = 738
     ExplicitWidth = 59
   end

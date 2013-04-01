@@ -52,7 +52,10 @@ sGfxCache::sGfxCache() {
     rr_quest->LoadFromFile("data\\rr_quest.png");
 
     PlaceRedZero = new TPicture();
-    PlaceRedZero->LoadFromFile("Data\\Place_red_zero.png");
+	PlaceRedZero->LoadFromFile("Data\\Place_red_zero.png");
+
+	PlaceRedMechActive = new TPicture();
+	PlaceRedMechActive->LoadFromFile("Data\\Place_red_zero2.png");
 
     quest_correct = new TPicture();
     quest_correct->LoadFromFile("Data\\quest_correct.png");
@@ -82,7 +85,8 @@ sGfxCache::~sGfxCache() {
 
     delete Place;
     delete rr_quest;
-    delete PlaceRedZero;
+	delete PlaceRedZero;
+	delete PlaceRedMechActive;
     delete quest_correct;
     delete quest_incorrect;
     delete FinalSplash;

@@ -15,7 +15,8 @@ public:
     TPicture *Liver[16];
 
     TPicture *Place;
-    TPicture *PlaceRedZero;
+	TPicture *PlaceRedZero;
+	TPicture *PlaceRedMechActive;
 
     TPicture *rr_quest;
     TPicture *quest_correct;

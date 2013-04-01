@@ -7,7 +7,7 @@ enum TBotType {
 };
 
 enum TBotActionType {
-	baStoppingMech, baChoosingOpp, baChoosingHatch
+	baStoppingMech, baChoosingOpp, baChoosingHatch, baDecideStayOrLeave
 };
 
 class TBot { // класс ботов
@@ -17,7 +17,7 @@ public:
 	void SetBotType(TBotType bottype);
     int bAction;
 
-    bool Get_Answer();
+	bool Get_Answer();
 
 private:
     int bBrain;

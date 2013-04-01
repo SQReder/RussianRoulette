@@ -78,6 +78,7 @@ int chooseplayer;
 int CantFall;
 
 int curbot = -1; // переменная показывает порядковый номер бота среди игроков
+TColor BgStateColor; // добавим маленько эпичности при проверке ответов: окраска окна
 
 #define COUNT_HATCHES 6
 #define COUNT_ANSWERS 5
@@ -210,7 +211,7 @@ void __fastcall TF::btnMechStartClick(TObject *Sender) {
     }
     tmrRotator->Interval = SpeedOfRotation;
     MechanizmState = Spining;
-    imgPlace->Picture->Assign(gfx->PlaceRedZero);
+    imgPlace->Picture->Assign(gfx->PlaceRedMechActive);
     tmrRotator->Enabled = true;
     PlaySound(rr_mexopen);
     btnMechStart->Enabled = false;
@@ -232,12 +233,13 @@ void __fastcall TF::btnMechStopClick(TObject *Sender) {
     }
     PlaySound(rr_mexclose);
     randomize();
-    WaitForFate = 5 + random(11);
+	WaitForFate = 5 + random(11);
+	imgPlace->Picture->Assign(gfx->PlaceRedZero);
     if (RoundOfGame < 1) {
         imgPlace->Picture->Assign(gfx->Place);
     }
 
-    if (FinalRoundOfGame > 0) {
+	if (FinalRoundOfGame > 0) {
         SwitchOffMech_WhiteLights();
         CanChoose = 1;
         OpenRandomHatches(FinalRoundOfGame + 2, ModeOfGame);
@@ -538,7 +540,8 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
             CanAnswer = 0;
             StopSound(rr_20sec);
             if (answer == RandomPlace) {
-                imgQuestion->Picture->Assign(gfx->quest_correct);
+				imgQuestion->Picture->Assign(gfx->quest_correct);
+				FlashBackground((TColor)RGB(0,255,0));
                 if (!Settings->HostMode) {
                     tmrWaiting->Enabled = true;
                 }
@@ -554,7 +557,8 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                 chooseplayer = 255;
                 QuestionsLeft-- ;
             } else {
-                imgQuestion->Picture->Assign(gfx->quest_incorrect);
+				imgQuestion->Picture->Assign(gfx->quest_incorrect);
+				FlashBackground((TColor)RGB(255,0,0));
                 if (answer != -1) {
                     imgChoosenAnswer->Visible = true;
                     imgChAnsLeft->Visible = true;
@@ -1110,14 +1114,16 @@ void TF::TransferMoney() {
         money[CurrentHatch - 1] += (Reward >= 100) ? 100 : Reward;
         lblMoney[CurrentHatch - 1]->Caption = IntToStr(money[CurrentHatch - 1]);
         LabelMoney->Caption = IntToStr(money[CurrentHatch - 1]);
-    } else {
-        int dt = money[CurrentHatch - 1] % 1000;
-        if (dt > 997) {
-            money[chooseplayer - 1] += 1000 - dt;
+	} else {
+		int dt = money[CurrentHatch - 1] % 100;
+		if (dt > 97) {
+			money[chooseplayer - 1] += 100 - dt;
+			money[CurrentHatch - 1] += 100 - dt;
         }
         dt = money[CurrentHatch - 1] % 10;
         if (dt > 7) {
-            money[chooseplayer - 1] += 10 - dt;
+			money[chooseplayer - 1] += 10 - dt;
+			money[CurrentHatch - 1] += 10 - dt;
         }
         tmrMoney->Enabled = false;
         lblMoney[CurrentHatch - 1]->Caption = IntToStr(money[CurrentHatch - 1]);
@@ -1228,19 +1234,19 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
 					hatches_enable_state(true);
                 } else {
 					switch (Settings->PlayerType[LeaderPlayerAtFinal]) {
-                    case bbFoooool: TimeToDecide = 5 + random(41);
-                        break;
-                    case bbFooly: TimeToDecide = 5 + random(31);
-                        break;
-                    case bbNormal: TimeToDecide = 5 + random(21);
-                        break;
-                    case bbHard: TimeToDecide = 1 + random(16);
-                        break;
-                    case bbVeryHard: TimeToDecide = 1 + random(11);
-                        break;
-                    }
+					case bbFoooool: TimeToDecide = 5 + random(41);
+						break;
+					case bbFooly: TimeToDecide = 5 + random(31);
+						break;
+					case bbNormal: TimeToDecide = 5 + random(21);
+						break;
+					case bbHard: TimeToDecide = 1 + random(16);
+						break;
+					case bbVeryHard: TimeToDecide = 1 + random(11);
+						break;
+					}
 #ifdef _DEBUG
-                    TimeToDecide = 1;
+					TimeToDecide = 1;
 #endif
 
 					imgLiverClick(imgLiver);
@@ -1366,14 +1372,17 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 MoneyTransferMode = 0;
                 tmrMoney->Enabled = true;
             }
-            if (Wait == 18) {
-                if (FinalRoundOfGame < 3) {
-                    btnGetMoney->Visible = true;
-                    btnContinueGame->Visible = true;
+			if (Wait == 18) {
+				if (FinalRoundOfGame < 3) {
+					imgContGame->Top = imgBorder->Top + 15;
+					imgTakeAMoney->Top = imgBorder->Top + 15;
+					imgContGame->Left = imgTotalPrize->Left - 75;
+					imgTakeAMoney->Left = imgTotalPrize->Left + imgTotalPrize->Width - (imgTakeAMoney->Width / 2.) - 75;
+					imgTakeAMoney->Visible = true;
+					imgContGame->Visible = true;
                 }
                 tmrWaitingFinal->Enabled = false;
                 imgChoosenAnswer->Visible = false;
-                imgBorder->Visible = false;
                 imgChAnsLeft->Visible = false;
                 imgChAnsRight->Visible = false;
                 imgTimer->Visible = false;
@@ -1386,11 +1395,36 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 lblRightAnswer->Visible = false;
                 imgTicker->Visible = false;
                 imgPulseBar->Visible = false;
-                imgTotalPrize->Visible = false;
+				imgTotalPrize->Visible = false;
+				// если в финале бот, то блокируем кнопки, а иначе - наоборот
+				bool LockedDecisionBtns = (bool)(Settings->PlayerType[LeaderPlayerAtFinal] != bbHuman);
+				imgContGame->Enabled = !LockedDecisionBtns;
+				imgTakeAMoney->Enabled = !LockedDecisionBtns;
+				if (LockedDecisionBtns) {
+					bot[LeaderPlayerAtFinal].bAction = baDecideStayOrLeave;
+					switch (Settings->PlayerType[LeaderPlayerAtFinal]) {
+					case bbFoooool: TimeToDecide = 1 + random(15);
+						break;
+					case bbFooly: TimeToDecide = 1 + random(12);
+						break;
+					case bbNormal: TimeToDecide = 1 + random(10);
+						break;
+					case bbHard: TimeToDecide = 1 + random(7);
+						break;
+					case bbVeryHard: TimeToDecide = 1 + random(4);
+						break;
+					}
+#ifdef _DEBUG
+					TimeToDecide = 3;
+#endif
+					tmrDecided->Enabled = true;
+					Wait = 0;
+				}
                 if (FinalRoundOfGame == 3) {
-                    Wait = 0;
+					Wait = 0;
+					tmrDecided->Enabled = false;
                     ModeOfGame = mFinalEndOfGame;
-                    tmrWaitingFinal->Enabled = true;
+					tmrWaitingFinal->Enabled = true;
                 }
             }
         } break;
@@ -1483,7 +1517,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
             } else if (Wait == 8 && ModeOfGame == mFinalEndOfGame) {
                 LightHatchesW(2, 3);
             }
-            imgTotalPrize->Top = imgBorder->Top + 30;
+			imgTotalPrize->Top = imgBorder->Top + 30;
             LabelMoney->Top = imgTotalPrize->Top + 10;
             LabelMoney->Visible = true;
             LabelMoney->Left = imgTotalPrize->Left + 9;
@@ -1652,7 +1686,12 @@ void __fastcall TF::FormShow(TObject *Sender) {
     imgPulseBar->Left = imgQuestion->Left + 704;
 
     imgPulse->Top = imgPulseBar->Top + 8;
-    imgPulse->Left = imgPulseBar->Left + 7;
+	imgPulse->Left = imgPulseBar->Left + 7;
+
+	imgContGame->Top = imgBorder->Top + 15;
+	imgTakeAMoney->Top = imgBorder->Top + 15;
+	imgContGame->Left = imgTotalPrize->Left - 75;
+	imgTakeAMoney->Left = imgTotalPrize->Left + imgTotalPrize->Width - (imgTakeAMoney->Width / 2.) - 75;
 
     imgSplash->Visible = true;
     tmrSplash->Enabled = true;
@@ -1864,6 +1903,10 @@ void __fastcall TF::tmrDecidedTimer(TObject *Sender) {
 				Wait = 18;
 				tmrDecided->Enabled = false;
 				HatchClick(imgHatch[random(6)]);
+			}
+			else if (bot[curbot].bAction == baDecideStayOrLeave) {
+				if (bot[curbot].Get_Answer()) { imgContGameClick(imgContGame); }
+				else { imgTakeAMoneyClick(imgTakeAMoney); }
 			}
 		}
 	}
@@ -2155,4 +2198,68 @@ void __fastcall TF::FormHide(TObject *Sender) {
     StopSoundAll();
 }
 // ---------------------------------------------------------------------------
+
+void __fastcall TF::tmrAnimateBackgroundTimer(TObject *Sender)
+{
+	switch (BgStateColor) {
+		case (TColor)RGB(0,255,0):
+		{
+			int green = GetGValue(F->Color);
+			green+=51;
+			F->Color = (TColor)RGB(0, green, 0);
+			if (F->Color == BgStateColor) {
+				BgStateColor = (TColor)RGB(0,0,0);
+			}
+		}
+		break;
+		case (TColor)RGB(255,0,0):
+		{
+			int red = GetRValue(F->Color);
+			red+=51;
+			F->Color = (TColor)RGB(red, 0, 0);
+			if (F->Color == BgStateColor) {
+				BgStateColor = (TColor)RGB(0,0,0);
+			}
+		}
+		break;
+		case (TColor)RGB(0,0,0):
+		{
+			int green = GetGValue(F->Color);
+			int red = GetRValue(F->Color);
+			if (green != 0) green-=15;
+			if (red != 0) red-=15;
+			F->Color = (TColor)RGB(red, green, 0);
+			if (F->Color == BgStateColor) {
+				tmrAnimateBackground->Enabled = false;
+			}
+		}
+		break;
+	}
+}
+//---------------------------------------------------------------------------
+void TF::FlashBackground(TColor NewStateColor)
+{
+	BgStateColor = NewStateColor;
+	tmrAnimateBackground->Enabled = true;
+}
+//---------------------------------------------------------------------------
+void __fastcall TF::imgContGameClick(TObject *Sender)
+{
+	btnContinueGameClick(btnContinueGame);
+	imgTakeAMoney->Visible = false;
+	imgContGame->Visible = false;
+	imgBorder->Visible = false;
+	tmrDecided->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TF::imgTakeAMoneyClick(TObject *Sender)
+{
+	btnGetMoneyClick(btnGetMoney);
+	imgTakeAMoney->Visible = false;
+	imgContGame->Visible = false;
+	imgBorder->Visible = false;
+	tmrDecided->Enabled = false;
+}
+//---------------------------------------------------------------------------
 

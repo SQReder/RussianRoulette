@@ -84,6 +84,9 @@ __published: // IDE-managed Components
     TImage *imgChAnsLeft;
     TImage *imgChAnsRight;
     TLabel *ControlLabel;
+	TTimer *tmrAnimateBackground;
+	TImage *imgContGame;
+	TImage *imgTakeAMoney;
 
     void __fastcall tmrPulseAnimationTimer(TObject *Sender);
     void __fastcall FormCreate(TObject *Sender);
@@ -111,6 +114,9 @@ __published: // IDE-managed Components
     void __fastcall ControlLabelClick(TObject *Sender);
     void __fastcall FormHide(TObject *Sender);
     void __fastcall HatchClick(TObject *Sender);
+	void __fastcall tmrAnimateBackgroundTimer(TObject *Sender);
+	void __fastcall imgContGameClick(TObject *Sender);
+	void __fastcall imgTakeAMoneyClick(TObject *Sender);
 
 private: // User declarations
     void SetLabel(TLabel **, int, int, int, int, int, String);
@@ -177,7 +183,8 @@ public: // User declarations
 
     void ShowAnswers();
     void ResizeAnswers();
-    void Choosen_Answer_Change_Position(int mode);
+	void Choosen_Answer_Change_Position(int mode);
+	void FlashBackground(TColor NewStateColor);
 };
 
 void LoadQuestionFromBase(String BaseName);
