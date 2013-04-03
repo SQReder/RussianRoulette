@@ -16,21 +16,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-#define imgBlackHatch   "Data\\Black.png"   //state index 0
-#define imgBaseHatch    "Data\\Base.png"    //state index 1
-#define imgBlueHatch    "Data\\Blue.png"    //state index 2
-#define imgRedHatch     "Data\\Red.png"     //state index 3
-#define imgWhiteHatch   "Data\\White.png"   //state index 4
-#define imgGreyHatch    "Data\\Base.png"    //state index 5
+const array<const String, 6> hatchFilenames = {
+	"Data\\Black.png",
+	"Data\\Base.png",
+	"Data\\Blue.png",
+	"Data\\Red.png",
+	"Data\\White.png",
+	"Data\\Base.png",
+};
 
 #include "Hatches.h"
 #include "GameLogic.h"
 #pragma package(smart_init)
 
 using Graphics::TPicture;
-TPicture *hatch[6]; // указатели на изображения люков на форме
-TPicture *h_state_img[6]; // изображения состояний люков
-int h_state[6]; // текущее состояние люков
+array<TPicture*, 6> hatch; // указатели на изображения люков на форме
+array<shared_ptr<TPicture>, 6> h_state_img; // изображения состояний люков
+array<int, 6> h_state; // текущее состояние люков
 int AnimationFrame; // определяет порядок анимации
 
 // from MainForm.cpp
@@ -39,55 +41,53 @@ extern int CantFall;
 extern int chooseplayer;
 
 // ---------------------------------------------------------------------------
+inline void LoadHatchImage(int index, int state) { // банальное копирование изображения состояния на форму
+	hatch[index]->Assign(h_state_img[state].get());
+}
+
+// ---------------------------------------------------------------------------
+// приведение изображений на форме в соответствие с состояниями люков
+void MechanizmSetHatchesStates(array<int, 6>& states) {
+	for (int i = 0; i < 6; i++) {
+        LoadHatchImage(i, states[i]);
+    }
+}
+
+// ---------------------------------------------------------------------------
 void ShiftHatches() {
-    char tmp = h_state[5]; // проворот барабана осуществляется
-    h_state[5] = h_state[4]; // простым сдвигом массива на 1 элемент.
-    h_state[4] = h_state[3]; // по своей сути это shr(h_state[]);
-    h_state[3] = h_state[2];
-    h_state[2] = h_state[1];
-    h_state[1] = h_state[0];
-    h_state[0] = tmp;
+	char tmp = h_state[5]; // проворот барабана осуществляется
+	h_state[5] = h_state[4]; // простым сдвигом массива на 1 элемент.
+	h_state[4] = h_state[3]; // по своей сути это shr(h_state[]);
+	h_state[3] = h_state[2];
+	h_state[2] = h_state[1];
+	h_state[1] = h_state[0];
+	h_state[0] = tmp;
+
+	MechanizmSetHatchesStates(h_state);
 };
 
 // ---------------------------------------------------------------------------
 inline void InitializeHatches() {
     for (int i = 0; i < 6; i++) {
-        hatch[i] = new TPicture; // конструкторы изображений люков
-        h_state[i] = 1; // и закрытие их
-    }
+		h_state[i] = 1; // люки изначально закрыты
+	}
 
-    hatch[0] = F->imgHatch0->Picture; // установка ссылок на изображения на форме
+	hatch[0] = F->imgHatch0->Picture; // установка ссылок на изображения на форме
     hatch[1] = F->imgHatch1->Picture;
     hatch[2] = F->imgHatch2->Picture;
     hatch[3] = F->imgHatch3->Picture;
     hatch[4] = F->imgHatch4->Picture;
-    hatch[5] = F->imgHatch5->Picture;
+	hatch[5] = F->imgHatch5->Picture;
+
+	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 inline void LoadHatchStateImages() {
     for (int i = 0; i < 6; i++) { // конструктор изображений состояний люков
-        h_state_img[i] = new TPicture;
-    }
-
-    h_state_img[0]->LoadFromFile(imgBlackHatch); // и подгрузка из файлов на диске
-    h_state_img[1]->LoadFromFile(imgBaseHatch); // значения констант описаны
-    h_state_img[2]->LoadFromFile(imgBlueHatch); // в начале модуля
-    h_state_img[3]->LoadFromFile(imgRedHatch);
-    h_state_img[4]->LoadFromFile(imgWhiteHatch);
-    h_state_img[5]->LoadFromFile(imgGreyHatch);
-}
-
-// ---------------------------------------------------------------------------
-inline void LoadHatchImage(int index, int state) { // банальное копирование изображения состояния на форму
-    hatch[index]->Assign(h_state_img[state]);
-}
-
-// ---------------------------------------------------------------------------
-void MechanizmSetHatchesStates() { // приведение изображений на форме в соответствие с состояниями люков
-    for (int i = 0; i < 6; i++) {
-        LoadHatchImage(i, h_state[i]);
-    }
+		h_state_img[i] = shared_ptr<TPicture>(new TPicture());
+		h_state_img[i]->LoadFromFile(hatchFilenames[i]);
+	}
 }
 
 // ---------------------------------------------------------------------------
@@ -129,8 +129,7 @@ void Hatches() { // инициализация механизма
     randomize();
     InitializeHatches();
     LoadHatchStateImages();
-    MechanizmSetHatchesStates();
-
+	MechanizmSetHatchesStates(h_state);
 };
 
 // ---------------------------------------------------------------------------
@@ -175,31 +174,32 @@ void LightHatchesW(int bright, int light) {
             if (h_state[i] != light) {
                 h_state[i] = bright;
             }
-        }
+		}
+	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 void ZeroRoundSpin() {
-    static const int frames[15][6] = {
-        { 1, 4, 1, 1, 1, 1 },
-        { 1, 4, 1, 1, 1, 1 },
-        { 1, 4, 4, 1, 1, 1 },
-        { 4, 4, 4, 1, 1, 1 },
-        { 4, 4, 4, 4, 1, 1 },
-        { 4, 4, 4, 4, 1, 1 },
-        { 4, 1, 4, 4, 4, 1 },
-        { 4, 1, 4, 4, 4, 1 },
-        { 1, 1, 1, 4, 4, 4 },
-        { 1, 1, 1, 4, 4, 4 },
-        { 1, 1, 1, 1, 4, 4 },
-        { 1, 1, 1, 1, 4, 4 },
-        { 1, 1, 1, 1, 1, 4 },
-        { 1, 1, 1, 1, 1, 4 },
-        { 1, 1, 1, 1, 1, 4 }
-    };
+	static array<array<int, 6>, 15> framez = {{
+		{ 1, 4, 1, 1, 1, 1 },
+		{ 1, 4, 1, 1, 1, 1 },
+		{ 1, 4, 4, 1, 1, 1 },
+		{ 4, 4, 4, 1, 1, 1 },
+		{ 4, 4, 4, 4, 1, 1 },
+		{ 4, 4, 4, 4, 1, 1 },
+		{ 4, 1, 4, 4, 4, 1 },
+		{ 4, 1, 4, 4, 4, 1 },
+		{ 1, 1, 1, 4, 4, 4 },
+		{ 1, 1, 1, 4, 4, 4 },
+		{ 1, 1, 1, 1, 4, 4 },
+		{ 1, 1, 1, 1, 4, 4 },
+		{ 1, 1, 1, 1, 1, 4 },
+		{ 1, 1, 1, 1, 1, 4 },
+		{ 1, 1, 1, 1, 1, 4 }
+	}};
 
-    // copy one line of frames array to hatch states
-    memcpy(h_state, frames[AnimationFrame], sizeof(frames[AnimationFrame]));
+	// copy one line of frames array to hatch states
+	h_state.swap(framez[AnimationFrame]);
 
     AnimationFrame = ++AnimationFrame % 15;
     CurrentHatch = 1 + AnimationFrame % 5;
@@ -310,7 +310,7 @@ void FifthRoundRotating() {
 // ---------------------------------------------------------------------------
 void choosingplayer() {
     h_state[chooseplayer] = 4;
-    MechanizmSetHatchesStates();
+	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
@@ -318,7 +318,7 @@ void before_spin_lights() {
     for (int i = 0; i < 6; i++) {
         h_state[i] = 4;
     }
-    MechanizmSetHatchesStates();
+    MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
@@ -328,13 +328,13 @@ void after_spin_lights() {
     }
     h_state[CurrentHatch] = 4;
     h_state[chooseplayer] = 4;
-    MechanizmSetHatchesStates();
+    MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 void Proverka2() {
     h_state[chooseplayer] = 3;
-    MechanizmSetHatchesStates();
+    MechanizmSetHatchesStates(h_state);
     F->imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
 }
 
@@ -350,13 +350,13 @@ void UpdateHatches() {
         }
     }
     h_state[CurrentHatch] = 4;
-    MechanizmSetHatchesStates();
+	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 void OpenHatches() {
     h_state[chooseplayer] = 0;
-    MechanizmSetHatchesStates();
+	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
@@ -392,5 +392,28 @@ void OpenRndHatches() // открытие люков
             h_state[i] = 0;
             chooseplayer = i;
         }
-    MechanizmSetHatchesStates();
+    MechanizmSetHatchesStates(h_state);
+}
+
+void DoSpin(const RoundEnum round) {
+	switch(round) {
+		case Zero:
+			ZeroRoundRotating();
+			break;
+		case First:
+			ZeroRoundRotating();
+			break;
+		case Second:
+			SecondRoundRotating();
+			break;
+		case Third:
+			ThirdRoundRotating();
+			break;
+		case Fourth:
+			FourthRoundRotating();
+			break;
+		case Final:
+			FifthRoundRotating();
+			break;
+	}
 }

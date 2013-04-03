@@ -5,21 +5,19 @@
 // ---------------------------------------------------------------------------
 #include "pch.h"
 #include "MainForm.h"
+
+typedef enum {
+	Zero, First, Second, Third, Fourth, Final
+} RoundEnum;
 // ---------------------------------------------------------------------------
-void Hatches();
-void MechanizmSetHatchesStates();
+void InitializeHatches();
 void ShiftHatches();
 
 #define LIGHT_ALL_HATCHES_BLUE 255
 void LightHatchesW(int, int);
-void ZeroRoundRotating();
-void FirstRoundRotating();
+void DoSpin(const RoundEnum round);
 void ZeroRoundSpin();
 void OpenRandomHatches(const int OpenHatches, int ModeOfGame);
-void SecondRoundRotating();
-void ThirdRoundRotating();
-void FourthRoundRotating();
-void FifthRoundRotating();
 void UpdateHatches();
 void choosingplayer();
 void Proverka2();
