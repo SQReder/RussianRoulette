@@ -15,7 +15,7 @@ object f: Tf
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -28,12 +28,15 @@ object f: Tf
     TabOrder = 0
     object btnAddQuestionToBase: TButton
       AlignWithMargins = True
-      Left = 738
-      Top = 4
+      Left = 739
+      Top = 3
       Width = 35
-      Height = 49
+      Height = 51
       Hint = 'Add question to base'
       Margins.Left = 0
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Align = alRight
       Caption = 'v'
       Font.Charset = DEFAULT_CHARSET
@@ -44,12 +47,15 @@ object f: Tf
       ParentFont = False
       TabOrder = 0
       OnClick = btnAddQuestionToBaseClick
+      ExplicitLeft = 738
+      ExplicitTop = 4
+      ExplicitHeight = 49
     end
     object mQuestion: TMemo
       AlignWithMargins = True
       Left = 63
       Top = 4
-      Width = 675
+      Width = 676
       Height = 49
       Margins.Right = 0
       Align = alClient
@@ -60,6 +66,7 @@ object f: Tf
       WantReturns = False
       OnEnter = FieldEnter
       OnExit = FieldExit
+      ExplicitWidth = 675
     end
     object edRound: TComboBox
       AlignWithMargins = True
@@ -87,7 +94,6 @@ object f: Tf
         '3'
         '4'
         'Final')
-      ExplicitTop = 7
     end
   end
   object pAnswers: TPanel

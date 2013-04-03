@@ -7,7 +7,6 @@
 #include <StdCtrls.hpp>
 #include <Forms.hpp>
 #include <CheckLst.hpp>
-#include "Spin.hpp"
 #include <ExtCtrls.hpp>
 #include <ComCtrls.hpp>
 #include <Menus.hpp>

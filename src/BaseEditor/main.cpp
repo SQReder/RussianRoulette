@@ -8,7 +8,6 @@
 #include "frm_pass.h"
 #include "crc32.cpp"
 #pragma package(smart_init)
-#pragma link "Spin"
 #pragma resource "*.dfm"
 // ---------------------------------------------------------------------------
 Tf *f;
