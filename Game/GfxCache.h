@@ -9,9 +9,11 @@ public:
     ~sGfxCache();
 
     int PulseFramesCount;
-    vector<shared_ptr<TPicture> > PulseFrames;
+    vector<shared_ptr<TPicture> > PulseFrames_;
 
-    TPicture *Tick[21];
+	TPicture *PulseFrames[56];
+
+	TPicture *Tick[21];
     TPicture *Liver[16];
 
     TPicture *Place;

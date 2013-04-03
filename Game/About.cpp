@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2011 Popovskiy Andrey
-// Copyright (C) 2010-2011 Boytsov Sergey
+// Copyright (C) 2010-2013 Popovskiy Andrey
+// Copyright (C) 2010-2013 Boytsov Sergey
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ TLabel *new_label(String caption, int top, align al, bool bold = false) {
 }
 
 const char *licence =
-    "Russian Roulette это PC версия популярного телешоу.\nCopyright © 2010-2012 Popovskiy Andrey\n" "Copyright © 2010-2012 Boytsov Sergey\n\nЭто свободная программа; вы можете повторно рас-\n"
+	"Russian Roulette это PC версия популярного телешоу.\nCopyright © 2010-2013 Popovskiy Andrey\n" "Copyright © 2010-2013 Boytsov Sergey\n\nЭто свободная программа; вы можете повторно рас-\n"
     "пространять её и/или модифицировать её в соответ-\nствии с Стандартной Общественной Лицензий GNU,\n" "опубликованной Фондом Свободного ПО; либо вер-\nсии 3, либо (по вашему выбору) любой более позд-\n"
     "ней версии.\n\n" "Эта программа распространяется в надежде, что\n"
     "она будет полезной, но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ;\nдаже без подразумеваемых гарантий КОММЕРЧЕ-\n" "СКОЙ ЦЕННОСТИ или ПРИГОДНОСТИ ДЛЯ\nКОНКРЕТНОЙ ЦЕЛИ. Для получения подробных\n"
@@ -62,7 +62,7 @@ const char *licence =
     "мой; если нет,смотрите\n" "                            http://www.gnu.org/licenses/";
 
 // People who works with project
-String sversion = "1.5 alpha";
+String sversion = "1.2 BETA";
 
 #define dev_count 2
 const char *sdevelopers[dev_count] = {

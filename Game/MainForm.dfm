@@ -5253,7 +5253,7 @@ object F: TF
   end
   object imgPulseBar: TImage
     Left = 656
-    Top = 431
+    Top = 432
     Width = 122
     Height = 122
     AutoSize = True
@@ -5491,7 +5491,7 @@ object F: TF
     Visible = False
   end
   object imgPulse: TImage
-    Left = 670
+    Left = 672
     Top = 442
     Width = 106
     Height = 106
@@ -6347,10 +6347,10 @@ object F: TF
     OnClick = btnExitClick
   end
   object mlog: TMemo
-    Left = 639
-    Top = 20
-    Width = 65
-    Height = 38
+    Left = 8
+    Top = 51
+    Width = 167
+    Height = 86
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
     Font.Height = -11
@@ -6417,6 +6417,7 @@ object F: TF
   end
   object tmrLog: TTimer
     Enabled = False
+    Interval = 100
     Left = 168
     Top = 200
   end

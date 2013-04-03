@@ -31,7 +31,6 @@ object SettingsForm: TSettingsForm
     Align = alClient
     Caption = 'gbOptions'
     TabOrder = 4
-    ExplicitHeight = 142
     object lblSoundVolume: TLabel
       AlignWithMargins = True
       Left = 5
@@ -269,7 +268,6 @@ object SettingsForm: TSettingsForm
     Align = alBottom
     BevelEdges = [beTop]
     TabOrder = 1
-    ExplicitTop = 412
     object btnCancel: TButton
       AlignWithMargins = True
       Left = 164

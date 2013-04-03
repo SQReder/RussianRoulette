@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2011 Popovskiy Andrey
-// Copyright (C) 2010-2011 Boytsov Sergey
+// Copyright (C) 2010-2013 Popovskiy Andrey
+// Copyright (C) 2010-2013 Boytsov Sergey
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -364,7 +364,6 @@ void SwitchesLights() {
     for (int i = 0; i < 6; i++) {
         h_state[i] = 5;
     }
-    F->Wait = 0;
 
     switch (AnimationFrame) {
     case 0: {

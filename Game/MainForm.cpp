@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2012 Popovskiy Andrey
-// Copyright (C) 2010-2012 Boytsov Sergey
+// Copyright (C) 2010-2013 Popovskiy Andrey
+// Copyright (C) 2010-2013 Boytsov Sergey
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -198,7 +198,7 @@ void __fastcall TF::FormCreate(TObject *Sender) {
 
 void __fastcall TF::tmrPulseAnimationTimer(TObject *Sender) {
 	static frame = 0;
-	imgPulse->Picture->Assign(gfx->PulseFrames[frame]->Bitmap);
+	imgPulse->Picture->Assign(gfx->PulseFrames[frame]);
 	frame = ++frame % gfx->PulseFramesCount;
 }
 
@@ -206,7 +206,7 @@ void __fastcall TF::tmrPulseAnimationTimer(TObject *Sender) {
 
 void __fastcall TF::btnMechStartClick(TObject *Sender) {
     SpeedOfRotation = (ModeOfGame == mRoundNoQuestions) ? 75 : _StartRotaingSpeed;
-    if (RoundOfGame == -1 || FinalRoundOfGame > 0) {
+	if (RoundOfGame == -1 || FinalRoundOfGame > 0) {
         SpeedOfRotation = 35;
     }
     tmrRotator->Interval = SpeedOfRotation;
@@ -502,8 +502,8 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
             TimeOfQuestion = 20;
 			imgPulse->Visible = true;
 			tmrPulseAnimation->Enabled = true;
-            imgPulseBar->Visible = true;
-            imgTicker->Visible = true;
+			imgPulseBar->Visible = true;
+			imgTicker->Visible = true;
             imgTimer->Picture->Assign(gfx->Tick[TimeOfQuestion]);
             ShowAnswers();
             ResizeAnswers();
@@ -608,24 +608,24 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                 imgLiver->Enabled = 1;
             } else {
 #ifdef _DEBUG
-                TimeToDecide = 1;
+				TimeToDecide = 1;
 #else
 				switch (Settings->PlayerType[chooseplayer - 1]) {
-                case bbFoooool: TimeToDecide = 10 + random(31);
-                    break;
-                case bbFooly: TimeToDecide = 10 + random(21);
-                    break;
-                case bbNormal: TimeToDecide = 5 + random(16);
-                    break;
-                case bbHard: TimeToDecide = 5 + random(11);
-                    break;
-                case bbVeryHard: TimeToDecide = 1 + random(11);
-                    break;
-                }
+				case bbFoooool: TimeToDecide = 10 + random(31);
+					break;
+				case bbFooly: TimeToDecide = 10 + random(21);
+					break;
+				case bbNormal: TimeToDecide = 5 + random(16);
+					break;
+				case bbHard: TimeToDecide = 5 + random(11);
+					break;
+				case bbVeryHard: TimeToDecide = 1 + random(11);
+					break;
+				}
 #endif
 				imgLiverClick(imgLiver);
 				curbot = chooseplayer - 1;
-                tmrDecided->Enabled = true;
+				tmrDecided->Enabled = true;
             }
             Wait = 0;
         }
@@ -724,7 +724,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                 if (MaximalSummCount > 1 || RoundOfGame == 4) {
 					CantFall = -1;
                 }
-                tmrWaiting->Enabled = false;
+				tmrWaiting->Enabled = false;
 				if (Settings->PlayerType[CantFall] == bbHuman) {
 					btnMechStart->Enabled = 1;
 					imgLiver->Enabled = 1;
@@ -747,9 +747,13 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
 #endif
 					imgLiverClick(imgLiver);
 					curbot = CantFall;
+					if (curbot < 0) {
+						curbot = -1;
+						TimeToDecide = 5 + random(6);
+					}
 					tmrDecided->Enabled = true;
 				}
-                // btnMechStart->SetFocus();
+                Wait = 0;
             }
         } break;
     case mRoundSuddenDeath: // ситуация, когда один из игроков неминуемо должен покинуть игру
@@ -1616,7 +1620,7 @@ void __fastcall TF::FormClose(TObject *Sender, TCloseAction &Action) {
     LabelQuestion->Visible = false;
     LabelMoney->Visible = false;
     lblTimer->Visible = false;
-    imgPulse->Visible = false;
+	imgPulse->Visible = false;
     imgTimer->Visible = false;
     imgTicker->Visible = false;
     imgPulseBar->Visible = false;
@@ -1878,7 +1882,7 @@ void __fastcall TF::tmrSplashTimer(TObject *Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrDecidedTimer(TObject *Sender) {
 	Wait++ ;
-    if (Wait == TimeToDecide) {
+	if (Wait == TimeToDecide) {
 		if (curbot == -1) {
             imgLiverClick(imgLiver);
 			tmrDecided->Enabled = false;
@@ -2262,4 +2266,5 @@ void __fastcall TF::imgTakeAMoneyClick(TObject *Sender)
 	tmrDecided->Enabled = false;
 }
 //---------------------------------------------------------------------------
+
 

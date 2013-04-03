@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
-// Copyright (C) 2010-2011 Popovskiy Andrey
-// Copyright (C) 2010-2011 Boytsov Sergey
+// Copyright (C) 2010-2013 Popovskiy Andrey
+// Copyright (C) 2010-2013 Boytsov Sergey
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,10 +24,12 @@ sGfxCache *gfx;
 sGfxCache::sGfxCache() {
     PulseFramesCount = 56;
     for (int i = 0; i < PulseFramesCount; i++) {
-        TPicture *pic = new TPicture();
-        pic->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
+		TPicture *pic = new TPicture();
+		pic->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
 
-        PulseFrames.push_back(shared_ptr <TPicture> (pic));
+		PulseFrames_.push_back(shared_ptr <TPicture> (pic));
+		PulseFrames[i] = new TPicture();
+		PulseFrames[i]->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
     }
 
     for (int i = 0; i < 21; ++i) {
