@@ -166,7 +166,7 @@ BOOL OSIsWin7() {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSplashForm::FormCreate(TObject *Sender) {
+void __fastcall TSplashForm::FormCreate(TObject *) {
     if (OSIsWin7()) {
         BorderStyle = bsToolWindow;
     } else {
@@ -179,7 +179,7 @@ void __fastcall TSplashForm::FormCreate(TObject *Sender) {
 // ---------------------------------------------------------------------------
 int CountDown = 0;
 
-void __fastcall TSplashForm::tmrSplashTimer(TObject *Sender) {
+void __fastcall TSplashForm::tmrSplashTimer(TObject *) {
     if (CountDown-- || FatalError) {
         tmrSplash->Enabled = false;
         MenuForm->Show();
@@ -190,7 +190,7 @@ void __fastcall TSplashForm::tmrSplashTimer(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSplashForm::tmrOpenSplashTimer(TObject *Sender) {
+void __fastcall TSplashForm::tmrOpenSplashTimer(TObject *) {
     SplashForm->AlphaBlendValue += 15;
     if (SplashForm->AlphaBlendValue >= 255) {
         tmrOpenSplash->Enabled = false;

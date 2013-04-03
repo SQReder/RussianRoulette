@@ -99,7 +99,7 @@ TLabel *lbldev;
 TLabel *lblcomposer, *lblcompo, *tnx_title, *qa_title;
 TLabel *mLicence;
 
-void __fastcall TAboutForm::FormCreate(TObject *Sender) {
+void __fastcall TAboutForm::FormCreate(TObject *) {
     AboutForm->Hide();
     GlassFrame->Enabled = true;
 
@@ -141,7 +141,7 @@ void __fastcall TAboutForm::FormCreate(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TAboutForm::lblLicenceClick(TObject *Sender) {
+void __fastcall TAboutForm::lblLicenceClick(TObject *) {
     mLicence->Visible = !mLicence->Visible;
 
     lblversion->Visible = !lblversion->Visible;
@@ -164,7 +164,7 @@ void __fastcall TAboutForm::lblLicenceClick(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TAboutForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift) {
+void __fastcall TAboutForm::FormKeyDown(TObject *, WORD &Key, TShiftState Shift) {
     if (Shift.Empty()) {
         if (Key == 32) {
             lblLicenceClick(NULL);

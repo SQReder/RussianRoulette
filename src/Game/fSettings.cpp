@@ -29,7 +29,7 @@ TSettingsForm *SettingsForm;
 __fastcall TSettingsForm::TSettingsForm(TComponent *Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
-void __fastcall TSettingsForm::FormShow(TObject *Sender) {
+void __fastcall TSettingsForm::FormShow(TObject *) {
     TSettings *Settings = TSettings::Instance();
     cmbListOfBases->Items->Assign(Settings->BaseNames);
 
@@ -77,7 +77,7 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::FormCreate(TObject *Sender) {
+void __fastcall TSettingsForm::FormCreate(TObject *) {
     btnCancel->Caption = "Cancel";
     btnOK->Caption = "OK";
     gbPlayerNames->Caption = "Имена игроков";
@@ -94,13 +94,13 @@ void __fastcall TSettingsForm::FormCreate(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::btnCancelClick(TObject *Sender) {
+void __fastcall TSettingsForm::btnCancelClick(TObject *) {
     SettingsForm->Hide();
     SettingsForm->Close();
 }
 
 // -----------------------------------------------------------------------------
-void __fastcall TSettingsForm::btnOKClick(TObject *Sender) {
+void __fastcall TSettingsForm::btnOKClick(TObject *) {
     TSettings *Settings = TSettings::Instance();
     Settings->PlayerNames[0] = edPlayer0->Text;
     Settings->PlayerNames[1] = edPlayer1->Text;
@@ -130,27 +130,27 @@ void __fastcall TSettingsForm::btnOKClick(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::tbSoundVolumeChange(TObject *Sender) {
+void __fastcall TSettingsForm::tbSoundVolumeChange(TObject *) {
     lblSoundVolume->Caption = "Громкость звука: " + IntToStr(tbSoundVolume->Position) + "%"; }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::tbMusicVolumeChange(TObject *Sender) {
+void __fastcall TSettingsForm::tbMusicVolumeChange(TObject *) {
     lblMusicVolume->Caption = "Громкость музыки: " + IntToStr(tbMusicVolume->Position) + "%"; }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::cbSoundOnOffClick(TObject *Sender) {
+void __fastcall TSettingsForm::cbSoundOnOffClick(TObject *) {
     tbSoundVolume->Enabled = cbSoundOnOff->Checked;
     lblSoundVolume->Enabled = cbSoundOnOff->Checked;
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::cbMusicOnOffClick(TObject *Sender) {
+void __fastcall TSettingsForm::cbMusicOnOffClick(TObject *) {
     tbMusicVolume->Enabled = cbMusicOnOff->Checked;
     lblMusicVolume->Enabled = cbMusicOnOff->Checked;
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::addBaseClick(TObject *Sender) {
+void __fastcall TSettingsForm::addBaseClick(TObject *) {
     if (OpenDialog1->Execute()) {
         WCHAR *from = (OpenDialog1->FileName).w_str();
         WCHAR *to = (".\\Base\\" + ExtractFileName(OpenDialog1->FileName)).w_str();

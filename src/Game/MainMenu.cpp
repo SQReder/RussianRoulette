@@ -33,7 +33,7 @@ TMenuForm *MenuForm;
 __fastcall TMenuForm::TMenuForm(TComponent *Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::FormCreate(TObject *Sender) {
+void __fastcall TMenuForm::FormCreate(TObject *) {
     Color = clBlack;
 
     btnNewGame->Caption = "Новая игра";
@@ -44,19 +44,19 @@ void __fastcall TMenuForm::FormCreate(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::FormClose(TObject *Sender, TCloseAction &Action) {
+void __fastcall TMenuForm::FormClose(TObject *, TCloseAction &) {
     delete TSettings::Instance();
     Application->Terminate();
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::btnBblNTuHaxepClick(TObject *Sender) {
+void __fastcall TMenuForm::btnBblNTuHaxepClick(TObject *) {
     TCloseAction ca = caFree;
     FormClose(NULL, ca);
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::btnNewGameClick(TObject *Sender) {
+void __fastcall TMenuForm::btnNewGameClick(TObject *) {
     LoadQuestionFromBase(TSettings::Instance()->LastBase);
 
     // сохранение текущего положения и размеров формы
@@ -67,17 +67,17 @@ void __fastcall TMenuForm::btnNewGameClick(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::btnShowSettingsClick(TObject *Sender) {
+void __fastcall TMenuForm::btnShowSettingsClick(TObject *) {
     SettingsForm->ShowModal();
 
     LoadFormPosition(MenuForm);
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::btnAboutClick(TObject *Sender) { AboutForm->ShowModal(); }
+void __fastcall TMenuForm::btnAboutClick(TObject *) { AboutForm->ShowModal(); }
 // ---------------------------------------------------------------------------
 
-void __fastcall TMenuForm::FormResize(TObject *Sender) {
+void __fastcall TMenuForm::FormResize(TObject *) {
     static bool lock_form = false;
     if (lock_form) {
         return;
@@ -109,7 +109,7 @@ void __fastcall TMenuForm::FormResize(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TMenuForm::FormShow(TObject *Sender) {
+void __fastcall TMenuForm::FormShow(TObject *) {
     TSettings *Settings = TSettings::Instance();
     MenuForm->Constraints->MinWidth = Settings->MinWidth;
     MenuForm->Constraints->MinHeight = Settings->MinHeight;
@@ -121,7 +121,7 @@ void __fastcall TMenuForm::FormShow(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TMenuForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift) {
+void __fastcall TMenuForm::FormKeyDown(TObject *, WORD &Key, TShiftState Shift) {
     if (Shift.Contains(ssAlt) && (Key == 13)) {
         SwitchFullscreen(MenuForm);
     } else if (Shift.Empty()) {

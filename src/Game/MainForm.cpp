@@ -172,7 +172,7 @@ void TF::SetLabel(TLabel **typedLabel, int index, int top, int left, int width, 
 __fastcall TF::TF(TComponent *Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::FormCreate(TObject *Sender) {
+void __fastcall TF::FormCreate(TObject *) {
     EZDBGONLYLOGGERSTREAM << _T("Created\n");
     // initialise control pointer arrays with visual components
     imgPlayer[0] = imgPlayer1;
@@ -197,7 +197,7 @@ void __fastcall TF::FormCreate(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::tmrPulseAnimationTimer(TObject *Sender) {
+void __fastcall TF::tmrPulseAnimationTimer(TObject *) {
 	static frame = 0;
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	imgPulse->Picture->Assign(gfx->GetPulseFrame(frame));
@@ -206,7 +206,7 @@ void __fastcall TF::tmrPulseAnimationTimer(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::btnMechStartClick(TObject *Sender) {
+void __fastcall TF::btnMechStartClick(TObject *) {
 	SpeedOfRotation = (ModeOfGame == mRoundNoQuestions) ? 75 : _StartRotaingSpeed;
 	if (RoundOfGame == -1 || FinalRoundOfGame > 0) {
 		SpeedOfRotation = 35;
@@ -229,7 +229,7 @@ void SwitchOffMech_WhiteLights() {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::btnMechStopClick(TObject *Sender) {
+void __fastcall TF::btnMechStopClick(TObject *) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 
 	MechanizmState = Stoping;
@@ -278,7 +278,7 @@ void __fastcall TF::btnMechStopClick(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::btnExitClick(TObject *Sender) {
+void __fastcall TF::btnExitClick(TObject *) {
     int r;
     r = MessageDlg("Вы действительно хотите закончить игру?\nВсе данные об этой игре будут потеряны!", mtCustom,
         mbYesNo, 0);
@@ -288,7 +288,7 @@ void __fastcall TF::btnExitClick(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::tmrRotatorTimer(TObject *Sender) {
+void __fastcall TF::tmrRotatorTimer(TObject *) {
     if (ModeOfGame == mRoundNoQuestions) {
         SwitchesLights();
     } else {
@@ -371,7 +371,7 @@ int ChooseAnyPlayer() {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
+void __fastcall TF::tmrWaitingTimer(TObject *) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	TSettings *Settings = TSettings::Instance();
 	Wait++ ;
@@ -884,7 +884,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::tmrMoneyTimer(TObject *Sender) {
+void __fastcall TF::tmrMoneyTimer(TObject *) {
     if (MoneyTransferMode == 'a') {
         int control = 0;
         if (ModeOfGame != mRoundSuddenDeath) // стартовое начисление по 1000 игрокам
@@ -969,7 +969,7 @@ void __fastcall TF::HatchClick(TObject *Sender) {
 // 'a' + n === VK_NUMPAD1 + n
 const char *KeyCode[6] = { "6f", "1a", "2b", "3c", "4d", "5e" };
 
-void __fastcall TF::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift) {
+void __fastcall TF::FormKeyDown(TObject *, WORD &Key, TShiftState Shift) {
     TSettings *Settings = TSettings::Instance();
 
     TCHAR ch[] = "\0\0";
@@ -1060,7 +1060,7 @@ void __fastcall TF::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::tmrTimeTimer(TObject *Sender) {
+void __fastcall TF::tmrTimeTimer(TObject *) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	TimeOfQuestion-- ;
     if (RoundOfGame < 5) {
@@ -1118,7 +1118,7 @@ void TF::TransferMoney() {
     if (chooseplayer != 255) {
         money[chooseplayer - 1] -= (Reward >= 100) ? 100 : Reward;
         lblMoney[chooseplayer - 1]->Caption = IntToStr(money[chooseplayer - 1]);
-        LabelMoney->Caption = IntToStr(money[chooseplayer - 1]);
+		LabelMoney->Caption = IntToStr(money[chooseplayer - 1]);
     }
 
     if (Reward > 0) {
@@ -1151,7 +1151,7 @@ void TF::TransferMoney() {
                 Wait = 0;
                 tmrWaiting->Enabled = true;
             } else {
-                Wait = 4;
+				Wait = 4;
                 tmrWaiting->Enabled = false;
             }
             ResetForm();
@@ -1187,7 +1187,7 @@ void TF::ResetForm() // возвращает форму в исходное положение
     UpdateHatches();
 }
 
-void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
+void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
     // финальный раунд игры "Русская рулетка"
     TSettings *Settings = TSettings::Instance();
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
@@ -1545,7 +1545,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::edFinalAnswerKeyPress(TObject *Sender, wchar_t &Key) {
+void __fastcall TF::edFinalAnswerKeyPress(TObject *, wchar_t &Key) {
     if ((Key == 13) && (ModeOfGame == mFinalAnswering)) {
         tmrTime->Enabled = false;
         edFinalAnswer->Visible = false;
@@ -1575,7 +1575,7 @@ void TF::TransferMoneyFinal() {
     lblMoney[pos]->Caption = LabelMoney->Caption;
 }
 
-void __fastcall TF::btnContinueGameClick(TObject *Sender) {
+void __fastcall TF::btnContinueGameClick(TObject *) {
     int pos;
     for (int i = 0; i < COUNT_PLAYERS; i++) {
         if (isPlayerInGame[i]) {
@@ -1603,7 +1603,7 @@ void __fastcall TF::btnContinueGameClick(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::FormClose(TObject *Sender, TCloseAction &Action) {
+void __fastcall TF::FormClose(TObject *, TCloseAction &) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	// сохранение текущего положения и размеров формы
 	delete[]base;
@@ -1669,7 +1669,7 @@ void ResetPlayers() {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::FormShow(TObject *Sender) {
+void __fastcall TF::FormShow(TObject *) {
     ResetPlayers();
 
     LoadFormPosition(F);
@@ -1736,7 +1736,7 @@ void __fastcall TF::FormShow(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::btnGetMoneyClick(TObject *Sender) {
+void __fastcall TF::btnGetMoneyClick(TObject *) {
     Wait = 7;
     ModeOfGame = mFinalEndOfGame;
     btnGetMoney->Visible = false;
@@ -1745,7 +1745,7 @@ void __fastcall TF::btnGetMoneyClick(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::FormResize(TObject *Sender) {
+void __fastcall TF::FormResize(TObject *) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 
     CoolPositionFix(F);
@@ -1852,7 +1852,7 @@ void __fastcall TF::FormResize(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::tmrMechamizmTimer(TObject *Sender) {
+void __fastcall TF::tmrMechamizmTimer(TObject *) {
     static int MechState = 1;
     if (MechanizmState == Spining) {
         if (++MechState == 15) {
@@ -1868,7 +1868,7 @@ void __fastcall TF::tmrMechamizmTimer(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::imgLiverClick(TObject *Sender) {
+void __fastcall TF::imgLiverClick(TObject *) {
     if (MechanizmState != Spining) {
         btnMechStartClick(NULL);
         tmrMechamizm->Enabled = true;
@@ -1879,7 +1879,7 @@ void __fastcall TF::imgLiverClick(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::tmrSplashTimer(TObject *Sender) {
+void __fastcall TF::tmrSplashTimer(TObject *) {
     Wait++ ;
 #ifdef _DEBUG
 #define ROUND_SPLASH_OUTTIME 1
@@ -1894,7 +1894,7 @@ void __fastcall TF::tmrSplashTimer(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TF::tmrDecidedTimer(TObject *Sender) {
+void __fastcall TF::tmrDecidedTimer(TObject *) {
 	Wait++ ;
 	if (Wait == TimeToDecide) {
 		if (curbot == -1) {
@@ -1939,7 +1939,7 @@ void SetQuestionsMaximum(int FirstRound, int SecondRound, int ThirdRound, int Fo
 }
 
 // ----------------------------------------------------------------------------
-void __fastcall TF::tmrLightAnimationTimer(TObject *Sender) {
+void __fastcall TF::tmrLightAnimationTimer(TObject *) {
     int pos1[2], pos2[2], pos3[2], pos4[2], pos5[2], pos6[2];
 
     pos1[0] = imgPlace->Left + 8;
@@ -2210,14 +2210,14 @@ void TF::Choosen_Answer_Change_Position(int mode) {
     imgChAnsRight->Left = imgChoosenAnswer->Left + imgChoosenAnswer->Width;
 }
 
-void __fastcall TF::FormHide(TObject *Sender) {
+void __fastcall TF::FormHide(TObject *) {
     tmrPulseAnimation->Enabled = false;
     SaveFormPosition(F);
     StopSoundAll();
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TF::tmrAnimateBackgroundTimer(TObject *Sender)
+void __fastcall TF::tmrAnimateBackgroundTimer(TObject *)
 {
 	switch (BgStateColor) {
 		case (TColor)RGB(0,255,0):
@@ -2261,7 +2261,7 @@ void TF::FlashBackground(TColor NewStateColor)
 	tmrAnimateBackground->Enabled = true;
 }
 //---------------------------------------------------------------------------
-void __fastcall TF::imgContGameClick(TObject *Sender)
+void __fastcall TF::imgContGameClick(TObject *)
 {
 	btnContinueGameClick(btnContinueGame);
 	imgTakeAMoney->Visible = false;
@@ -2271,7 +2271,7 @@ void __fastcall TF::imgContGameClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TF::imgTakeAMoneyClick(TObject *Sender)
+void __fastcall TF::imgTakeAMoneyClick(TObject *)
 {
 	btnGetMoneyClick(btnGetMoney);
 	imgTakeAMoney->Visible = false;

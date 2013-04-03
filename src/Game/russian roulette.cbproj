@@ -53,6 +53,19 @@
 			<Cfg_2>true</Cfg_2>
 			<Base>true</Base>
 		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Strict Release' or '$(Cfg_4)'!=''">
+			<Cfg_4>true</Cfg_4>
+			<CfgParent>Cfg_2</CfgParent>
+			<Cfg_2>true</Cfg_2>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_4)'=='true') or '$(Cfg_4_Win32)'!=''">
+			<Cfg_4_Win32>true</Cfg_4_Win32>
+			<CfgParent>Cfg_4</CfgParent>
+			<Cfg_4>true</Cfg_4>
+			<Cfg_2>true</Cfg_2>
+			<Base>true</Base>
+		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<UsingDelphiRTL>true</UsingDelphiRTL>
 			<IntermediateOutputDir>$(CONFIG)</IntermediateOutputDir>
@@ -85,14 +98,12 @@
 			<ILINK_TranslatedLibraryPath>$(BDS)\lib\$(LANGDIR)</ILINK_TranslatedLibraryPath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
-			<Icon_MainIcon>russian roulette_Icon.ico</Icon_MainIcon>
 			<DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
-			<Icon_MainIcon>russian roulette_Icon.ico</Icon_MainIcon>
 			<BCC_MonitorGlobalAndStackData>true</BCC_MonitorGlobalAndStackData>
 			<BCC_AllCodeguardOptions>true</BCC_AllCodeguardOptions>
 			<BCC_MonitorThis>true</BCC_MonitorThis>
@@ -128,7 +139,6 @@
 			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
-			<Icon_MainIcon>russian roulette_Icon.ico</Icon_MainIcon>
 			<BCC_AsmToObj>false</BCC_AsmToObj>
 			<TASM_Debugging>None</TASM_Debugging>
 			<DynamicRTL>false</DynamicRTL>
@@ -140,6 +150,23 @@
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 			<VerInfo_Locale>1033</VerInfo_Locale>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_4_Win32)'!=''">
+			<BCC_wstl>true</BCC_wstl>
+			<BCC_wprc>true</BCC_wprc>
+			<BCC_wuse>true</BCC_wuse>
+			<BCC_wimp>true</BCC_wimp>
+			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+			<BCC_wiac>true</BCC_wiac>
+			<BCC_wntn>true</BCC_wntn>
+			<BCC_wucp>true</BCC_wucp>
+			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+			<BCC_WarningIsError>true</BCC_WarningIsError>
+			<VerInfo_Locale>1033</VerInfo_Locale>
+			<BCC_wamp>true</BCC_wamp>
+			<BCC_wpar>true</BCC_wpar>
+			<BCC_wdef>true</BCC_wdef>
+			<BCC_wamb>true</BCC_wamb>
 		</PropertyGroup>
 		<ItemGroup>
 			<CppCompile Include="About.cpp">
@@ -218,6 +245,10 @@
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
 			</BuildConfiguration>
+			<BuildConfiguration Include="Strict Release">
+				<Key>Cfg_4</Key>
+				<CfgParent>Cfg_2</CfgParent>
+			</BuildConfiguration>
 			<BuildConfiguration Include="Debug_with_NDEBUG">
 				<Key>Cfg_3</Key>
 				<CfgParent>Cfg_1</CfgParent>
@@ -243,7 +274,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">2</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">424</VersionInfo>
+						<VersionInfo Name="Build">428</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -255,7 +286,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule studios</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">It&apos;s PC realisation of TV gameshow</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.2.0.424</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.2.0.428</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GNU GPLv3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
