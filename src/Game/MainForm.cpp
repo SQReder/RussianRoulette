@@ -97,32 +97,33 @@ void SetQuestionsMaximum(int FirstRound, int SecondRound, int ThirdRound, int Fo
 // -----------------------------------------------------------------------------
 
 void __fastcall TF::LoadGraphic() {
-    imgPlace->Picture->Assign(gfx->Place);
-    Wait = 0;
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	imgPlace->Picture->Assign(gfx->Place.get());
+	Wait = 0;
 
-    hatches_enable_state(false);
-    tmrWaiting->Enabled = false;
-    imgTotalPrize->Visible = false;
+	hatches_enable_state(false);
+	tmrWaiting->Enabled = false;
+	imgTotalPrize->Visible = false;
 
-    TSettings *Settings = TSettings::Instance();
-    F->Constraints->MinWidth = Settings->MinWidth;
-    F->Constraints->MinHeight = Settings->MinHeight;
+	TSettings *Settings = TSettings::Instance();
+	F->Constraints->MinWidth = Settings->MinWidth;
+	F->Constraints->MinHeight = Settings->MinHeight;
 
-    btnMechStart->Enabled = true;
+	btnMechStart->Enabled = true;
 
-    for (int i = 0; i < COUNT_ANSWERS; ++i) {
-        SetLabel(lblAnswers, i, 0, 0, 0, 0, "");
-    }
+	for (int i = 0; i < COUNT_ANSWERS; ++i) {
+		SetLabel(lblAnswers, i, 0, 0, 0, 0, "");
+	}
 
-    edFinalAnswer->Visible = false;
+	edFinalAnswer->Visible = false;
 
-    for (int i = 0; i < COUNT_ANSWERS; ++i) {
-        imgNumber[i]->Visible = false;
-    }
+	for (int i = 0; i < COUNT_ANSWERS; ++i) {
+		imgNumber[i]->Visible = false;
+	}
 
-    imgChoosenAnswer->Visible = false;
+	imgChoosenAnswer->Visible = false;
 
-    imgQuestion->Picture->Assign(gfx->rr_quest);
+	imgQuestion->Picture->Assign(gfx->rr_quest.get());
 
     btnMechStop->Enabled = false;
     CantFall = -1;
@@ -198,20 +199,22 @@ void __fastcall TF::FormCreate(TObject *Sender) {
 
 void __fastcall TF::tmrPulseAnimationTimer(TObject *Sender) {
 	static frame = 0;
-	imgPulse->Picture->Assign(gfx->PulseFrames[frame]);
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	imgPulse->Picture->Assign(gfx->GetPulseFrame(frame));
 	frame = ++frame % gfx->PulseFramesCount;
 }
 
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::btnMechStartClick(TObject *Sender) {
-    SpeedOfRotation = (ModeOfGame == mRoundNoQuestions) ? 75 : _StartRotaingSpeed;
+	SpeedOfRotation = (ModeOfGame == mRoundNoQuestions) ? 75 : _StartRotaingSpeed;
 	if (RoundOfGame == -1 || FinalRoundOfGame > 0) {
-        SpeedOfRotation = 35;
-    }
-    tmrRotator->Interval = SpeedOfRotation;
-    MechanizmState = Spining;
-    imgPlace->Picture->Assign(gfx->PlaceRedMechActive);
+		SpeedOfRotation = 35;
+	}
+	tmrRotator->Interval = SpeedOfRotation;
+	MechanizmState = Spining;
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	imgPlace->Picture->Assign(gfx->PlaceRedMechActive.get());
     tmrRotator->Enabled = true;
     PlaySound(rr_mexopen);
     btnMechStart->Enabled = false;
@@ -227,16 +230,18 @@ void SwitchOffMech_WhiteLights() {
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::btnMechStopClick(TObject *Sender) {
-    MechanizmState = Stoping;
-    if (RoundOfGame == -1) {
-        RoundOfGame = 0;
-    }
-    PlaySound(rr_mexclose);
-    randomize();
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+
+	MechanizmState = Stoping;
+	if (RoundOfGame == -1) {
+		RoundOfGame = 0;
+	}
+	PlaySound(rr_mexclose);
+	randomize();
 	WaitForFate = 5 + random(11);
-	imgPlace->Picture->Assign(gfx->PlaceRedZero);
+	imgPlace->Picture->Assign(gfx->PlaceRedZero.get());
     if (RoundOfGame < 1) {
-        imgPlace->Picture->Assign(gfx->Place);
+		imgPlace->Picture->Assign(gfx->Place.get());
     }
 
 	if (FinalRoundOfGame > 0) {
@@ -367,6 +372,7 @@ int ChooseAnyPlayer() {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	TSettings *Settings = TSettings::Instance();
 	Wait++ ;
     switch (ModeOfGame) {
@@ -504,8 +510,8 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
 			tmrPulseAnimation->Enabled = true;
 			imgPulseBar->Visible = true;
 			imgTicker->Visible = true;
-            imgTimer->Picture->Assign(gfx->Tick[TimeOfQuestion]);
-            ShowAnswers();
+			imgTimer->Picture->Assign(gfx->GetTickFrame(TimeOfQuestion));
+			ShowAnswers();
             ResizeAnswers();
             // --[ 4. Финальное: определение надписи, в которой лежит правильный ответ ]--
             int trueans;
@@ -540,7 +546,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
             CanAnswer = 0;
             StopSound(rr_20sec);
             if (answer == RandomPlace) {
-				imgQuestion->Picture->Assign(gfx->quest_correct);
+				imgQuestion->Picture->Assign(gfx->quest_correct.get());
 				FlashBackground((TColor)RGB(0,255,0));
                 if (!Settings->HostMode) {
                     tmrWaiting->Enabled = true;
@@ -557,7 +563,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                 chooseplayer = 255;
                 QuestionsLeft-- ;
             } else {
-				imgQuestion->Picture->Assign(gfx->quest_incorrect);
+				imgQuestion->Picture->Assign(gfx->quest_incorrect.get());
 				FlashBackground((TColor)RGB(255,0,0));
                 if (answer != -1) {
                     imgChoosenAnswer->Visible = true;
@@ -674,7 +680,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                     imgChAnsRight->Visible = false;
                     imgTimer->Visible = false;
                     lblTimer->Visible = false;
-                    imgQuestion->Picture->Assign(gfx->rr_quest);
+					imgQuestion->Picture->Assign(gfx->rr_quest.get());
                     LabelQuestion->Visible = false;
                     if (!Settings->HostMode) {
                         tmrWaiting->Enabled = true;
@@ -688,7 +694,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                     PlaySound(rr_save);
                     CurrentHatch = chooseplayer;
                     chooseplayer = 255;
-                    imgPlace->Picture->Assign(gfx->Place);
+					imgPlace->Picture->Assign(gfx->Place.get());
                     ResetForm();
                 }
             }
@@ -802,7 +808,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                 if (RoundOfGame != 5) {
                     QuestionsLeft = colquestions[RoundOfGame - 1];
                     ModeOfGame = mRoundNewRound;
-                    imgSplash->Picture->Assign(gfx->Splash[RoundOfGame]);
+                    imgSplash->Picture->Assign(gfx->GetSplash(RoundOfGame));
                 } else {
                     ModeOfGame = mFinalStartNewRound;
                     tmrWaiting->Enabled = false;
@@ -816,7 +822,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *Sender) {
                 imgSplash->Visible = true;
                 LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 2);
                 MechanizmSetHatchesStates();
-                imgPlace->Picture->Assign(gfx->Place);
+				imgPlace->Picture->Assign(gfx->Place.get());
             }
             if (Wait == 12) {
                 imgSplash->Visible = false;
@@ -1055,7 +1061,8 @@ void __fastcall TF::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::tmrTimeTimer(TObject *Sender) {
-    TimeOfQuestion-- ;
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	TimeOfQuestion-- ;
     if (RoundOfGame < 5) {
         if (TimeOfQuestion == (20 - TimeToDecide)
          && TSettings::Instance()->PlayerType[chooseplayer - 1] != bbHuman) {
@@ -1087,7 +1094,7 @@ void __fastcall TF::tmrTimeTimer(TObject *Sender) {
     }
     if (TimeOfQuestion >= 0) {
         lblTimer->Caption = IntToStr(TimeOfQuestion);
-        imgTimer->Picture->Assign(gfx->Tick[TimeOfQuestion]);
+		imgTimer->Picture->Assign(gfx->GetTickFrame(TimeOfQuestion));
     }
     if (TimeOfQuestion < 0) {
         if (TimeOfQuestion == -3) {
@@ -1155,24 +1162,25 @@ void TF::TransferMoney() {
 // ---------------------------------------------------------------------------
 void TF::ResetForm() // возвращает форму в исходное положение
 {
-    for (int i = 0; i <= RoundOfGame; ++i) {
-        lblAnswers[i]->Visible = false;
-    }
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	for (int i = 0; i <= RoundOfGame; ++i) {
+		lblAnswers[i]->Visible = false;
+	}
 
-    for (int i = 0; i < COUNT_ANSWERS; ++i) {
-        imgNumber[i]->Visible = false;
-    }
+	for (int i = 0; i < COUNT_ANSWERS; ++i) {
+		imgNumber[i]->Visible = false;
+	}
 
-    F->imgChoosenAnswer->Visible = false;
-    F->imgChAnsLeft->Visible = false;
-    F->imgChAnsRight->Visible = false;
-    F->imgTimer->Visible = false;
-    F->lblTimer->Visible = false;
-    F->imgTicker->Visible = false;
-    F->imgPulse->Visible = false;
-    F->imgTotalPrize->Visible = false;
-    F->imgPulseBar->Visible = false;
-    F->imgQuestion->Picture->Assign(gfx->rr_quest);
+	F->imgChoosenAnswer->Visible = false;
+	F->imgChAnsLeft->Visible = false;
+	F->imgChAnsRight->Visible = false;
+	F->imgTimer->Visible = false;
+	F->lblTimer->Visible = false;
+	F->imgTicker->Visible = false;
+	F->imgPulse->Visible = false;
+	F->imgTotalPrize->Visible = false;
+	F->imgPulseBar->Visible = false;
+	F->imgQuestion->Picture->Assign(gfx->rr_quest.get());
     F->LabelQuestion->Visible = false;
     F->LabelMoney->Visible = false;
     hatches_enable_state(false);
@@ -1182,28 +1190,30 @@ void TF::ResetForm() // возвращает форму в исходное положение
 void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
     // финальный раунд игры "Русская рулетка"
     TSettings *Settings = TSettings::Instance();
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 
-    Wait++ ;
-    switch (ModeOfGame) {
-    case mFinalStartNewRound: {
-            if (Wait == 5) {
-                for (int i = 0; i < COUNT_ANSWERS; ++i) {
-                    imgNumber[i]->Enabled = false;
-                }
-                CanChoose = 0;
-                for (int i = 0; i < COUNT_PLAYERS; i++) {
-                    if (isPlayerInGame[i]) {
-                        LeaderPlayerAtFinal = i;
-                    }
-                }
-                PlaySound(rr_final);
-                hatches_enable_state(false);
-                imgSplash->Picture->Assign(gfx->FinalSplash);
+
+	Wait++ ;
+	switch (ModeOfGame) {
+	case mFinalStartNewRound: {
+			if (Wait == 5) {
+				for (int i = 0; i < COUNT_ANSWERS; ++i) {
+					imgNumber[i]->Enabled = false;
+				}
+				CanChoose = 0;
+				for (int i = 0; i < COUNT_PLAYERS; i++) {
+					if (isPlayerInGame[i]) {
+						LeaderPlayerAtFinal = i;
+					}
+				}
+				PlaySound(rr_final);
+				hatches_enable_state(false);
+				imgSplash->Picture->Assign(gfx->FinalSplash.get());
                 imgSplash->Visible = true;
                 CantFall = -1;
                 LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 2);
                 MechanizmSetHatchesStates();
-                imgPlace->Picture->Assign(gfx->Place);
+				imgPlace->Picture->Assign(gfx->Place.get());
                 FinalRoundOfGame = 1;
             }
             if (Wait == 11) {
@@ -1227,7 +1237,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 imgTicker->Visible = false;
                 imgChAnsLeft->Visible = false;
                 imgChAnsRight->Visible = false;
-                imgQuestion->Picture->Assign(gfx->rr_quest);
+				imgQuestion->Picture->Assign(gfx->rr_quest.get());
                 imgQuestion->Visible = false;
                 LabelQuestion->Visible = false;
                 lblRightAnswer->Visible = false;
@@ -1296,7 +1306,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 load_final_question();
                 lblTimer->Caption = IntToStr(TimeOfQuestion);
                 lblTimer->Visible = true;
-                imgTimer->Picture->Assign(gfx->Tick[TimeOfQuestion]);
+                imgTimer->Picture->Assign(gfx->GetTickFrame(TimeOfQuestion));
                 imgTimer->Visible = true;
                 edFinalAnswer->Top = imgQuestion->Top + imgQuestion->Height - 30 - edFinalAnswer->Height;
                 edFinalAnswer->Left = (int)(imgQuestion->Left + (imgQuestion->Width - edFinalAnswer->Width) / 2.);
@@ -1338,7 +1348,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 imgChAnsLeft->Visible = true;
                 imgChAnsRight->Visible = true;
                 Reward = StrToInt(LabelMoney->Caption);
-                imgQuestion->Picture->Assign(gfx->quest_correct);
+				imgQuestion->Picture->Assign(gfx->quest_correct.get());
                 LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 4);
                 MechanizmSetHatchesStates();
                 ModeOfGame = mFinalGiveMoney;
@@ -1365,8 +1375,8 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 ModeOfGame = mFinalMomentOfTruth;
                 WaitForFate = 10 + random(11);
                 MechanizmSetHatchesStates();
-                imgQuestion->Picture->Assign(gfx->quest_incorrect);
-                imgPlace->Picture->Assign(gfx->PlaceRedZero);
+				imgQuestion->Picture->Assign(gfx->quest_incorrect.get());
+				imgPlace->Picture->Assign(gfx->PlaceRedZero.get());
             }
             Wait = 0;
         } break;
@@ -1393,7 +1403,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 lblTimer->Visible = false;
                 LabelMoney->Visible = false;
                 imgPulse->Visible = false;
-                imgQuestion->Picture->Assign(gfx->rr_quest);
+				imgQuestion->Picture->Assign(gfx->rr_quest.get());
                 imgQuestion->Visible = false;
                 LabelQuestion->Visible = false;
                 lblRightAnswer->Visible = false;
@@ -1455,7 +1465,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                     imgTicker->Visible = false;
                     imgPulseBar->Visible = false;
                     imgTotalPrize->Visible = false;
-                    imgQuestion->Picture->Assign(gfx->rr_quest);
+					imgQuestion->Picture->Assign(gfx->rr_quest.get());
                     imgQuestion->Visible = false;
                     LabelQuestion->Visible = false;
                     lblRightAnswer->Visible = false;
@@ -1470,7 +1480,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
         } break;
     case mFinalPlayerSave: {
             if (Wait == 35) {
-                imgPlace->Picture->Assign(gfx->Place);
+				imgPlace->Picture->Assign(gfx->Place.get());
                 LightHatchesW(1, 0);
                 MechanizmSetHatchesStates();
                 imgChoosenAnswer->Visible = false;
@@ -1484,7 +1494,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *Sender) {
                 imgChAnsLeft->Visible = false;
                 imgChAnsRight->Visible = false;
                 imgPulse->Visible = false;
-                imgQuestion->Picture->Assign(gfx->rr_quest);
+				imgQuestion->Picture->Assign(gfx->rr_quest.get());
                 imgQuestion->Visible = false;
                 LabelQuestion->Visible = false;
                 lblRightAnswer->Visible = false;
@@ -1594,9 +1604,10 @@ void __fastcall TF::btnContinueGameClick(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::FormClose(TObject *Sender, TCloseAction &Action) {
-    // сохранение текущего положения и размеров формы
-    delete[]base;
-    SaveFormPosition(F);
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	// сохранение текущего положения и размеров формы
+	delete[]base;
+	SaveFormPosition(F);
     MenuForm->Show();
 
     for (int i = 0; i < COUNT_PLAYERS; i++) {
@@ -1628,8 +1639,8 @@ void __fastcall TF::FormClose(TObject *Sender, TCloseAction &Action) {
     imgChAnsRight->Visible = false;
     imgChoosenAnswer->Visible = false;
     imgBorder->Visible = false;
-    imgPlace->Picture->Assign(gfx->Place);
-    imgSplash->Picture->Assign(gfx->Splash[1]);
+	imgPlace->Picture->Assign(gfx->Place.get());
+    imgSplash->Picture->Assign(gfx->GetSplash(1));
     for (int i = 0; i < COUNT_PLAYERS; ++i) {
         imgPlayer[i]->Visible = true;
     }
@@ -1735,6 +1746,8 @@ void __fastcall TF::btnGetMoneyClick(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::FormResize(TObject *Sender) {
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+
     CoolPositionFix(F);
 
     imgQuestion->Left = (ClientWidth - imgQuestion->Width) / 2;
@@ -1822,7 +1835,7 @@ void __fastcall TF::FormResize(TObject *Sender) {
 
     imgLiver->Left = 0;
     imgLiver->Top = 145;
-    imgLiver->Picture->Assign(gfx->Liver[0]);
+	imgLiver->Picture->Assign(gfx->GetLiverFrame(0));
 
     imgSplash->Left = int((F->ClientWidth - imgSplash->Width) / 2);
     imgSplash->Top = int((F->ClientHeight - imgSplash->Height) / 2);
@@ -1850,7 +1863,8 @@ void __fastcall TF::tmrMechamizmTimer(TObject *Sender) {
             tmrMechamizm->Enabled = false;
         }
     }
-    imgLiver->Picture->Assign(gfx->Liver[MechState]);
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+    imgLiver->Picture->Assign(gfx->GetLiverFrame(MechState));
 }
 // ---------------------------------------------------------------------------
 

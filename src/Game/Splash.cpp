@@ -36,14 +36,14 @@ TStringList *nonExisten;
 __fastcall TSplashForm::TSplashForm(TComponent *Owner) : TForm(Owner) { }
 
 // ---------------------------------------------------------------------------
-inline void UpdPB() {
+inline void UpdateProgress() {
     SplashForm->PBLoad->Position = SplashForm->PBLoad->Position + 1;
     SplashForm->PBLoad->Update();
     SplashForm->Update();
 }
 
 void CheckFile(String filename) {
-    UpdPB();
+    UpdateProgress();
     if (!FileExists(filename)) {
         nonExisten->Add(filename);
     }
@@ -124,16 +124,16 @@ void Loader() {
 
     ShowState("Проверка ресурсов игры…");
     CheckSystemIntegrity();
-    UpdPB();
+    UpdateProgress();
     ShowState("Загрузка графики…");
-    gfx = new sGfxCache;
-    UpdPB();
+	GfxCache::Instance();
+	UpdateProgress();
     ShowState("Загрузка аудио…");
     init_audio(Application->Handle);
-    UpdPB();
+    UpdateProgress();
     ShowState("Загрузка настроек игры…");
     TSettings::Instance()->LoadFromFile(".\\settings.cfg");
-    UpdPB();
+	UpdateProgress();
     ShowState("Загрузка завершена!");
     SplashForm->tmrSplash->Enabled = true;
 }

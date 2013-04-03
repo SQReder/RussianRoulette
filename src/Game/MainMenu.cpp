@@ -46,7 +46,6 @@ void __fastcall TMenuForm::FormCreate(TObject *Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::FormClose(TObject *Sender, TCloseAction &Action) {
     delete TSettings::Instance();
-    delete gfx;
     Application->Terminate();
 }
 
@@ -115,7 +114,8 @@ void __fastcall TMenuForm::FormShow(TObject *Sender) {
     MenuForm->Constraints->MinWidth = Settings->MinWidth;
     MenuForm->Constraints->MinHeight = Settings->MinHeight;
 
-    Background->Picture->Assign(gfx->Menu_bg);
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	Background->Picture->Assign(gfx->Menu_bg.get());
 
     LoadFormPosition(MenuForm);
 }

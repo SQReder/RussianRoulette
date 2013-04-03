@@ -19,77 +19,63 @@
 #include "GfxCache.h"
 #pragma package(smart_init)
 
-sGfxCache *gfx;
+GfxCache::GfxCache() {
+	for (size_t i = 0; i < PulseFramesCount; i++) {
+		shared_ptr<TPicture> tmp(new TPicture());
+		tmp->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(static_cast<int>(i) + 1)) + ".png");
+		PulseFrames.at(i) = tmp;
+	}
 
-sGfxCache::sGfxCache() {
-    PulseFramesCount = 56;
-    for (int i = 0; i < PulseFramesCount; i++) {
-		TPicture *pic = new TPicture();
-		pic->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
+	for (size_t i = 0; i < TickFramesCount; ++i) {
+		shared_ptr<TPicture> tmp(new TPicture());
+		tmp->LoadFromFile("data\\" + Trim(IntToStr(static_cast<int>(i))) + "sec.png");
+		TickFrames.at(i) = tmp;
+	}
 
-		PulseFrames_.push_back(shared_ptr <TPicture> (pic));
-		PulseFrames[i] = new TPicture();
-		PulseFrames[i]->LoadFromFile("data\\pulse\\pulse_" + Trim(IntToStr(i + 1)) + ".png");
-    }
-
-    for (int i = 0; i < 21; ++i) {
-        Tick[i] = new TPicture();
-        Tick[i]->LoadFromFile("data\\" + Trim(IntToStr(i)) + "sec.png");
-    }
-
-    for (int i = 0; i < 16; ++i) {
-        Liver[i] = new TPicture();
-        Liver[i]->LoadFromFile("Data\\рычаг_" + IntToStr(i) + ".png");
+	for (size_t i = 0; i < LiverFramesCount; ++i) {
+		shared_ptr<TPicture> tmp(new TPicture());
+		tmp->LoadFromFile("Data\\рычаг_" + Trim(IntToStr(static_cast<int>(i))) + ".png");
+		LiverFrames.at(i) = tmp;
     }
 
     for (int i = 1; i < 5; ++i) {
-        Splash[i] = new TPicture();
-        Splash[i]->LoadFromFile("Data\\splash-" + IntToStr(i) + ".png");
+		shared_ptr<TPicture> tmp(new TPicture());
+		tmp->LoadFromFile("Data\\splash-" + IntToStr(i) + ".png");
+        Splashes.at(i) = tmp;
     }
 
-    Place = new TPicture();
-    Place->LoadFromFile("data\\place.png");
+	Place = shared_ptr<TPicture>(new TPicture());
+	rr_quest = shared_ptr<TPicture>(new TPicture());
+	PlaceRedZero = shared_ptr<TPicture>(new TPicture());
+	PlaceRedMechActive = shared_ptr<TPicture>(new TPicture());
+	quest_correct = shared_ptr<TPicture>(new TPicture());
+	quest_incorrect = shared_ptr<TPicture>(new TPicture());
+	FinalSplash = shared_ptr<TPicture>(new TPicture());
+	Menu_bg = shared_ptr<TPicture>(new TPicture());
 
-    rr_quest = new TPicture();
-    rr_quest->LoadFromFile("data\\rr_quest.png");
-
-    PlaceRedZero = new TPicture();
+	Place->LoadFromFile("data\\place.png");
+	rr_quest->LoadFromFile("data\\rr_quest.png");
 	PlaceRedZero->LoadFromFile("Data\\Place_red_zero.png");
-
-	PlaceRedMechActive = new TPicture();
 	PlaceRedMechActive->LoadFromFile("Data\\Place_red_zero2.png");
-
-    quest_correct = new TPicture();
-    quest_correct->LoadFromFile("Data\\quest_correct.png");
-
-    quest_incorrect = new TPicture();
-    quest_incorrect->LoadFromFile("Data\\quest_incorrect.png");
-
-    FinalSplash = new TPicture();
-    FinalSplash->LoadFromFile("Data\\Final.png");
-
-    Menu_bg = new TPicture();
-    Menu_bg->LoadFromFile("Data\\menu_bg.jpg");
+	quest_correct->LoadFromFile("Data\\quest_correct.png");
+	quest_incorrect->LoadFromFile("Data\\quest_incorrect.png");
+	FinalSplash->LoadFromFile("Data\\Final.png");
+	Menu_bg->LoadFromFile("Data\\menu_bg.jpg");
 }
 
-sGfxCache::~sGfxCache() {
-    for (int i = 0; i < 21; ++i) {
-        delete Tick[i];
-    }
+TPicture *GfxCache::GetPulseFrame(size_t index) const
+{ return PulseFrames.at(index).get(); }
 
-    for (int i = 0; i < 16; ++i) {
-        delete Liver[i];
-    }
+TPicture *GfxCache::GetTickFrame(size_t index) const
+{ return TickFrames.at(index).get(); }
 
-    for (int i = 1; i < 5; ++i) {
-        delete Splash[i];
-    }
+TPicture *GfxCache::GetLiverFrame(size_t index) const
+{ return LiverFrames.at(index).get(); }
 
-    delete Place;
-    delete rr_quest;
-	delete PlaceRedZero;
-	delete PlaceRedMechActive;
-    delete quest_correct;
-    delete quest_incorrect;
-    delete FinalSplash;
+TPicture *GfxCache::GetSplash(size_t index) const
+{ return Splashes.at(index).get(); }
+
+const shared_ptr<GfxCache> GfxCache::Instance() {
+	static shared_ptr<GfxCache> instance(new GfxCache());
+	return instance;
 }

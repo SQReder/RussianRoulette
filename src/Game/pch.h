@@ -24,6 +24,7 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <array>
 using namespace std;
 
 #include <boost\shared_ptr.hpp>
