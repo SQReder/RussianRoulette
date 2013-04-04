@@ -106,10 +106,6 @@ void __fastcall TF::LoadGraphic() {
 
 	btnMechStart->Enabled = true;
 
-	for (int i = 0; i < COUNT_ANSWERS; ++i) {
-		SetLabel(lblAnswers[i], 0, 0, 0, 0, "");
-	}
-
 	edFinalAnswer->Visible = false;
 
 	for (int i = 0; i < COUNT_ANSWERS; ++i) {
@@ -126,7 +122,8 @@ void __fastcall TF::LoadGraphic() {
 }
 
 // ---------------------------------------------------------------------------
-void TF::SetLabel(shared_ptr<TLabel> typedLabel, int top, int left, int width, int height, String caption) {
+void TF::SetLabel(shared_ptr<TLabel> typedLabel, int top, int left, int width,
+				  String caption, int height) {
 	typedLabel->Top = top;
 	typedLabel->Left = left;
 	typedLabel->Width = width;
@@ -278,7 +275,8 @@ void __fastcall TF::btnMechStopClick(TObject *) {
 // ---------------------------------------------------------------------------
 void __fastcall TF::btnExitClick(TObject *) {
 	int r;
-	r = MessageDlg("Вы действительно хотите закончить игру?\nВсе данные об этой игре будут потеряны!", mtCustom,
+	r = MessageDlg("Вы действительно хотите закончить игру?\n"
+				   "Все данные об этой игре будут потеряны!", mtCustom,
 		mbYesNo, 0);
 	if (r == mrYes) {
 		Close();
@@ -1810,8 +1808,8 @@ void __fastcall TF::FormResize(TObject *) {
 	// Создаем лейблочки для имен игроков и денег
 	int offcet = 0;
 	for (int i = 0; i < COUNT_PLAYERS; ++i) {
-		SetLabel(lblPlayer[i], 15 + offcet, imgPlayers->Left + 67, 201, 20, TSettings::Instance()->PlayerNames[i]);
-		SetLabel(lblMoney[i], 43 + offcet, imgPlayers->Left + 80, 176, 25, money[i]);
+		SetLabel(lblPlayer[i], 15 + offcet, imgPlayers->Left + 67, 201, TSettings::Instance()->PlayerNames[i]);
+		SetLabel(lblMoney[i], 43 + offcet, imgPlayers->Left + 80, 176, money[i], 25);
 		offcet += 83;
 	}
 
@@ -2138,56 +2136,50 @@ void TF::ResizeAnswers() {
 }
 
 // ---------------------------------------------------------------------------
+String GetAnswer(int question, int variant) {
+	return base[question].Answers[variant];
+}
+
+int GetAnswerLength(int question, int variant) {
+	return GetAnswer(question, variant).Length() *12;
+}
+
 void TF::ShowAnswers() {
 	if (RoundOfGame == 1) {
 		SetLabel(lblAnswers[0], imgQuestion->Top + 160, imgQuestion->Left + 300,
-			(base[NumberOfQuestion].Answers[variants[0]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[0]]);
+			GetAnswerLength(NumberOfQuestion, variants[0]), GetAnswer(NumberOfQuestion, variants[0]));
 		SetLabel(lblAnswers[1], imgQuestion->Top + 160, imgQuestion->Left + 600,
-			(base[NumberOfQuestion].Answers[variants[1]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[1]]);
+			GetAnswerLength(NumberOfQuestion, variants[1]), GetAnswer(NumberOfQuestion, variants[1]));
 	}
 	if (RoundOfGame == 2) {
 		SetLabel(lblAnswers[0], imgQuestion->Top + 150, imgQuestion->Left + 300,
-			(base[NumberOfQuestion].Answers[variants[0]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[0]]);
+			GetAnswerLength(NumberOfQuestion, variants[0]), GetAnswer(NumberOfQuestion, variants[0]));
 		SetLabel(lblAnswers[1], imgQuestion->Top + 150, imgQuestion->Left + 600,
-			(base[NumberOfQuestion].Answers[variants[1]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[1]]);
+			GetAnswerLength(NumberOfQuestion, variants[1]), GetAnswer(NumberOfQuestion, variants[1]));
 		SetLabel(lblAnswers[2], imgQuestion->Top + 175, imgQuestion->Left + 300,
-			(base[NumberOfQuestion].Answers[variants[2]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[2]]);
+			GetAnswerLength(NumberOfQuestion, variants[2]), GetAnswer(NumberOfQuestion, variants[2]));
 	}
 	if (RoundOfGame == 3) {
 		SetLabel(lblAnswers[0], imgQuestion->Top + 150, imgQuestion->Left + 300,
-			(base[NumberOfQuestion].Answers[variants[0]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[0]]);
+			GetAnswerLength(NumberOfQuestion, variants[0]), GetAnswer(NumberOfQuestion, variants[0]));
 		SetLabel(lblAnswers[1], imgQuestion->Top + 150, imgQuestion->Left + 600,
-			(base[NumberOfQuestion].Answers[variants[1]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[1]]);
+			GetAnswerLength(NumberOfQuestion, variants[1]), GetAnswer(NumberOfQuestion, variants[1]));
 		SetLabel(lblAnswers[2], imgQuestion->Top + 175, imgQuestion->Left + 300,
-			(base[NumberOfQuestion].Answers[variants[2]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[2]]);
+			GetAnswerLength(NumberOfQuestion, variants[2]), GetAnswer(NumberOfQuestion, variants[2]));
 		SetLabel(lblAnswers[3], imgQuestion->Top + 175, imgQuestion->Left + 600,
-			(base[NumberOfQuestion].Answers[variants[3]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[3]]);
+			GetAnswerLength(NumberOfQuestion, variants[3]), GetAnswer(NumberOfQuestion, variants[3]));
 	}
 	if (RoundOfGame == 4) {
 		SetLabel(lblAnswers[0], imgQuestion->Top + 150, imgQuestion->Left + 150,
-			(base[NumberOfQuestion].Answers[variants[0]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[0]]);
+			GetAnswerLength(NumberOfQuestion, variants[0]), GetAnswer(NumberOfQuestion, variants[0]));
 		SetLabel(lblAnswers[1], imgQuestion->Top + 150, imgQuestion->Left + 450,
-			(base[NumberOfQuestion].Answers[variants[1]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[1]]);
+			GetAnswerLength(NumberOfQuestion, variants[1]), GetAnswer(NumberOfQuestion, variants[1]));
 		SetLabel(lblAnswers[2], imgQuestion->Top + 150, imgQuestion->Left + 750,
-			(base[NumberOfQuestion].Answers[variants[2]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[2]]);
+			GetAnswerLength(NumberOfQuestion, variants[2]), GetAnswer(NumberOfQuestion, variants[2]));
 		SetLabel(lblAnswers[3], imgQuestion->Top + 175, imgQuestion->Left + 300,
-			(base[NumberOfQuestion].Answers[variants[3]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[3]]);
+			GetAnswerLength(NumberOfQuestion, variants[3]), GetAnswer(NumberOfQuestion, variants[3]));
 		SetLabel(lblAnswers[4], imgQuestion->Top + 175, imgQuestion->Left + 600,
-			(base[NumberOfQuestion].Answers[variants[4]]).Length() *12, 20,
-			base[NumberOfQuestion].Answers[variants[4]]);
+			GetAnswerLength(NumberOfQuestion, variants[4]), GetAnswer(NumberOfQuestion, variants[4]));
 	}
 
 	for (int i = 0; i <= RoundOfGame; ++i) {

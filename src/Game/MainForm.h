@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
 // Copyright (C) 2010-2011 Popovskiy Andrey
 // Copyright (C) 2010-2011 Boytsov Sergey
@@ -123,7 +123,7 @@ __published: // IDE-managed Components
 	void __fastcall imgTakeAMoneyClick(TObject *Sender);
 
 private: // User declarations
-	void SetLabel(shared_ptr<TLabel>, int, int, int, int, String);
+	void SetLabel(shared_ptr<TLabel>, int, int, int, String, int = 20);
 
 public: // User declarations
 	__fastcall TF(TComponent *Owner);

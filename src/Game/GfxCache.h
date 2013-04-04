@@ -10,6 +10,7 @@ public:
 	static const size_t PulseFramesCount = 56;
 	static const size_t TickFramesCount = 21;
 	static const size_t LiverFramesCount = 16;
+	static const size_t HatchesCount = 6;
 
 	// one moar for 1..4
 	static const size_t SplashesCount = 5;
@@ -38,5 +39,6 @@ private:
 	array<shared_ptr<TPicture>, TickFramesCount> TickFrames;
 	array<shared_ptr<TPicture>, LiverFramesCount> LiverFrames;
 	array<shared_ptr<TPicture>, SplashesCount> Splashes;
+	array<shared_ptr<TPicture>, HatchesCount> Hatches;
 };
 #endif
