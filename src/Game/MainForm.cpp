@@ -555,7 +555,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
             StopSound(rr_20sec);
             if (answer == RandomPlace) {
 				imgQuestion->Picture->Assign(gfx->quest_correct.get());
-				FlashBackground((TColor)RGB(0,255,0));
+				FlashBackground(clLime);
                 if (!Settings->HostMode) {
                     tmrWaiting->Enabled = true;
                 }
@@ -572,7 +572,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
                 QuestionsLeft-- ;
             } else {
 				imgQuestion->Picture->Assign(gfx->quest_incorrect.get());
-				FlashBackground((TColor)RGB(255,0,0));
+				FlashBackground(clRed);
                 if (answer != -1) {
                     imgChoosenAnswer->Visible = true;
                     imgChAnsLeft->Visible = true;
@@ -2229,32 +2229,32 @@ void __fastcall TF::FormHide(TObject *) {
 void __fastcall TF::tmrAnimateBackgroundTimer(TObject *)
 {
 	switch (BgStateColor) {
-		case (TColor)RGB(0,255,0):
+		case clLime:
 		{
 			int green = GetGValue(F->Color);
-			green+=51;
+			green = (green <= 255 - 51) ? green + 51 : 255;
 			F->Color = (TColor)RGB(0, green, 0);
 			if (F->Color == BgStateColor) {
-				BgStateColor = (TColor)RGB(0,0,0);
+				BgStateColor = clBlack;
 			}
 		}
 		break;
-		case (TColor)RGB(255,0,0):
+		case clRed:
 		{
 			int red = GetRValue(F->Color);
-			red+=51;
+			red = (red <= 255 - 51) ? red + 51 : 255;
 			F->Color = (TColor)RGB(red, 0, 0);
 			if (F->Color == BgStateColor) {
-				BgStateColor = (TColor)RGB(0,0,0);
+				BgStateColor = clBlack;
 			}
 		}
 		break;
-		case (TColor)RGB(0,0,0):
+		case clBlack:
 		{
 			int green = GetGValue(F->Color);
-			int red = GetRValue(F->Color);
-			if (green != 0) green-=15;
-			if (red != 0) red-=15;
+			int red   = GetRValue(F->Color);
+			green = (green >= 15) ? green - 15 : 0;
+			red   = (red   >= 15) ? red   - 15 : 0;
 			F->Color = (TColor)RGB(red, green, 0);
 			if (F->Color == BgStateColor) {
 				tmrAnimateBackground->Enabled = false;
