@@ -194,8 +194,6 @@ public: // User declarations
 	array<shared_ptr<TLabel>, COUNT_PLAYERS> lblAnswers;
 };
 
-void LoadQuestionFromBase(String BaseName);
-
 // ---------------------------------------------------------------------------
 extern PACKAGE TF *F;
 // ---------------------------------------------------------------------------

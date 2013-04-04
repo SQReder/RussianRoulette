@@ -46,33 +46,30 @@ void switchonquestion() {
 // -----------------------------------------------------------------------------
 
 void showquestion() {
-    unsigned int rndq; // random question
+	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
+	size_t rndq = base->GetRandomQuestionForRound(RoundOfGame);
 
-    do {
-        rndq = random(qcount);
-    }
-    while (!(StrToInt(base[rndq].Round) == RoundOfGame));
+	F->LabelQuestion->WordWrap = false;
+	F->LabelQuestion->AutoSize = true;
+	F->NumberOfQuestion = rndq;
+	F->LabelQuestion->Caption = base->GetQuestion(F->NumberOfQuestion);
+	int offset = (F->imgQuestion->Width - F->LabelQuestion->Width) / 2;
+	F->LabelQuestion->Left = F->imgQuestion->Left + offset;
 
-    F->LabelQuestion->WordWrap = false;
-    F->LabelQuestion->AutoSize = true;
-    F->NumberOfQuestion = rndq;
-    F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
-    F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
+	if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
+		F->LabelQuestion->WordWrap = true;
+		F->LabelQuestion->AutoSize = false;
+		F->LabelQuestion->Width = 573;
+		F->LabelQuestion->AutoSize = true;
+	} else {
+		F->LabelQuestion->WordWrap = false;
+	}
 
-    if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
-        F->LabelQuestion->WordWrap = true;
-        F->LabelQuestion->AutoSize = false;
-        F->LabelQuestion->Width = 573;
-        F->LabelQuestion->AutoSize = true;
-    } else {
-        F->LabelQuestion->WordWrap = false;
-    }
-
-    F->LabelQuestion->Left = (int)(F->imgQuestion->Left + (F->imgQuestion->Width - F->LabelQuestion->Width) / 2.);
-    F->LabelQuestion->Visible = true;
+	offset = (F->imgQuestion->Width - F->LabelQuestion->Width) / 2;
+	F->LabelQuestion->Left = F->imgQuestion->Left + offset;
+	F->LabelQuestion->Visible = true;
     F->tmrWaiting->Enabled = true;
-    base[F->NumberOfQuestion].Round = '0';
-    PlaySound(rr_question);
+	PlaySound(rr_question);
     // считать вопрос из файла; для начала заранее с помощью отдельной программы
 }
 
@@ -127,17 +124,13 @@ void hatches_enable_state(bool state) {
 
 // -----------------------------------------------------------------------------
 void load_final_question() {
-    unsigned int rndq; // random question
-
-    do {
-        rndq = random(qcount);
-    }
-    while (!(StrToInt(base[rndq].Round) == RoundOfGame));
+	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
+	size_t rndq = base->GetRandomQuestionForRound(RoundOfGame);
 
     F->LabelQuestion->WordWrap = false;
     F->LabelQuestion->AutoSize = true;
     F->NumberOfQuestion = rndq;
-    F->LabelQuestion->Caption = base[F->NumberOfQuestion].Question;
+    F->LabelQuestion->Caption = base->GetQuestion(F->NumberOfQuestion);
 
     if (F->LabelQuestion->Width == F->LabelQuestion->Constraints->MaxWidth) {
         F->LabelQuestion->WordWrap = true;
@@ -154,7 +147,6 @@ void load_final_question() {
     F->imgTotalPrize->Visible = true;
     F->imgPulseBar->Visible = true;
     F->imgTicker->Visible = true;
-    base[F->NumberOfQuestion].Round = '0';
 }
 
 // -----------------------------------------------------------------------------
@@ -175,11 +167,13 @@ String myLowerCase(String str) {
 
 // -----------------------------------------------------------------------------
 bool CheckAnswerAtFinalRound(String ans, int NumberOfQuestion) {
+	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
+
     ans = Trim(ans);
     ans = myLowerCase(ans);
     String trueans[5];
     for (int i = 0; i < 5; i++) {
-        trueans[i] = base[NumberOfQuestion].Answers[i];
+        trueans[i] = base->GetAnswer(NumberOfQuestion, i);
         trueans[i] = myLowerCase(trueans[i]);
     }
     // удаление двойных пробелов

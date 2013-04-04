@@ -1,22 +1,27 @@
-// ---------------------------------------------------------------------------
 #ifndef baseH
 #define baseH
 #include "pch.h"
 
-void LoadQuestionFromBase(String BaseFile);
+class QA;
+class QuestionBase {
+	QuestionBase() {};
+	QuestionBase(const QuestionBase& root);
+	QuestionBase& operator=(const QuestionBase&);
 
-class QA {
+	vector<QA> questions;
+	const QA& item(size_t index) const;
 public:
-    QA() : Round(-1), TrueAnswer(-1) { };
+	static const shared_ptr<QuestionBase> Instance();
+	void LoadFromFile(const String filename);
 
-    char Round;
-    int TrueAnswer;
-    String Question;
-    String Answers[5];
+	const String GetQuestion(size_t index) const;
+	const String GetAnswer(size_t question, size_t answer) const;
+	const int GetTrueAnswer(size_t question) const;
+	const int GetRound(size_t question) const;
 
+	const size_t GetQuestionsCount() const;
+
+	const size_t GetRandomQuestionForRound(int round);
 };
-
-extern QA *base;
-extern int qcount;
 
 #endif

@@ -23,6 +23,7 @@
 #include "About.h"
 #include "GfxCache.h"
 #include "audio.h"
+#include "base.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -57,9 +58,10 @@ void __fastcall TMenuForm::btnBblNTuHaxepClick(TObject *) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TMenuForm::btnNewGameClick(TObject *) {
-    LoadQuestionFromBase(TSettings::Instance()->LastBase);
+	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
+	base->LoadFromFile(TSettings::Instance()->LastBase);
 
-    // сохранение текущего положения и размеров формы
+	// сохранение текущего положения и размеров формы
     SaveFormPosition(MenuForm);
 
     F->Show();

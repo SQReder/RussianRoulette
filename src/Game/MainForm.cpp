@@ -369,6 +369,7 @@ int ChooseAnyPlayer() {
 void __fastcall TF::tmrWaitingTimer(TObject *) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	TSettings *Settings = TSettings::Instance();
+	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
 	Wait++ ;
 	switch (ModeOfGame) {
 	case mRoundQuestion: // показ вопроса
@@ -509,7 +510,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 			ResizeAnswers();
 			// --[ 4. Финальное: определение надписи, в которой лежит правильный ответ ]--
 			int trueans;
-			trueans = base[NumberOfQuestion].TrueAnswer;
+			trueans = base->GetTrueAnswer(NumberOfQuestion);
 			for (int i = 0; i < RoundOfGame + 1; i++) {
 				if (variants[i] == trueans) {
 					RandomPlace = i;
@@ -1054,6 +1055,7 @@ void __fastcall TF::FormKeyDown(TObject *, WORD &Key, TShiftState Shift) {
 
 void __fastcall TF::tmrTimeTimer(TObject *) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
 	TimeOfQuestion-- ;
 	if (RoundOfGame < 5) {
 		if (TimeOfQuestion == (20 - TimeToDecide)
@@ -1075,7 +1077,7 @@ void __fastcall TF::tmrTimeTimer(TObject *) {
 		if (TimeOfQuestion == (10 - TimeToDecide)
 		&& TSettings::Instance()->PlayerType[LeaderPlayerAtFinal] != bbHuman) {
 			if (bot[LeaderPlayerAtFinal].Get_Answer()) {
-				String q = base[NumberOfQuestion].Answers[0];
+				String q = base->GetAnswer(NumberOfQuestion, 0);;
 				edFinalAnswer->Text = q;
 			}
 			ModeOfGame = mFinalAnswerLocked;
@@ -1183,7 +1185,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 	// финальный раунд игры "Русская рулетка"
 	TSettings *Settings = TSettings::Instance();
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
-
+	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
 
 	Wait++ ;
 	switch (ModeOfGame) {
@@ -1324,7 +1326,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				lblRightAnswer->Top = imgQuestion->Top + 160;
 				lblRightAnswer->Height = 19;
 				lblRightAnswer->AutoSize = true;
-				lblRightAnswer->Caption = base[NumberOfQuestion].Answers[0];
+				lblRightAnswer->Caption = base->GetAnswer(NumberOfQuestion, 0);
 				lblRightAnswer->Left =
 					(int)(imgQuestion->Left + (imgQuestion->Width / 2.) - (lblRightAnswer->Width / 2.));
 				lblRightAnswer->Visible = true;
@@ -1347,7 +1349,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				lblRightAnswer->Top = imgQuestion->Top + 160;
 				lblRightAnswer->Height = 19;
 				lblRightAnswer->AutoSize = true;
-				lblRightAnswer->Caption = base[NumberOfQuestion].Answers[0];
+				lblRightAnswer->Caption = base->GetAnswer(NumberOfQuestion, 0);
 				lblRightAnswer->Left =
 					(int)(imgQuestion->Left + (imgQuestion->Width / 2.) - (lblRightAnswer->Width / 2.));
 				lblRightAnswer->Visible = true;
@@ -1590,7 +1592,6 @@ void __fastcall TF::btnContinueGameClick(TObject *) {
 void __fastcall TF::FormClose(TObject *, TCloseAction &) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	// сохранение текущего положения и размеров формы
-	delete[]base;
 	SaveFormPosition(F);
 	MenuForm->Show();
 
@@ -2136,50 +2137,55 @@ void TF::ResizeAnswers() {
 }
 
 // ---------------------------------------------------------------------------
-String GetAnswer(int question, int variant) {
-	return base[question].Answers[variant];
-}
-
-int GetAnswerLength(int question, int variant) {
-	return GetAnswer(question, variant).Length() *12;
-}
-
 void TF::ShowAnswers() {
+	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
 	if (RoundOfGame == 1) {
-		SetLabel(lblAnswers[0], imgQuestion->Top + 160, imgQuestion->Left + 300,
-			GetAnswerLength(NumberOfQuestion, variants[0]), GetAnswer(NumberOfQuestion, variants[0]));
-		SetLabel(lblAnswers[1], imgQuestion->Top + 160, imgQuestion->Left + 600,
-			GetAnswerLength(NumberOfQuestion, variants[1]), GetAnswer(NumberOfQuestion, variants[1]));
+		static const array<int, 2> left = {imgQuestion->Left + 300, imgQuestion->Left + 600};
+		static top = imgQuestion->Top + 160;
+		SetLabel(lblAnswers[0], top, left[0],
+			base->GetAnswer(NumberOfQuestion, variants[0]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[0]));
+		SetLabel(lblAnswers[1], top, left[1],
+			base->GetAnswer(NumberOfQuestion, variants[1]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[1]));
 	}
 	if (RoundOfGame == 2) {
-		SetLabel(lblAnswers[0], imgQuestion->Top + 150, imgQuestion->Left + 300,
-			GetAnswerLength(NumberOfQuestion, variants[0]), GetAnswer(NumberOfQuestion, variants[0]));
-		SetLabel(lblAnswers[1], imgQuestion->Top + 150, imgQuestion->Left + 600,
-			GetAnswerLength(NumberOfQuestion, variants[1]), GetAnswer(NumberOfQuestion, variants[1]));
-		SetLabel(lblAnswers[2], imgQuestion->Top + 175, imgQuestion->Left + 300,
-			GetAnswerLength(NumberOfQuestion, variants[2]), GetAnswer(NumberOfQuestion, variants[2]));
+		static const array<int, 2> left = {imgQuestion->Left + 300, imgQuestion->Left + 600};
+		static const array<int, 2> top =  {imgQuestion->Top  + 150, imgQuestion->Top  + 175};
+		SetLabel(lblAnswers[0], top[0], left[0],
+			base->GetAnswer(NumberOfQuestion, variants[0]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[0]));
+		SetLabel(lblAnswers[1], top[0], left[1],
+			base->GetAnswer(NumberOfQuestion, variants[1]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[1]));
+		SetLabel(lblAnswers[2], top[1], left[0],
+			base->GetAnswer(NumberOfQuestion, variants[2]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[2]));
 	}
 	if (RoundOfGame == 3) {
-		SetLabel(lblAnswers[0], imgQuestion->Top + 150, imgQuestion->Left + 300,
-			GetAnswerLength(NumberOfQuestion, variants[0]), GetAnswer(NumberOfQuestion, variants[0]));
-		SetLabel(lblAnswers[1], imgQuestion->Top + 150, imgQuestion->Left + 600,
-			GetAnswerLength(NumberOfQuestion, variants[1]), GetAnswer(NumberOfQuestion, variants[1]));
-		SetLabel(lblAnswers[2], imgQuestion->Top + 175, imgQuestion->Left + 300,
-			GetAnswerLength(NumberOfQuestion, variants[2]), GetAnswer(NumberOfQuestion, variants[2]));
-		SetLabel(lblAnswers[3], imgQuestion->Top + 175, imgQuestion->Left + 600,
-			GetAnswerLength(NumberOfQuestion, variants[3]), GetAnswer(NumberOfQuestion, variants[3]));
+		static const array<int, 2> left = {imgQuestion->Left + 300, imgQuestion->Left + 600};
+		static const array<int, 2> top =  {imgQuestion->Top  + 150, imgQuestion->Top  + 175};
+		SetLabel(lblAnswers[0], top[0], left[0],
+			base->GetAnswer(NumberOfQuestion, variants[0]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[0]));
+		SetLabel(lblAnswers[1], top[0], left[2],
+			base->GetAnswer(NumberOfQuestion, variants[1]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[1]));
+		SetLabel(lblAnswers[2], top[1], left[0],
+			base->GetAnswer(NumberOfQuestion, variants[2]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[2]));
+		SetLabel(lblAnswers[3], top[1], left[2],
+			base->GetAnswer(NumberOfQuestion, variants[3]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[3]));
 	}
 	if (RoundOfGame == 4) {
-		SetLabel(lblAnswers[0], imgQuestion->Top + 150, imgQuestion->Left + 150,
-			GetAnswerLength(NumberOfQuestion, variants[0]), GetAnswer(NumberOfQuestion, variants[0]));
-		SetLabel(lblAnswers[1], imgQuestion->Top + 150, imgQuestion->Left + 450,
-			GetAnswerLength(NumberOfQuestion, variants[1]), GetAnswer(NumberOfQuestion, variants[1]));
-		SetLabel(lblAnswers[2], imgQuestion->Top + 150, imgQuestion->Left + 750,
-			GetAnswerLength(NumberOfQuestion, variants[2]), GetAnswer(NumberOfQuestion, variants[2]));
-		SetLabel(lblAnswers[3], imgQuestion->Top + 175, imgQuestion->Left + 300,
-			GetAnswerLength(NumberOfQuestion, variants[3]), GetAnswer(NumberOfQuestion, variants[3]));
-		SetLabel(lblAnswers[4], imgQuestion->Top + 175, imgQuestion->Left + 600,
-			GetAnswerLength(NumberOfQuestion, variants[4]), GetAnswer(NumberOfQuestion, variants[4]));
+		static const array<int, 5> left = {
+										imgQuestion->Left + 150, imgQuestion->Left + 450,
+										imgQuestion->Left + 750, imgQuestion->Left + 300,
+										imgQuestion->Left + 600
+									};
+		static const array<int, 2> top =  {imgQuestion->Top  + 150, imgQuestion->Top  + 175};
+		SetLabel(lblAnswers[0], top[0], left[0],
+			base->GetAnswer(NumberOfQuestion, variants[0]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[0]));
+		SetLabel(lblAnswers[1], top[0], left[1],
+			base->GetAnswer(NumberOfQuestion, variants[1]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[1]));
+		SetLabel(lblAnswers[2], top[0], left[2],
+			base->GetAnswer(NumberOfQuestion, variants[2]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[2]));
+		SetLabel(lblAnswers[3], top[1], left[3],
+			base->GetAnswer(NumberOfQuestion, variants[3]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[3]));
+		SetLabel(lblAnswers[4], top[1], left[4],
+			base->GetAnswer(NumberOfQuestion, variants[4]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[4]));
 	}
 
 	for (int i = 0; i <= RoundOfGame; ++i) {
