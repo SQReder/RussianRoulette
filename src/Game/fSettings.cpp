@@ -175,21 +175,21 @@ void __fastcall TSettingsForm::addBaseClick(TObject *) {
 
 // ---------------------------------------------------------------------------
 void LoadFormPosition(TForm *form) {
-    TSettings *Settings = TSettings::Instance();
+	TSettings *Settings = TSettings::Instance();
 
-    if (Settings->Fullscreen) {
-        form->BorderStyle = bsNone;
-        form->Width = Screen->Width;
-        form->Height = Screen->Height;
-        form->Top = 0;
-        form->Left = 0;
-    } else {
-        form->BorderStyle = bsSizeable;
-        form->Width = Settings->FormsWidth;
-        form->Height = Settings->FormsHeight;
-        form->Left = Settings->FormsLeft;
-        form->Top = Settings->FormsTop;
-    }
+	if (Settings->Fullscreen) {
+		form->BorderStyle = bsNone;
+		form->Width = Screen->Width;
+		form->Height = Screen->Height;
+		form->Top = 0;
+		form->Left = 0;
+	} else {
+		form->BorderStyle = bsSizeable;
+		form->Width = Settings->FormsWidth;
+		form->Height = Settings->FormsHeight;
+		form->Left = Settings->FormsLeft;
+		form->Top = Settings->FormsTop;
+	}
 }
 
 void SaveFormPosition(TForm *form) {

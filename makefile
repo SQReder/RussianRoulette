@@ -1,2 +1,2 @@
 clean:
-	del /s "*.#??" *.il? *.map *.tds *.pdi *.obj
+	del /s "*.#??" *.il? *.map *.tds *.pdi *.obj *.cgl *.*log*

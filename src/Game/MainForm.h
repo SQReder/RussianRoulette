@@ -25,142 +25,144 @@
 #include <pngimage.hpp>
 #include <StdCtrls.hpp>
 
+const int COUNT_PLAYERS = 5;
+const int COUNT_HATCHES = 6;
+const int COUNT_ANSWERS = 5;
+
 // -----------------------------------------------------------------------------
 class TF : public TForm {
 __published: // IDE-managed Components
 
-    TImage *imgPlace;
-    TImage *imgHatch0;
-    TImage *imgHatch3;
-    TImage *imgHatch1;
-    TImage *imgHatch2;
-    TImage *imgHatch5;
-    TImage *imgHatch4;
-    TImage *imgQuestion;
-    TButton *btnMechStart;
-    TButton *btnMechStop;
-    TButton *btnGetMoney;
-    TButton *btnContinueGame;
-    TButton *btnExit;
-    TTimer *tmrRotator;
-    TLabel *LabelQuestion;
-    TLabel *LabelMoney;
-    TTimer *tmrWaiting;
-    TTimer *tmrMoney;
-    TImage *imgPlayers;
-    TImage *imgNumber1;
-    TImage *imgNumber2;
-    TImage *imgNumber3;
-    TImage *imgNumber4;
-    TImage *imgNumber5;
-    TImage *imgChoosenAnswer;
-    TTimer *tmrTime;
-    TLabel *lblTimer;
-    TImage *imgTimer;
-    TMemo *mlog;
-    TTimer *tmrLog;
-    TImage *imgPulse;
-    TTimer *tmrWaitingFinal;
-    TTimer *tmrPulseAnimation;
-    TEdit *edFinalAnswer;
-    TLabel *lblRightAnswer;
-    TImage *imgTotalPrize;
-    TImage *imgPlayer1;
-    TImage *imgPlayer2;
-    TImage *imgPlayer3;
-    TImage *imgPlayer4;
-    TImage *imgPlayer5;
-    TImage *imgLiver;
-    TTimer *tmrMechamizm;
-    TImage *imgSplash;
-    TTimer *tmrSplash;
-    TLabel *lblExit;
-    TButton *Button1;
-    TImage *imgTicker;
-    TImage *imgPulseBar;
-    TImage *imgBorder;
-    TTimer *tmrDecided;
-    TTimer *tmrLightAnimation;
-    TImage *imgChAnsLeft;
-    TImage *imgChAnsRight;
-    TLabel *ControlLabel;
+	TImage *imgPlace;
+	TImage *imgHatch0;
+	TImage *imgHatch3;
+	TImage *imgHatch1;
+	TImage *imgHatch2;
+	TImage *imgHatch5;
+	TImage *imgHatch4;
+	TImage *imgQuestion;
+	TButton *btnMechStart;
+	TButton *btnMechStop;
+	TButton *btnGetMoney;
+	TButton *btnContinueGame;
+	TButton *btnExit;
+	TTimer *tmrRotator;
+	TLabel *LabelQuestion;
+	TLabel *LabelMoney;
+	TTimer *tmrWaiting;
+	TTimer *tmrMoney;
+	TImage *imgPlayers;
+	TImage *imgNumber1;
+	TImage *imgNumber2;
+	TImage *imgNumber3;
+	TImage *imgNumber4;
+	TImage *imgNumber5;
+	TImage *imgChoosenAnswer;
+	TTimer *tmrTime;
+	TLabel *lblTimer;
+	TImage *imgTimer;
+	TMemo *mlog;
+	TTimer *tmrLog;
+	TImage *imgPulse;
+	TTimer *tmrWaitingFinal;
+	TTimer *tmrPulseAnimation;
+	TEdit *edFinalAnswer;
+	TLabel *lblRightAnswer;
+	TImage *imgTotalPrize;
+	TImage *imgPlayer1;
+	TImage *imgPlayer2;
+	TImage *imgPlayer3;
+	TImage *imgPlayer4;
+	TImage *imgPlayer5;
+	TImage *imgLiver;
+	TTimer *tmrMechamizm;
+	TImage *imgSplash;
+	TTimer *tmrSplash;
+	TLabel *lblExit;
+	TButton *Button1;
+	TImage *imgTicker;
+	TImage *imgPulseBar;
+	TImage *imgBorder;
+	TTimer *tmrDecided;
+	TTimer *tmrLightAnimation;
+	TImage *imgChAnsLeft;
+	TImage *imgChAnsRight;
+	TLabel *ControlLabel;
 	TTimer *tmrAnimateBackground;
 	TImage *imgContGame;
 	TImage *imgTakeAMoney;
 
-    void __fastcall tmrPulseAnimationTimer(TObject *Sender);
-    void __fastcall FormCreate(TObject *Sender);
-    void __fastcall LoadGraphic();
-    void __fastcall btnMechStartClick(TObject *Sender);
-    void __fastcall btnExitClick(TObject *Sender);
-    void __fastcall btnMechStopClick(TObject *Sender);
-    void __fastcall tmrRotatorTimer(TObject *Sender);
-    void __fastcall tmrWaitingTimer(TObject *Sender);
-    void __fastcall tmrMoneyTimer(TObject *Sender);
-    void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-    void __fastcall tmrTimeTimer(TObject *Sender);
-    void __fastcall tmrWaitingFinalTimer(TObject *Sender);
-    void __fastcall edFinalAnswerKeyPress(TObject *Sender, wchar_t &Key);
-    void __fastcall btnContinueGameClick(TObject *Sender);
-    void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
-    void __fastcall FormShow(TObject *Sender);
-    void __fastcall btnGetMoneyClick(TObject *Sender);
-    void __fastcall FormResize(TObject *Sender);
-    void __fastcall tmrMechamizmTimer(TObject *Sender);
-    void __fastcall imgLiverClick(TObject *Sender);
-    void __fastcall tmrSplashTimer(TObject *Sender);
-    void __fastcall tmrDecidedTimer(TObject *Sender);
-    void __fastcall tmrLightAnimationTimer(TObject *Sender);
-    void __fastcall ControlLabelClick(TObject *Sender);
-    void __fastcall FormHide(TObject *Sender);
-    void __fastcall HatchClick(TObject *Sender);
+	void __fastcall tmrPulseAnimationTimer(TObject *Sender);
+	void __fastcall FormCreate(TObject *Sender);
+	void __fastcall LoadGraphic();
+	void __fastcall btnMechStartClick(TObject *Sender);
+	void __fastcall btnExitClick(TObject *Sender);
+	void __fastcall btnMechStopClick(TObject *Sender);
+	void __fastcall tmrRotatorTimer(TObject *Sender);
+	void __fastcall tmrWaitingTimer(TObject *Sender);
+	void __fastcall tmrMoneyTimer(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall tmrTimeTimer(TObject *Sender);
+	void __fastcall tmrWaitingFinalTimer(TObject *Sender);
+	void __fastcall edFinalAnswerKeyPress(TObject *Sender, wchar_t &Key);
+	void __fastcall btnContinueGameClick(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall FormShow(TObject *Sender);
+	void __fastcall btnGetMoneyClick(TObject *Sender);
+	void __fastcall FormResize(TObject *Sender);
+	void __fastcall tmrMechamizmTimer(TObject *Sender);
+	void __fastcall imgLiverClick(TObject *Sender);
+	void __fastcall tmrSplashTimer(TObject *Sender);
+	void __fastcall tmrDecidedTimer(TObject *Sender);
+	void __fastcall tmrLightAnimationTimer(TObject *Sender);
+	void __fastcall ControlLabelClick(TObject *Sender);
+	void __fastcall FormHide(TObject *Sender);
+	void __fastcall HatchClick(TObject *Sender);
 	void __fastcall tmrAnimateBackgroundTimer(TObject *Sender);
 	void __fastcall imgContGameClick(TObject *Sender);
 	void __fastcall imgTakeAMoneyClick(TObject *Sender);
 
 private: // User declarations
-    void SetLabel(TLabel **, int, int, int, int, int, String);
+	void SetLabel(shared_ptr<TLabel>, int, int, int, int, String);
 
 public: // User declarations
-    __fastcall TF(TComponent *Owner);
+	__fastcall TF(TComponent *Owner);
 
-    typedef enum {
-        mRoundQuestion, // задаётся вопрос раунда
-            mRoundChoosePlayer, // задающий участник должен выбрать отвечающего игрока
-            mRoundPlayerChoosen, // отвечающий игрок выбран
-            mRoundAnswering, // ответы показны, игрок даёт ответ
-            mRoundAnswerLocked, // ответ принят, идёт проверка ответа
-            mRoundShowCorrectAns, // показ верного ответа, перечисление денег
-            mRoundMomentOfTruth = 7, // «момент истины» для игрока после остановки механизма
-            mRoundNoQuestions, // вопросы раунда закончились, определяется явный лидер
-            mRoundSuddenDeath, // один из игроков (кроме спасённого) покидает игру
-            mRoundEndOfCurrRound, // конец текущего раунда
-            mRoundNewRound, // объявление нового раунда
-            mRoundStartNewRound, // начало нового раунда
-        // состояния игры в финальном раунде
-            mFinalStartNewRound = 20, // начало финального раунда или отрезка финала
-            mFinalQuestion, // задаётся вопрос стоимостью $amount рублей
-            mFinalAnswering, // игрок отвечает на вопрос финала
-            mFinalAnswerLocked, // игрок даёт ответ на вопрос и он проверяется
-            mFinalGiveMoney, // в случае верного ответа игрок получает деньги
-            mFinalMomentOfTruth, // «%s люков из 6 открываются автоматически» ©
-            mFinalPlayerSave, // игрок остался на площадке игры после открытия люков
-            mFinalPlayerFall, // игрок провалился
-            mFinalEndOfGame, // игра закончена; выигрыш игрока - $amount рублей
+	typedef enum {
+		mRoundQuestion, // Р·Р°РґР°С‘С‚СЃСЏ РІРѕРїСЂРѕСЃ СЂР°СѓРЅРґР°
+			mRoundChoosePlayer, // Р·Р°РґР°СЋС‰РёР№ СѓС‡Р°СЃС‚РЅРёРє РґРѕР»Р¶РµРЅ РІС‹Р±СЂР°С‚СЊ РѕС‚РІРµС‡Р°СЋС‰РµРіРѕ РёРіСЂРѕРєР°
+			mRoundPlayerChoosen, // РѕС‚РІРµС‡Р°СЋС‰РёР№ РёРіСЂРѕРє РІС‹Р±СЂР°РЅ
+			mRoundAnswering, // РѕС‚РІРµС‚С‹ РїРѕРєР°Р·РЅС‹, РёРіСЂРѕРє РґР°С‘С‚ РѕС‚РІРµС‚
+			mRoundAnswerLocked, // РѕС‚РІРµС‚ РїСЂРёРЅСЏС‚, РёРґС‘С‚ РїСЂРѕРІРµСЂРєР° РѕС‚РІРµС‚Р°
+			mRoundShowCorrectAns, // РїРѕРєР°Р· РІРµСЂРЅРѕРіРѕ РѕС‚РІРµС‚Р°, РїРµСЂРµС‡РёСЃР»РµРЅРёРµ РґРµРЅРµРі
+			mRoundMomentOfTruth = 7, // В«РјРѕРјРµРЅС‚ РёСЃС‚РёРЅС‹В» РґР»СЏ РёРіСЂРѕРєР° РїРѕСЃР»Рµ РѕСЃС‚Р°РЅРѕРІРєРё РјРµС…Р°РЅРёР·РјР°
+			mRoundNoQuestions, // РІРѕРїСЂРѕСЃС‹ СЂР°СѓРЅРґР° Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ, РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ СЏРІРЅС‹Р№ Р»РёРґРµСЂ
+			mRoundSuddenDeath, // РѕРґРёРЅ РёР· РёРіСЂРѕРєРѕРІ (РєСЂРѕРјРµ СЃРїР°СЃС‘РЅРЅРѕРіРѕ) РїРѕРєРёРґР°РµС‚ РёРіСЂСѓ
+			mRoundEndOfCurrRound, // РєРѕРЅРµС† С‚РµРєСѓС‰РµРіРѕ СЂР°СѓРЅРґР°
+			mRoundNewRound, // РѕР±СЉСЏРІР»РµРЅРёРµ РЅРѕРІРѕРіРѕ СЂР°СѓРЅРґР°
+			mRoundStartNewRound, // РЅР°С‡Р°Р»Рѕ РЅРѕРІРѕРіРѕ СЂР°СѓРЅРґР°
+		// СЃРѕСЃС‚РѕСЏРЅРёСЏ РёРіСЂС‹ РІ С„РёРЅР°Р»СЊРЅРѕРј СЂР°СѓРЅРґРµ
+            mFinalStartNewRound = 20, // РЅР°С‡Р°Р»Рѕ С„РёРЅР°Р»СЊРЅРѕРіРѕ СЂР°СѓРЅРґР° РёР»Рё РѕС‚СЂРµР·РєР° С„РёРЅР°Р»Р°
+            mFinalQuestion, // Р·Р°РґР°С‘С‚СЃСЏ РІРѕРїСЂРѕСЃ СЃС‚РѕРёРјРѕСЃС‚СЊСЋ $amount СЂСѓР±Р»РµР№
+            mFinalAnswering, // РёРіСЂРѕРє РѕС‚РІРµС‡Р°РµС‚ РЅР° РІРѕРїСЂРѕСЃ С„РёРЅР°Р»Р°
+            mFinalAnswerLocked, // РёРіСЂРѕРє РґР°С‘С‚ РѕС‚РІРµС‚ РЅР° РІРѕРїСЂРѕСЃ Рё РѕРЅ РїСЂРѕРІРµСЂСЏРµС‚СЃСЏ
+            mFinalGiveMoney, // РІ СЃР»СѓС‡Р°Рµ РІРµСЂРЅРѕРіРѕ РѕС‚РІРµС‚Р° РёРіСЂРѕРє РїРѕР»СѓС‡Р°РµС‚ РґРµРЅСЊРіРё
+            mFinalMomentOfTruth, // В«%s Р»СЋРєРѕРІ РёР· 6 РѕС‚РєСЂС‹РІР°СЋС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРёВ» В©
+            mFinalPlayerSave, // РёРіСЂРѕРє РѕСЃС‚Р°Р»СЃСЏ РЅР° РїР»РѕС‰Р°РґРєРµ РёРіСЂС‹ РїРѕСЃР»Рµ РѕС‚РєСЂС‹С‚РёСЏ Р»СЋРєРѕРІ
+            mFinalPlayerFall, // РёРіСЂРѕРє РїСЂРѕРІР°Р»РёР»СЃСЏ
+            mFinalEndOfGame, // РёРіСЂР° Р·Р°РєРѕРЅС‡РµРЅР°; РІС‹РёРіСЂС‹С€ РёРіСЂРѕРєР° - $amount СЂСѓР±Р»РµР№
         }
 
     ModesOfGame;
-    ModesOfGame ModeOfGame; // режимы игры (последовательность игровых действий)
-
-#define COUNT_PLAYERS 5
+    ModesOfGame ModeOfGame; // СЂРµР¶РёРјС‹ РёРіСЂС‹ (РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ РёРіСЂРѕРІС‹С… РґРµР№СЃС‚РІРёР№)
 
     int answer;
     int Reward;
 
     void TransferMoney();
 
-    int money[COUNT_PLAYERS]; // деньги игроков
-    int pulse[COUNT_PLAYERS]; // Пульсации кровяного давления
+    int money[COUNT_PLAYERS]; // РґРµРЅСЊРіРё РёРіСЂРѕРєРѕРІ
+    int pulse[COUNT_PLAYERS]; // РџСѓР»СЊСЃР°С†РёРё РєСЂРѕРІСЏРЅРѕРіРѕ РґР°РІР»РµРЅРёСЏ
 
     int NumberOfQuestion;
     int Wait;
@@ -170,10 +172,10 @@ public: // User declarations
 
     void TransferMoneyFinal();
 
-    bool isPlayerInGame[COUNT_PLAYERS]; // массив, определяющий наличие игрока в игре
-    char FinalRound; // указывается номер финальной части раунда
+    bool isPlayerInGame[COUNT_PLAYERS]; // РјР°СЃСЃРёРІ, РѕРїСЂРµРґРµР»СЏСЋС‰РёР№ РЅР°Р»РёС‡РёРµ РёРіСЂРѕРєР° РІ РёРіСЂРµ
+    char FinalRound; // СѓРєР°Р·С‹РІР°РµС‚СЃСЏ РЅРѕРјРµСЂ С„РёРЅР°Р»СЊРЅРѕР№ С‡Р°СЃС‚Рё СЂР°СѓРЅРґР°
     int FinalRoundOfGame;
-    // финальный раунд игры (определяет стоимость финального вопроса)
+    // С„РёРЅР°Р»СЊРЅС‹Р№ СЂР°СѓРЅРґ РёРіСЂС‹ (РѕРїСЂРµРґРµР»СЏРµС‚ СЃС‚РѕРёРјРѕСЃС‚СЊ С„РёРЅР°Р»СЊРЅРѕРіРѕ РІРѕРїСЂРѕСЃР°)
 
     String FillChars(String str, int count);
     String GetStr(String str, int begin, int size);
@@ -185,9 +187,15 @@ public: // User declarations
     void ResizeAnswers();
 	void Choosen_Answer_Change_Position(int mode);
 	void FlashBackground(TColor NewStateColor);
+
+	// Р»РµР№Р±Р»С‹ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РґРµРЅРµРі РЅР° РїР°РЅРµР»Рё РёРіСЂРѕРєРѕРІ.
+	array<shared_ptr<TLabel>, COUNT_PLAYERS> lblMoney;
+	array<shared_ptr<TLabel>, COUNT_PLAYERS> lblPlayer;
+	array<shared_ptr<TLabel>, COUNT_PLAYERS> lblAnswers;
 };
 
 void LoadQuestionFromBase(String BaseName);
+
 // ---------------------------------------------------------------------------
 extern PACKAGE TF *F;
 // ---------------------------------------------------------------------------
