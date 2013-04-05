@@ -276,7 +276,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">2</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">445</VersionInfo>
+						<VersionInfo Name="Build">448</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -288,7 +288,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule studios</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">It&apos;s PC realisation of TV gameshow</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.2.0.445</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.2.0.448</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GNU GPLv3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

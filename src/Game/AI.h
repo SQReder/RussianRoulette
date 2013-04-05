@@ -15,7 +15,7 @@ class TBot { // класс ботов
 public:
     TBot();
 	void SetBotType(TBotType bottype);
-    int bAction;
+    TBotActionType bAction;
 
 	bool Get_Answer();
 

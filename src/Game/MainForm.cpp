@@ -145,7 +145,7 @@ shared_ptr<TLabel> createLabel() {
 	instance->Font->Name = "ARIAL";
 	instance->Font->Charset = TFontCharset(RUSSIAN_CHARSET);
 	instance->AutoSize = true;
-	instance->Font->Style = TFontStyles(fsBold);
+	instance->Font->Style = TFontStyles() << fsBold;
 	return shared_ptr<TLabel>(instance);
 }
 
@@ -174,14 +174,14 @@ void __fastcall TF::FormCreate(TObject *) {
 
 	for(int i = 0; i < COUNT_PLAYERS; ++i) {
 		lblMoney.at(i) = createLabel();
-		lblMoney.at(i)->Alignment = taLeftJustify;
-		lblMoney.at(i)->BringToFront();
+		lblMoney.at(i)->Alignment = taRightJustify;
 
 		lblPlayer.at(i)  = createLabel();
 		lblPlayer.at(i)->Alignment = taCenter;
 
 		lblAnswers.at(i) = createLabel();
-		lblAnswers.at(i)->Alignment = taRightJustify;
+		lblAnswers.at(i)->Alignment = taLeftJustify;
+		lblAnswers.at(i)->BringToFront();
 	}
 
 	for (int i = 0; i < 6; ++i) {

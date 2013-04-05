@@ -18,36 +18,31 @@
 // ---------------------------------------------------------------------------
 #include "AI.h"
 #include "pch.h"
-const int BotBrain[6] = {
-    0, 30, 33, 70, 8, 100
-};
-const int BotIdent[6] = {
-    0, 10, 20, 30, 25, 5
-};
+array<int, 6> BotBrain = { 0, 30, 33, 70, 8, 100 };
+array<int, 6> BotIdent = { 0, 10, 20, 30, 25, 5 };
 
 // -----------------------------------------------------------------------------
 TBot::TBot() {
     bBrain = 0;
 	bIdentity = 0;
-	bAction = 0;
+	bAction = baStoppingMech;
 }
 
 // -----------------------------------------------------------------------------
 void TBot::SetBotType(TBotType BotType) {
-    bBrain = BotBrain[BotType];
-    bIdentity = BotIdent[BotType];
+	bBrain = BotBrain.at(BotType);
+	bIdentity = BotIdent.at(BotType);
 };
 
 // -----------------------------------------------------------------------------
 bool TBot::Get_Answer() {
-    bool answer = false;
     // если бот знает ответ на вопрос, или ему помогла интуиция
     if (random(100) <= bBrain || random(100) <= bIdentity) {
         // отвечает верно
-        answer = true;
+        return true;
     }
 
     // иначе ошибается
-    return answer;
+    return false;
 }
 // -----------------------------------------------------------------------------

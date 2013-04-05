@@ -25,23 +25,19 @@
 #include "audio.h"
 #include "pch.h"
 
-using namespace std;
-using boost::shared_ptr;
-
 const String extention = ".ogg";
 const String sounds_path = ".\\sounds\\";
 
 class Sound {
 public:
     Sound(String filename) {
-        mem = new TMemoryStream;
+        mem = shared_ptr<TMemoryStream>(new TMemoryStream());
         mem->LoadFromFile(sounds_path + filename + extention);
         stream = BASS_StreamCreateFile(1, mem->Memory, 0, mem->Size, 0);
     }
 
     ~Sound() {
         BASS_StreamFree(stream);
-        delete mem;
     }
 
     void Play() { BASS_ChannelPlay(stream, 1); }
@@ -52,7 +48,7 @@ public:
 
 private:
     HSTREAM stream;
-    TMemoryStream *mem;
+    shared_ptr<TMemoryStream> mem;
 };
 
 // ---------------------------------------------------------------------------
