@@ -31,8 +31,7 @@ public:
 };
 
 String FillChars(String str, int count);
-String ClearStr(String str);
-String GetStr(String str, int begin, int size);
+String ClearStr(const String& str);
 // ---------------------------------------------------------------------------
 
 const char *BaseDir = "base\\";
@@ -47,30 +46,27 @@ String FillChars(String str, int count) {
 }
 
 // ---------------------------------------------------------------------------
-String ClearStr(String str) {
-    String cl_str = "";
-    int i = 1;
+String ClearStr(const String& str) {
+	return str.SubString(0, str.Pos('|')-1);
+}
+// ===========================================================================
+QA parseQuestionData(const String& data) {
+	QA item;
+	item.Round = StrToInt(data.SubString(1, 1)); // суть номер раунда 1-4
 
-    while (str[i] != '|') {
-        cl_str += str[i];
-        if (i++ == str.Length()) {
-            break;
-        }
-    }
+	item.Question = ClearStr(data.SubString(2, 255)); // вопрос
 
-    return cl_str;
+	// варианты ответа
+	item.Answers[0] = ClearStr(data.SubString(257, 40));
+	item.Answers[1] = ClearStr(data.SubString(297, 40));
+	item.Answers[2] = ClearStr(data.SubString(337, 40));
+	item.Answers[3] = ClearStr(data.SubString(377, 40));
+	item.Answers[4] = ClearStr(data.SubString(417, 40));
+
+	item.TrueAnswer = StrToInt(data.SubString(457, 1));
+	return item;
 }
 
-// ---------------------------------------------------------------------------
-String GetStr(String str, int begin, int size) {
-    String ret = "";
-
-    for (int i = begin; i < begin + size; i++) {
-        ret += str[i];
-	}
-
-    return ret;
-}
 // ===========================================================================
 void QuestionBase::LoadFromFile(const String filename) {
 	questions.clear();
@@ -86,8 +82,9 @@ void QuestionBase::LoadFromFile(const String filename) {
 
     // открываем базу
     try {
-        TFileStream *stream = new TFileStream(BaseDir + filename, fmOpenRead);
-        // подготавливаем строку и считываем в нее количество вопросов в базе
+		shared_ptr<TMemoryStream> stream(new TMemoryStream);
+		stream->LoadFromFile(BaseDir + filename);
+		// подготавливаем строку и считываем в нее количество вопросов в базе
 		String tstr = "     "; // длина строки = количеству считываемых символов
         // считываем строку длиной в 10 байт, ибо юникод, а символов 5 =/
         stream->Read(&tstr[1], 10);
@@ -109,22 +106,9 @@ void QuestionBase::LoadFromFile(const String filename) {
 				str[i] = str[i] ^ (i % 7);
 			}
 
-			item.Round = GetStr(str, 1, 1)[1]; // суть номер раунда 1-4
 
-			item.Question = ClearStr(GetStr(str, 2, 255)); // вопрос
-
-			item.Answers[0] = ClearStr(GetStr(str, 257, 40));
-			// варианты ответа
-			item.Answers[1] = ClearStr(GetStr(str, 297, 40));
-			item.Answers[2] = ClearStr(GetStr(str, 337, 40));
-			item.Answers[3] = ClearStr(GetStr(str, 377, 40));
-			item.Answers[4] = ClearStr(GetStr(str, 417, 40));
-
-			item.TrueAnswer = StrToInt(GetStr(str, 457, 1));
-			// правильный ответ
-			questions.push_back(item);
+			questions.push_back(parseQuestionData(str));
 		}
-		stream->Free();
 	}
 	catch (...) {
 		ShowMessage("Ошибка загрузки базы вопросов: база с именем '" + filename + "' не существует!");
@@ -179,7 +163,7 @@ const size_t QuestionBase::GetRandomQuestionForRound(int round) {
 	bool wrongRound = false;
 	do {
 		rndq = random(max);
-		wrongRound == GetRound(rndq) != round;
+		wrongRound = GetRound(rndq) != round;
 		isUsed = (find(used.begin(), used.end(), rndq) != used.end());
 	}
 	while (wrongRound && isUsed);
