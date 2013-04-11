@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
 // Copyright (C) 2010-2013 Popovskiy Andrey
 // Copyright (C) 2010-2013 Boytsov Sergey
@@ -150,19 +150,18 @@ void load_final_question() {
 }
 
 // -----------------------------------------------------------------------------
-String myLowerCase(String str) {
-    const wchar_t upper[33] = L"АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-    const wchar_t lower[33] = L"абвгдеёжзиклмнопрстуфхцчшщъыьэюя";
-    wchar_t *ptr;
+String myLowerCase(const String& str) {
+	static const array<wchar_t, 33> upper = {L"АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"};
+	static const array<wchar_t, 33> lower = {L"абвгдеёжзиклмнопрстуфхцчшщъыьэюя"};
 
-    for (int i = 1; i <= str.Length(); i++) {
-        ptr = wcschr(upper, str[i]);
-        if (ptr) {
-            str[i] = lower[ptr - upper];
-        }
+	wstring wstr;
+	wstr = str.c_str();
+
+	for(unsigned i = 0; i != upper.size(); ++i) {
+		::replace(wstr.begin(), wstr.end(), upper[i], lower[i]);
     }
-
-    return str;
+	
+    return wstr.c_str();
 }
 
 // -----------------------------------------------------------------------------

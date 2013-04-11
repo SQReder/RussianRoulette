@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------
 // Russian Roulette is PC version of popular television game show.
 // Copyright (C) 2010-2013 Popovskiy Andrey
 // Copyright (C) 2010-2013 Boytsov Sergey
@@ -66,6 +66,19 @@ void ShiftHatches() {
 };
 
 // ---------------------------------------------------------------------------
+inline void LoadHatchStateImages() {
+	for (int i = 0; i < COUNT_HATCHES; i++) { // конструктор изображений состояний люков
+		h_state_img[LightColorsEnum(i)] = shared_ptr<TPicture>(new TPicture());
+	}
+
+	h_state_img[lcBlack]->LoadFromFile(hatchFilenames[0]);
+	h_state_img[lcBase]->LoadFromFile(hatchFilenames[1]);
+	h_state_img[lcBlue]->LoadFromFile(hatchFilenames[2]);
+	h_state_img[lcRed]->LoadFromFile(hatchFilenames[3]);
+	h_state_img[lcWhite]->LoadFromFile(hatchFilenames[4]);
+}
+
+// ---------------------------------------------------------------------------
 inline void InitializeHatches() {
 	for (int i = 0; i < COUNT_HATCHES; i++) {
 		h_state[i] = lcBase; // люки изначально закрыты
@@ -78,20 +91,8 @@ inline void InitializeHatches() {
 	ptrHatch[4] = F->imgHatch4->Picture;
 	ptrHatch[5] = F->imgHatch5->Picture;
 
+	LoadHatchStateImages();
 	MechanizmSetHatchesStates(h_state);
-}
-
-// ---------------------------------------------------------------------------
-inline void LoadHatchStateImages() {
-	for (int i = 0; i < COUNT_HATCHES; i++) { // конструктор изображений состояний люков
-		h_state_img[LightColorsEnum(i)] = shared_ptr<TPicture>(new TPicture());
-	}
-
-	h_state_img[lcBlack]->LoadFromFile(hatchFilenames[0]);
-	h_state_img[lcBase]->LoadFromFile(hatchFilenames[1]);
-	h_state_img[lcBlue]->LoadFromFile(hatchFilenames[2]);
-	h_state_img[lcRed]->LoadFromFile(hatchFilenames[3]);
-	h_state_img[lcWhite]->LoadFromFile(hatchFilenames[4]);
 }
 
 // ---------------------------------------------------------------------------
@@ -191,7 +192,8 @@ void ZeroRoundSpin() {
 	h_state.swap(framez[AnimationFrame]);
 
     AnimationFrame = ++AnimationFrame % 15;
-    CurrentHatch = 1 + AnimationFrame % 5;
+	CurrentHatch = 1 + AnimationFrame % 5;
+	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
@@ -402,13 +404,13 @@ void OpenHatches() // открытие люков
 	MechanizmSetHatchesStates(h_state);
 }
 
-void DoSpin(const RoundEnum round) {
+void DoRotating(const RoundEnum round) {
 	switch(round) {
 		case Zero:
-			ZeroRoundSpin();
+			ZeroRoundRotating();
 			break;
 		case First:
-			ZeroRoundRotating();
+			FirstRoundRotating();
 			break;
 		case Second:
 			SecondRoundRotating();

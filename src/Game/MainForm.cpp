@@ -118,7 +118,7 @@ void __fastcall TF::LoadGraphic() {
 
 	btnMechStop->Enabled = false;
 	CantFall = -1;
-	AnimationFrame = 1;
+	AnimationFrame = 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -252,7 +252,7 @@ void __fastcall TF::btnMechStopClick(TObject *) {
 	// ------------------
 
 	if (RoundOfGame == 0) {
-		DoSpin(Zero);
+		ZeroRoundSpin();
 	} else {
 		if (ModeOfGame != mRoundNoQuestions) {
 			OpenRandomHatches(RoundOfGame, ModeOfGame);
@@ -288,19 +288,19 @@ void __fastcall TF::tmrRotatorTimer(TObject *) {
 		SwitchesLights();
 	} else {
 		switch (RoundOfGame) {
-		case -1: DoSpin(Zero);
+		case -1: ZeroRoundSpin();
 			break;
 		case 0: ShiftHatches();
 			break;
-		case 1: DoSpin(First);
+		case 1: DoRotating(First);
 			break;
-		case 2: DoSpin(Second);
+		case 2: DoRotating(Second);
 			break;
-		case 3: DoSpin(Third);
+		case 3: DoRotating(Third);
 			break;
-		case 4: DoSpin(Fourth);
+		case 4: DoRotating(Fourth);
 			break;
-		case 5: DoSpin(Zero);
+		case 5: ZeroRoundSpin();
 			break;
 		}
 	}

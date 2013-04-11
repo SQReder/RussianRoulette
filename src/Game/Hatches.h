@@ -1,8 +1,4 @@
-// ---------------------------------------------------------------------------
-
-#ifndef HatchesH
-#define HatchesH
-// ---------------------------------------------------------------------------
+﻿#pragma once
 #include "pch.h"
 #include "MainForm.h"
 
@@ -45,7 +41,7 @@ public:
 void InitializeHatches();
 void ShiftHatches();
 
-void DoSpin(const RoundEnum round);
+void DoRotating(const RoundEnum round);
 void ZeroRoundSpin();
 void OpenRandomHatches(const int OpenHatches, int ModeOfGame);
 void UpdateHatches();
@@ -60,4 +56,3 @@ void LightAllHatchesWith(HatchLightState light);
 void ChangeHatchesLight(HatchLightState exclude, HatchLightState to);
 
 extern int AnimationFrame;
-#endif
