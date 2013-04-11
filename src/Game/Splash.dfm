@@ -7,14 +7,11 @@ object SplashForm: TSplashForm
   BorderStyle = bsNone
   ClientHeight = 600
   ClientWidth = 800
-  Color = clBlack
+  Color = 526344
   DoubleBuffered = True
   ParentFont = True
-  GlassFrame.Enabled = True
-  GlassFrame.SheetOfGlass = True
   OldCreateOrder = False
   Position = poScreenCenter
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object imgSplash: TImage

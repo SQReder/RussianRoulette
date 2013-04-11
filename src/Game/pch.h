@@ -17,10 +17,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
 
-#ifndef pch_H
-#define pch_H
-#include <stdlib.h>
-#include <tchar.h>
+#pragma once
+
+const int COUNT_PLAYERS = 5;
+const int COUNT_HATCHES = 6;
+const int COUNT_ANSWER_NUMBERS = 5;
+
 #include <map>
 #include <vector>
 #include <algorithm>
@@ -45,5 +47,3 @@ using namespace boost;
 #include <StdCtrls.hpp>
 
 #include <assert.h>
-
-#endif

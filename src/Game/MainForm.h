@@ -25,10 +25,6 @@
 #include <pngimage.hpp>
 #include <StdCtrls.hpp>
 
-const int COUNT_PLAYERS = 5;
-const int COUNT_HATCHES = 6;
-const int COUNT_ANSWERS = 5;
-
 // -----------------------------------------------------------------------------
 class TF : public TForm {
 __published: // IDE-managed Components
@@ -172,7 +168,7 @@ public: // User declarations
 
     void TransferMoneyFinal();
 
-    bool isPlayerInGame[COUNT_PLAYERS]; // массив, определяющий наличие игрока в игре
+    array<bool, COUNT_PLAYERS> isPlayerInGame; // массив, определяющий наличие игрока в игре
     char FinalRound; // указывается номер финальной части раунда
     int FinalRoundOfGame;
     // финальный раунд игры (определяет стоимость финального вопроса)

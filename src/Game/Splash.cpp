@@ -70,50 +70,50 @@ void CheckSystemIntegrity() {
         CheckFile("data\\splash-" + IntToStr(i) + ".png");
     }
 
-    CheckFile("data\\final.png");
-    CheckFile("data\\red.png");
-    CheckFile("data\\base.png");
-    CheckFile("data\\blue.png");
-    CheckFile("data\\white.png");
-    CheckFile("data\\black.png");
-    CheckFile("data\\place.png");
-    CheckFile("data\\place_red_zero.png");
-    CheckFile("data\\menu_bg.jpg");
+	CheckFile("data\\final.png");
+	CheckFile("data\\red.png");
+	CheckFile("data\\base.png");
+	CheckFile("data\\blue.png");
+	CheckFile("data\\white.png");
+	CheckFile("data\\black.png");
+	CheckFile("data\\place.png");
+	CheckFile("data\\place_red_zero.png");
+	CheckFile("data\\menu_bg.jpg");
 
-    CheckFile("sounds\\question_clear.ogg");
-    CheckFile("sounds\\rr_20sec.ogg");
-    CheckFile("sounds\\rr_bg2.ogg");
-    CheckFile("sounds\\rr_bg3.ogg");
-    CheckFile("sounds\\rr_bg4.ogg");
-    CheckFile("sounds\\rr_choosen.ogg");
-    CheckFile("sounds\\rr_closing.ogg");
-    CheckFile("sounds\\rr_endround.ogg");
-    CheckFile("sounds\\rr_fall.ogg");
-    CheckFile("sounds\\rr_fall_with_host.ogg");
-    CheckFile("sounds\\rr_false.ogg");
-    CheckFile("sounds\\rr_final.ogg");
-    CheckFile("sounds\\rr_intro_Take_2.ogg");
-    CheckFile("sounds\\rr_intro.ogg");
-    CheckFile("sounds\\rr_mexclose.ogg");
-    CheckFile("sounds\\rr_mexopen.ogg");
-    CheckFile("sounds\\rr_money.ogg");
-    CheckFile("sounds\\rr_openhole.ogg");
-    CheckFile("sounds\\rr_openround.ogg");
-    CheckFile("sounds\\rr_players.ogg");
-    CheckFile("sounds\\rr_question.ogg");
-    CheckFile("sounds\\rr_round.ogg");
-    CheckFile("sounds\\rr_save.ogg");
-    CheckFile("sounds\\rr_true.ogg");
+	CheckFile("sounds\\question_clear.ogg");
+	CheckFile("sounds\\rr_20sec.ogg");
+	CheckFile("sounds\\rr_bg2.ogg");
+	CheckFile("sounds\\rr_bg3.ogg");
+	CheckFile("sounds\\rr_bg4.ogg");
+	CheckFile("sounds\\rr_choosen.ogg");
+	CheckFile("sounds\\rr_closing.ogg");
+	CheckFile("sounds\\rr_endround.ogg");
+	CheckFile("sounds\\rr_fall.ogg");
+	CheckFile("sounds\\rr_fall_with_host.ogg");
+	CheckFile("sounds\\rr_false.ogg");
+	CheckFile("sounds\\rr_final.ogg");
+	CheckFile("sounds\\rr_intro_Take_2.ogg");
+	CheckFile("sounds\\rr_intro.ogg");
+	CheckFile("sounds\\rr_mexclose.ogg");
+	CheckFile("sounds\\rr_mexopen.ogg");
+	CheckFile("sounds\\rr_money.ogg");
+	CheckFile("sounds\\rr_openhole.ogg");
+	CheckFile("sounds\\rr_openround.ogg");
+	CheckFile("sounds\\rr_players.ogg");
+	CheckFile("sounds\\rr_question.ogg");
+	CheckFile("sounds\\rr_round.ogg");
+	CheckFile("sounds\\rr_save.ogg");
+	CheckFile("sounds\\rr_true.ogg");
 
-    if (nonExisten->Count > 0) {
-        FatalError = true;
-        nonExisten->SaveToFile("nonExistent.txt");
-        MessageDlg("ЕГГОГ! Некоторых файлов, необходимых для запуска игры, нет на своих местах.\n"
-            "Подробности в файле nonExistent.txt", mtError, TMsgDlgButtons() << mbOK, 0);
-        Application->Terminate();
-    }
+	if (nonExisten->Count > 0) {
+		FatalError = true;
+		nonExisten->SaveToFile("nonExistent.txt");
+		MessageDlg("ЕГГОГ! Некоторых файлов, необходимых для запуска игры, нет на своих местах.\n"
+			"Подробности в файле nonExistent.txt", mtError, TMsgDlgButtons() << mbOK, 0);
+		Application->Terminate();
+	}
 
-    nonExisten->Free();
+	nonExisten->Free();
 }
 
 void ShowState(String state) { SplashForm->lblLoadState->Caption = state; }
@@ -124,56 +124,22 @@ void Loader() {
 
     ShowState("Проверка ресурсов игры…");
     CheckSystemIntegrity();
-    UpdateProgress();
-    ShowState("Загрузка графики…");
+	UpdateProgress();
+
+	ShowState("Загрузка графики…");
 	GfxCache::Instance();
 	UpdateProgress();
-    ShowState("Загрузка аудио…");
-    init_audio(Application->Handle);
-    UpdateProgress();
-    ShowState("Загрузка настроек игры…");
-    TSettings::Instance()->LoadFromFile(".\\settings.cfg");
+
+	ShowState("Загрузка аудио…");
+	init_audio(Application->Handle);
 	UpdateProgress();
-    ShowState("Загрузка завершена!");
-    SplashForm->tmrSplash->Enabled = true;
-}
 
-// ---------------------------------------------------------------------------
+	ShowState("Загрузка настроек игры…");
+	TSettings::Instance()->LoadFromFile(".\\settings.cfg");
+	UpdateProgress();
 
-BOOL OSIsWin7() {
-    EZDBGONLYLOGGERSTREAM << endl;
-    OSVERSIONINFOEX osvi;
-
-    // Пытаемся вызвать GetVersionEx используя структуру OSVERSIONINFOEX.
-    // В случае ошибки пытаемся проделать тоже самое со структурой OSVERSIONINFO.
-    ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-
-    if (!GetVersionEx((OSVERSIONINFO *) &osvi)) {
-        // Если OSVERSIONINFOEX не работает, то используем OSVERSIONINFO.
-        osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-        if (!GetVersionEx((OSVERSIONINFO *) &osvi)) {
-            return FALSE;
-        }
-    }
-
-    EZDBGONLYLOGGERSTREAM << "OS version " << osvi.dwMajorVersion << "." << osvi.dwMinorVersion << endl;
-    int ScreenWidth = Screen->Width;
-    int ScreenHeight = Screen->Height;
-    EZDBGONLYLOGGERSTREAM << "Desktop resolution " << ScreenWidth << "x" << ScreenHeight << endl;
-
-    return osvi.dwMajorVersion >= 6;
-}
-
-// ---------------------------------------------------------------------------
-void __fastcall TSplashForm::FormCreate(TObject *) {
-    if (OSIsWin7()) {
-        BorderStyle = bsToolWindow;
-    } else {
-        BorderStyle = bsNone;
-        Color = clBlack;
-        lblLoadState->Font->Color = clWhite;
-    };
+	ShowState("Загрузка завершена!");
+	SplashForm->tmrSplash->Enabled = true;
 }
 
 // ---------------------------------------------------------------------------

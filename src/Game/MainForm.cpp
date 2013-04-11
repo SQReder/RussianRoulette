@@ -71,7 +71,7 @@ int LeaderPlayerAtFinal;
 // порядковый индекс игрока, прошедшего в финал (необходимо для принятия решений)
 int RoundOfGame; // указывается номер текущего раунда (влияет на механизм)
 
-int opened_now[6];
+array<bool, COUNT_HATCHES> opened_now;
 // указывает какие люки будут открыты после остановки механизма
 int TempRoundOfGame;
 int chooseplayer;
@@ -83,7 +83,7 @@ TColor BgStateColor; // добавим маленько эпичности пр�
 
 TImage *imgPlayer[COUNT_PLAYERS];
 TImage *imgHatch[COUNT_HATCHES];
-TImage *imgNumber[COUNT_ANSWERS];
+TImage *imgNumber[COUNT_ANSWER_NUMBERS];
 
 array<TBot, 5> bot;
 void SetQuestionsMaximum(int FirstRound, int SecondRound, int ThirdRound, int FouthRound);
@@ -108,7 +108,7 @@ void __fastcall TF::LoadGraphic() {
 
 	edFinalAnswer->Visible = false;
 
-	for (int i = 0; i < COUNT_ANSWERS; ++i) {
+	for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
 		imgNumber[i]->Visible = false;
 	}
 
@@ -219,8 +219,7 @@ void __fastcall TF::btnMechStartClick(TObject *) {
 // ---------------------------------------------------------------------------
 void SwitchOffMech_WhiteLights() {
 	F->tmrRotator->Enabled = false;
-	LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 4);
-//    MechanizmSetHatchesStates();
+	LightAllHatchesWith(lcWhite);
 }
 
 // ---------------------------------------------------------------------------
@@ -324,7 +323,7 @@ void __fastcall TF::tmrRotatorTimer(TObject *) {
 		{
 			tmrRotator->Enabled = false; // вырубаем таймер
 			if (RoundOfGame == 0) {
-				LightHatchesW(2, 4);
+				ChangeHatchesLight(lcBlue, lcWhite);
 				if (TempRoundOfGame != 0) {
 					RoundOfGame = TempRoundOfGame;
 				} else {
@@ -635,7 +634,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 		{
 			if (Wait == WaitForFate) {
 				if (opened_now[chooseplayer] == 1) {
-					OpenHatches();
+					OpenHatchNow(chooseplayer);
 					PlaySound(rr_fall);
 					int chooseplayer_debug_index = chooseplayer - 1;
 					EZDBGONLYLOGGERSTREAM << "mRoundMomentOfTruth: chooseplayer = " << chooseplayer <<
@@ -660,14 +659,14 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 					imgTicker->Visible = false;
 					imgPulseBar->Visible = false;
 					imgTotalPrize->Visible = false;
-					for (int i = 0; i < COUNT_ANSWERS; i++) {
+					for (int i = 0; i < COUNT_ANSWER_NUMBERS; i++) {
 						/* is it necessary? may be we are wrote wrong arcitecture? */
 						if (lblAnswers[i] != NULL) {
 							lblAnswers[i]->Visible = false;
 						}
 					}
 					imgPlayer[chooseplayer - 1]->Visible = false;
-					for (int i = 0; i < COUNT_ANSWERS; ++i) {
+					for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
 						imgNumber[i]->Visible = false;
 					}
 					imgChoosenAnswer->Visible = false;
@@ -761,7 +760,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 		{
 			if (Wait == WaitForFate) {
 				int NumberOfPlayers = 0;
-				OpenRndHatches();
+				OpenHatches();
 				PlaySound(rr_fall);
 				int chooseplayer_debug_index = chooseplayer - 1;
 				EZDBGONLYLOGGERSTREAM << "mRoundSuddenDeath: chooseplayer = " << chooseplayer << "; isPlayerInGame[" <<
@@ -796,7 +795,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 	case mRoundEndOfCurrRound: {
 			if (Wait == 10) {
 				PlaySound(rr_endround);
-				LightHatchesW(2, 0);
+				ChangeHatchesLight(lcBlue, lcBlack);
 				Wait = 0;
 				RoundOfGame++ ;
 				if (RoundOfGame != 5) {
@@ -814,7 +813,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 			if (Wait == 5) {
 				PlaySound(rr_round);
 				imgSplash->Visible = true;
-				LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 2);
+				LightAllHatchesWith(lcBlue);
 				imgPlace->Picture->Assign(gfx->Place.get());
 			}
 			if (Wait == 12) {
@@ -1161,7 +1160,7 @@ void TF::ResetForm() // возвращает форму в исходное по
 		lblAnswers[i]->Visible = false;
 	}
 
-	for (int i = 0; i < COUNT_ANSWERS; ++i) {
+	for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
 		imgNumber[i]->Visible = false;
 	}
 
@@ -1191,7 +1190,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 	switch (ModeOfGame) {
 	case mFinalStartNewRound: {
 			if (Wait == 5) {
-				for (int i = 0; i < COUNT_ANSWERS; ++i) {
+				for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
 					imgNumber[i]->Enabled = false;
 				}
 				CanChoose = 0;
@@ -1205,7 +1204,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				imgSplash->Picture->Assign(gfx->FinalSplash.get());
 				imgSplash->Visible = true;
 				CantFall = -1;
-				LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 2);
+				LightAllHatchesWith(lcBlue);
 				imgPlace->Picture->Assign(gfx->Place.get());
 				FinalRoundOfGame = 1;
 			}
@@ -1342,7 +1341,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				imgChAnsRight->Visible = true;
 				Reward = StrToInt(LabelMoney->Caption);
 				imgQuestion->Picture->Assign(gfx->quest_correct.get());
-				LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 4);
+				LightAllHatchesWith(lcWhite);
 				ModeOfGame = mFinalGiveMoney;
 			} else {
 				PlaySound(rr_false);
@@ -1363,7 +1362,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				imgChoosenAnswer->Visible = true;
 				imgChAnsLeft->Visible = true;
 				imgChAnsRight->Visible = true;
-				LightHatchesW(3, 4);
+				ChangeHatchesLight(lcRed, lcWhite);
 				ModeOfGame = mFinalMomentOfTruth;
 				WaitForFate = 10 + random(11);
 				imgQuestion->Picture->Assign(gfx->quest_incorrect.get());
@@ -1435,7 +1434,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 		} break;
 	case mFinalMomentOfTruth: { // игрок в ожидании решения судьбы
 			if (Wait == WaitForFate) {
-				OpenRndHatches();
+				OpenHatches();
 				if (opened_now[CurrentHatch] == 1) {
 					PlaySound(rr_fall);
 					for (int i = 0; i < COUNT_PLAYERS; i++)
@@ -1472,7 +1471,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 	case mFinalPlayerSave: {
 			if (Wait == 35) {
 				imgPlace->Picture->Assign(gfx->Place.get());
-				LightHatchesW(1, 0);
+				ChangeHatchesLight(lcBase, lcBlack);
 				imgChoosenAnswer->Visible = false;
 				imgTimer->Visible = false;
 				lblTimer->Visible = false;
@@ -1500,14 +1499,14 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 					Wait = 0;
 					ModeOfGame = mFinalEndOfGame;
 				} else {
-					LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 1);
+					LightAllHatchesWith(lcBase);
 					Wait = 10;
 					PlaySound(rr_bg5);
 					ModeOfGame = mFinalStartNewRound;
 				}
 			}
 			if (Wait == 35) {
-				LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 1);
+				LightAllHatchesWith(lcBase);
 				Wait = 10;
 				ModeOfGame = mFinalStartNewRound;
 			}
@@ -1515,9 +1514,9 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 	case mFinalPlayerFall:
 	case mFinalEndOfGame: {
 			if (Wait == 30 && ModeOfGame == mFinalPlayerFall) {
-				LightHatchesW(3, 0);
+				ChangeHatchesLight(lcRed, lcBlack);
 			} else if (Wait == 8 && ModeOfGame == mFinalEndOfGame) {
-				LightHatchesW(2, 3);
+				ChangeHatchesLight(lcBlue, lcRed);
 			}
 			imgTotalPrize->Top = imgBorder->Top + 30;
 			LabelMoney->Top = imgTotalPrize->Top + 10;
@@ -1580,7 +1579,7 @@ void __fastcall TF::btnContinueGameClick(TObject *) {
 
 	FinalRoundOfGame++ ;
 	Wait = 10;
-	LightHatchesW(LIGHT_ALL_HATCHES_BLUE, 1);
+	LightAllHatchesWith(lcBase);
 	ModeOfGame = mFinalStartNewRound;
 	RoundOfGame = -1;
 	btnGetMoney->Visible = false;
@@ -1604,7 +1603,7 @@ void __fastcall TF::FormClose(TObject *, TCloseAction &) {
 		lblMoney[i]->Visible = true;
 	}
 
-	for (int i = 0; i < COUNT_ANSWERS; ++i) {
+	for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
 		imgNumber[0]->Enabled = false;
 	}
 
@@ -1695,7 +1694,7 @@ void __fastcall TF::FormShow(TObject *) {
 	tmrSplash->Enabled = true;
 	PlaySound(rr_round);
 
-	for (int i = 0; i < COUNT_ANSWERS; ++i) {
+	for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
 		imgNumber[i]->Enabled = false;
 	}
 
@@ -2039,7 +2038,7 @@ void __fastcall TF::ControlLabelClick(TObject *Sender) {
 		F->Reward = 1000 * RoundOfGame;
 
 		// проверяем, какой именно ответ был выбран
-		for (int i = 0; i < COUNT_ANSWERS; ++i) {
+		for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
 			if (Sender == lblAnswers[i].get()) {
 				answer = i;
 			}
@@ -2124,7 +2123,7 @@ void TF::ResizeAnswers() {
 	}
 
 	int d = (RoundOfGame < 4) ? 2 : 3;
-	for (int i = 0; i < COUNT_ANSWERS && RoundOfGame > 1; ++i) {
+	for (int i = 0; i < COUNT_ANSWER_NUMBERS && RoundOfGame > 1; ++i) {
 		lblAnswers[i]->Top = imgQuestion->Top + 150 + 25 * (i / d);
 	}
 

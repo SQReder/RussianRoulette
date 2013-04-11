@@ -29,7 +29,7 @@
 			<Cfg_1>true</Cfg_1>
 			<Base>true</Base>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(Config)'=='Debug_with_NDEBUG' or '$(Cfg_3)'!=''">
+		<PropertyGroup Condition="'$(Config)'=='Debug with release logic' or '$(Cfg_3)'!=''">
 			<Cfg_3>true</Cfg_3>
 			<CfgParent>Cfg_1</CfgParent>
 			<Cfg_1>true</Cfg_1>
@@ -67,6 +67,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BCC_PCHInject>pch.h</BCC_PCHInject>
 			<UsingDelphiRTL>true</UsingDelphiRTL>
 			<IntermediateOutputDir>$(CONFIG)</IntermediateOutputDir>
 			<FinalOutputDir>..\..\bin</FinalOutputDir>
@@ -82,7 +83,6 @@
 			<VerInfo_MinorVer>2</VerInfo_MinorVer>
 			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
 			<BCC_PCHCache>true</BCC_PCHCache>
-			<BCC_PCHInject>pch.h</BCC_PCHInject>
 			<BCC_AsmToObj>true</BCC_AsmToObj>
 			<LinkPackageStatics>rtl.lib;vcl.lib;vclimg.lib;vclx.lib;Tee.lib;bcbie.lib</LinkPackageStatics>
 			<Multithreaded>true</Multithreaded>
@@ -251,7 +251,7 @@
 				<Key>Cfg_4</Key>
 				<CfgParent>Cfg_2</CfgParent>
 			</BuildConfiguration>
-			<BuildConfiguration Include="Debug_with_NDEBUG">
+			<BuildConfiguration Include="Debug with release logic">
 				<Key>Cfg_3</Key>
 				<CfgParent>Cfg_1</CfgParent>
 			</BuildConfiguration>
@@ -276,7 +276,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">2</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">448</VersionInfo>
+						<VersionInfo Name="Build">469</VersionInfo>
 						<VersionInfo Name="Debug">True</VersionInfo>
 						<VersionInfo Name="PreRelease">True</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -288,7 +288,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">QWERule studios</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">It&apos;s PC realisation of TV gameshow</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.2.0.448</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.2.0.469</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">GNU GPLv3</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>

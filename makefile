@@ -1,3 +1,6 @@
+all:
+	echo nothing
+
 clean:
 	del /s "*.#??" *.il? *.map *.tds *.pdi *.obj *.cgl *.*log*
 

@@ -16,13 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ---------------------------------------------------------------------------
-const array<const String, 6> hatchFilenames = {
+const array<const String, COUNT_HATCHES> hatchFilenames = {
 	"Data\\Black.png",
 	"Data\\Base.png",
 	"Data\\Blue.png",
 	"Data\\Red.png",
 	"Data\\White.png",
-	"Data\\Base.png",
 };
 
 #include "Hatches.h"
@@ -30,34 +29,34 @@ const array<const String, 6> hatchFilenames = {
 #pragma package(smart_init)
 
 using Graphics::TPicture;
-array<TPicture*, 6> hatch; // указатели на изображения люков на форме
-array<shared_ptr<TPicture>, 6> h_state_img; // изображения состояний люков
-array<int, 6> h_state; // текущее состояние люков
-int AnimationFrame; // определяет порядок анимации
+array<TPicture*, COUNT_HATCHES> ptrHatch; // СѓРєР°Р·Р°С‚РµР»Рё РЅР° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ Р»СЋРєРѕРІ РЅР° С„РѕСЂРјРµ
+map<LightColorsEnum, shared_ptr<TPicture> > h_state_img; // РёР·РѕР±СЂР°Р¶РµРЅРёСЏ СЃРѕСЃС‚РѕСЏРЅРёР№ Р»СЋРєРѕРІ
+array<HatchLightState, COUNT_HATCHES> h_state; // С‚РµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р»СЋРєРѕРІ
+int AnimationFrame; // РѕРїСЂРµРґРµР»СЏРµС‚ РїРѕСЂСЏРґРѕРє Р°РЅРёРјР°С†РёРё
 
 // from MainForm.cpp
-extern int opened_now[6];
+extern array<bool, COUNT_HATCHES> opened_now;
 extern int CantFall;
 extern int chooseplayer;
 
 // ---------------------------------------------------------------------------
-inline void LoadHatchImage(int index, int state) { // банальное копирование изображения состояния на форму
-	hatch[index]->Assign(h_state_img[state].get());
+inline void AssignHatchImage(int index, HatchLightState state) { // Р±Р°РЅР°Р»СЊРЅРѕРµ РєРѕРїРёСЂРѕРІР°РЅРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ СЃРѕСЃС‚РѕСЏРЅРёСЏ РЅР° С„РѕСЂРјСѓ
+	ptrHatch.at(index)->Assign(h_state_img[state].get());
 }
 
 // ---------------------------------------------------------------------------
-// приведение изображений на форме в соответствие с состояниями люков
-void MechanizmSetHatchesStates(array<int, 6>& states) {
-	for (int i = 0; i < 6; i++) {
-        LoadHatchImage(i, states[i]);
-    }
+// РїСЂРёРІРµРґРµРЅРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёР№ РЅР° С„РѕСЂРјРµ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ СЃ СЃРѕСЃС‚РѕСЏРЅРёСЏРјРё Р»СЋРєРѕРІ
+void MechanizmSetHatchesStates(array<HatchLightState, COUNT_HATCHES>& states) {
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+		AssignHatchImage(i, states[i]);
+	}
 }
 
 // ---------------------------------------------------------------------------
 void ShiftHatches() {
-	char tmp = h_state[5]; // проворот барабана осуществляется
-	h_state[5] = h_state[4]; // простым сдвигом массива на 1 элемент.
-	h_state[4] = h_state[3]; // по своей сути это shr(h_state[]);
+	HatchLightState tmp = h_state[5]; // РїСЂРѕРІРѕСЂРѕС‚ Р±Р°СЂР°Р±Р°РЅР° РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ
+	h_state[5] = h_state[4]; // РїСЂРѕСЃС‚С‹Рј СЃРґРІРёРіРѕРј РјР°СЃСЃРёРІР° РЅР° 1 СЌР»РµРјРµРЅС‚.
+	h_state[4] = h_state[3]; // РїРѕ СЃРІРѕРµР№ СЃСѓС‚Рё СЌС‚Рѕ shr(h_state[]);
 	h_state[3] = h_state[2];
 	h_state[2] = h_state[1];
 	h_state[1] = h_state[0];
@@ -68,137 +67,127 @@ void ShiftHatches() {
 
 // ---------------------------------------------------------------------------
 inline void InitializeHatches() {
-    for (int i = 0; i < 6; i++) {
-		h_state[i] = 1; // люки изначально закрыты
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+		h_state[i] = lcBase; // Р»СЋРєРё РёР·РЅР°С‡Р°Р»СЊРЅРѕ Р·Р°РєСЂС‹С‚С‹
 	}
 
-	hatch[0] = F->imgHatch0->Picture; // установка ссылок на изображения на форме
-    hatch[1] = F->imgHatch1->Picture;
-    hatch[2] = F->imgHatch2->Picture;
-    hatch[3] = F->imgHatch3->Picture;
-    hatch[4] = F->imgHatch4->Picture;
-	hatch[5] = F->imgHatch5->Picture;
+	ptrHatch[0] = F->imgHatch0->Picture; // СѓСЃС‚Р°РЅРѕРІРєР° СЃСЃС‹Р»РѕРє РЅР° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РЅР° С„РѕСЂРјРµ
+	ptrHatch[1] = F->imgHatch1->Picture;
+	ptrHatch[2] = F->imgHatch2->Picture;
+	ptrHatch[3] = F->imgHatch3->Picture;
+	ptrHatch[4] = F->imgHatch4->Picture;
+	ptrHatch[5] = F->imgHatch5->Picture;
 
 	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 inline void LoadHatchStateImages() {
-    for (int i = 0; i < 6; i++) { // конструктор изображений состояний люков
-		h_state_img[i] = shared_ptr<TPicture>(new TPicture());
-		h_state_img[i]->LoadFromFile(hatchFilenames[i]);
+	for (int i = 0; i < COUNT_HATCHES; i++) { // РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РёР·РѕР±СЂР°Р¶РµРЅРёР№ СЃРѕСЃС‚РѕСЏРЅРёР№ Р»СЋРєРѕРІ
+		h_state_img[LightColorsEnum(i)] = shared_ptr<TPicture>(new TPicture());
 	}
+
+	h_state_img[lcBlack]->LoadFromFile(hatchFilenames[0]);
+	h_state_img[lcBase]->LoadFromFile(hatchFilenames[1]);
+	h_state_img[lcBlue]->LoadFromFile(hatchFilenames[2]);
+	h_state_img[lcRed]->LoadFromFile(hatchFilenames[3]);
+	h_state_img[lcWhite]->LoadFromFile(hatchFilenames[4]);
 }
 
 // ---------------------------------------------------------------------------
 void OpenRandomHatches(const int OpenHatches, int ModeOfGame) {
-    assert(OpenHatches <= 6);
+	assert(OpenHatches <= COUNT_HATCHES);
 
-    // F->RndHatch = 0;
-    for (int i = 0; i < 6; i++) {
-        opened_now[i] = 0;
-    } // закрываем открытые люки,
+	// F->RndHatch = 0;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+		opened_now[i] = false;
+	} // Р·Р°РєСЂС‹РІР°РµРј РѕС‚РєСЂС‹С‚С‹Рµ Р»СЋРєРё,
 
-    do {
-        opened_now[random(6)] = 1; // и открываем случайный пока не откроем
+	do {
+		opened_now[random(COUNT_HATCHES)] = true; // Рё РѕС‚РєСЂС‹РІР°РµРј СЃР»СѓС‡Р°Р№РЅС‹Р№ РїРѕРєР° РЅРµ РѕС‚РєСЂРѕРµРј
 
-        if (CantFall != -1) {
-            opened_now[CantFall + 1] = 0;
-        } // и спасаем игрока же! ^_^"
+		if (CantFall != -1) {
+			opened_now[CantFall + 1] = false;
+		} // Рё СЃРїР°СЃР°РµРј РёРіСЂРѕРєР° Р¶Рµ! ^_^"
 
-        // закрываем люки, которые не могут открываться
-        for (int i = 0; i < 5; i++) { // те, что уже не в игре
-            if (!F->isPlayerInGame[i] && ModeOfGame == 8) {
-                opened_now[i + 1] = 0;
-            }
-        }
+		// Р·Р°РєСЂС‹РІР°РµРј Р»СЋРєРё, РєРѕС‚РѕСЂС‹Рµ РЅРµ РјРѕРіСѓС‚ РѕС‚РєСЂС‹РІР°С‚СЊСЃСЏ
+		for (int i = 0; i < COUNT_PLAYERS; i++) { // С‚Рµ, С‡С‚Рѕ СѓР¶Рµ РЅРµ РІ РёРіСЂРµ
+			if (!F->isPlayerInGame[i] && ModeOfGame == 8) {
+				opened_now[i + 1] = false;
+			}
+		}
 
-        // закрываем люк ведущего, если не финал еще или миниигра.
-        if (F->FinalRoundOfGame < 1) { /* && (F->GameMode != minigame) */
-            opened_now[0] = 0;
-        }
+		// Р·Р°РєСЂС‹РІР°РµРј Р»СЋРє РІРµРґСѓС‰РµРіРѕ, РµСЃР»Рё РЅРµ С„РёРЅР°Р» РµС‰Рµ РёР»Рё РјРёРЅРёРёРіСЂР°.
+		if (F->FinalRoundOfGame < 1) { /* && (F->GameMode != minigame) */
+			opened_now[0] = false;
+		}
 
-    }
-    while // нужное нам количество
-        (opened_now[0] + opened_now[1] + opened_now[2] + opened_now[3] + opened_now[4] + opened_now[5] < OpenHatches);
+	}
+	while // РЅСѓР¶РЅРѕРµ РЅР°Рј РєРѕР»РёС‡РµСЃС‚РІРѕ
+		(count(opened_now.begin(), opened_now.end(), true) < int(OpenHatches));
 
 }
 
 // ---------------------------------------------------------------------------
-void Hatches() { // инициализация механизма
-    randomize();
-    InitializeHatches();
+void Hatches() { // РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РјРµС…Р°РЅРёР·РјР°
+	randomize();
+	InitializeHatches();
     LoadHatchStateImages();
 	MechanizmSetHatchesStates(h_state);
 };
 
 // ---------------------------------------------------------------------------
-// на самом эта процедура выбирает случайного игрока в начале раунда
-// кто-бы мог подумать?!
-void ZeroRoundRotating() // установки для нулевого раунда
-{ // один люк подсвечен белым
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 1;
+// РЅР° СЃР°РјРѕРј СЌС‚Р° РїСЂРѕС†РµРґСѓСЂР° РІС‹Р±РёСЂР°РµС‚ СЃР»СѓС‡Р°Р№РЅРѕРіРѕ РёРіСЂРѕРєР° РІ РЅР°С‡Р°Р»Рµ СЂР°СѓРЅРґР°
+// РєС‚Рѕ-Р±С‹ РјРѕРі РїРѕРґСѓРјР°С‚СЊ?!
+void ZeroRoundRotating() // СѓСЃС‚Р°РЅРѕРІРєРё РґР»СЏ РЅСѓР»РµРІРѕРіРѕ СЂР°СѓРЅРґР°
+{ // РѕРґРёРЅ Р»СЋРє РїРѕРґСЃРІРµС‡РµРЅ Р±РµР»С‹Рј
+    for (int i = 0; i < COUNT_HATCHES; i++) {
+        h_state[i] = lcBase;
     }
-    int blah = random(6);
-    h_state[blah] = 4;
+    int blah = random(COUNT_HATCHES);
+    h_state[blah] = lcWhite;
     CurrentHatch = blah;
 }
 
 // ---------------------------------------------------------------------------
 void FirstRoundRotating() {
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 2;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+		h_state[i] = lcBlue;
     }
 
     switch (AnimationFrame++ % 2) {
-    case 0: h_state[CurrentHatch] = 4;
-        break;
-    case 1: h_state[CurrentHatch] = 3;
-        CurrentHatch++ ;
-        break;
+	case 0: h_state[CurrentHatch] = lcWhite;
+		break;
+	case 1: h_state[CurrentHatch] = lcRed;
+		CurrentHatch++ ;
+		break;
     default: AnimationFrame = 0;
         break;
     }
-    CurrentHatch = CurrentHatch % 6;
-}
-
-// ---------------------------------------------------------------------------
-void LightHatchesW(int bright, int light) {
-    // если 255 то заливаем все вторым цветом
-    if (bright == LIGHT_ALL_HATCHES_BLUE)
-        for (int i = 0; i < 6; i++) {
-            h_state[i] = light;
-        } else
-        for (int i = 0; i < 6; i++) {
-            if (h_state[i] != light) {
-                h_state[i] = bright;
-            }
-		}
-	MechanizmSetHatchesStates(h_state);
+    CurrentHatch = CurrentHatch % COUNT_HATCHES;
 }
 
 // ---------------------------------------------------------------------------
 void ZeroRoundSpin() {
-	static array<array<int, 6>, 15> framez = {{
-		{ 1, 4, 1, 1, 1, 1 },
-		{ 1, 4, 1, 1, 1, 1 },
-		{ 1, 4, 4, 1, 1, 1 },
-		{ 4, 4, 4, 1, 1, 1 },
-		{ 4, 4, 4, 4, 1, 1 },
-		{ 4, 4, 4, 4, 1, 1 },
-		{ 4, 1, 4, 4, 4, 1 },
-		{ 4, 1, 4, 4, 4, 1 },
-		{ 1, 1, 1, 4, 4, 4 },
-		{ 1, 1, 1, 4, 4, 4 },
-		{ 1, 1, 1, 1, 4, 4 },
-		{ 1, 1, 1, 1, 4, 4 },
-		{ 1, 1, 1, 1, 1, 4 },
-		{ 1, 1, 1, 1, 1, 4 },
-		{ 1, 1, 1, 1, 1, 4 }
+	static array<array<HatchLightState, COUNT_HATCHES>, 15> framez = {{
+		{ lcBase,  lcWhite, lcBase,  lcBase,  lcBase,  lcBase  },
+		{ lcBase,  lcWhite, lcBase,  lcBase,  lcBase,  lcBase  },
+		{ lcBase,  lcWhite, lcWhite, lcBase,  lcBase,  lcBase  },
+		{ lcWhite, lcWhite, lcWhite, lcBase,  lcBase,  lcBase  },
+		{ lcWhite, lcWhite, lcWhite, lcWhite, lcBase,  lcBase  },
+		{ lcWhite, lcWhite, lcWhite, lcWhite, lcBase,  lcBase  },
+		{ lcWhite, lcBase,  lcWhite, lcWhite, lcWhite, lcBase  },
+		{ lcWhite, lcBase,  lcWhite, lcWhite, lcWhite, lcBase  },
+		{ lcBase,  lcBase,  lcBase,  lcWhite, lcWhite, lcWhite },
+		{ lcBase,  lcBase,  lcBase,  lcWhite, lcWhite, lcWhite },
+		{ lcBase,  lcBase,  lcBase,  lcBase,  lcWhite, lcWhite },
+		{ lcBase,  lcBase,  lcBase,  lcBase,  lcWhite, lcWhite },
+		{ lcBase,  lcBase,  lcBase,  lcBase,  lcBase,  lcWhite },
+		{ lcBase,  lcBase,  lcBase,  lcBase,  lcBase,  lcWhite },
+		{ lcBase,  lcBase,  lcBase,  lcBase,  lcBase,  lcWhite }
 	}};
 
-	// copy one line of frames array to hatch states
+	// copy one line of frames array to ptrHatch states
 	h_state.swap(framez[AnimationFrame]);
 
     AnimationFrame = ++AnimationFrame % 15;
@@ -208,132 +197,150 @@ void ZeroRoundSpin() {
 // ---------------------------------------------------------------------------
 void SecondRoundRotating() {
 
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 2;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+        h_state[i] = lcBlue;
     }
 
     switch (AnimationFrame++ % 2) {
     case 0:
-        h_state[CurrentHatch] = 4;
-        h_state[(CurrentHatch + 3) % 6] = 4;
-        break;
-    case 1:
-        h_state[CurrentHatch] = 3;
-        h_state[(CurrentHatch + 3) % 6] = 3;
-        CurrentHatch++ ;
-        break;
-    default:
-        assert(false);
-        AnimationFrame = 0;
-        break;
-    }
-    CurrentHatch = CurrentHatch % 6;
+        h_state[CurrentHatch] = lcWhite;
+		h_state[(CurrentHatch + 3) % COUNT_HATCHES] = lcWhite;
+		break;
+	case 1:
+		h_state[CurrentHatch] = lcRed;
+		h_state[(CurrentHatch + 3) % COUNT_HATCHES] = lcRed;
+		CurrentHatch++ ;
+		break;
+	default:
+		assert(false);
+		AnimationFrame = 0;
+		break;
+	}
+    CurrentHatch = CurrentHatch % COUNT_HATCHES;
 }
 
 // ---------------------------------------------------------------------------
 void ThirdRoundRotating() {
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 2;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+        h_state[i] = lcBlue;
     }
 
     switch (AnimationFrame++ % 2) {
     case 0:
-        h_state[CurrentHatch] = 4;
-        h_state[(CurrentHatch + 2) % 6] = 4;
-        h_state[(CurrentHatch + 4) % 6] = 4;
+        h_state[CurrentHatch] = lcWhite;
+        h_state[(CurrentHatch + 2) % COUNT_HATCHES] = lcWhite;
+        h_state[(CurrentHatch + 4) % COUNT_HATCHES] = lcWhite;
         break;
     case 1:
-        h_state[CurrentHatch] = 3;
-        h_state[(CurrentHatch + 2) % 6] = 3;
-        h_state[(CurrentHatch + 4) % 6] = 3;
+        h_state[CurrentHatch] = lcRed;
+        h_state[(CurrentHatch + 2) % COUNT_HATCHES] = lcRed;
+        h_state[(CurrentHatch + 4) % COUNT_HATCHES] = lcRed;
         CurrentHatch++ ;
         break;
     }
-    CurrentHatch = CurrentHatch % 6;
+    CurrentHatch = CurrentHatch % COUNT_HATCHES;
 }
 
 // ---------------------------------------------------------------------------
 void FourthRoundRotating() {
 
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 2;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+        h_state[i] = lcBlue;
     }
 
     switch (AnimationFrame++ % 2) {
     case 0:
-        h_state[CurrentHatch] = 4;
-        h_state[(CurrentHatch + 1) % 6] = 4;
-        h_state[(CurrentHatch + 3) % 6] = 4;
-        h_state[(CurrentHatch + 4) % 6] = 4;
+        h_state[CurrentHatch] = lcWhite;
+        h_state[(CurrentHatch + 1) % COUNT_HATCHES] = lcWhite;
+        h_state[(CurrentHatch + 3) % COUNT_HATCHES] = lcWhite;
+        h_state[(CurrentHatch + 4) % COUNT_HATCHES] = lcWhite;
         break;
     case 1:
-        h_state[CurrentHatch] = 3;
-        h_state[(CurrentHatch + 1) % 6] = 3;
-        h_state[(CurrentHatch + 3) % 6] = 3;
-        h_state[(CurrentHatch + 4) % 6] = 3;
+        h_state[CurrentHatch] = lcRed;
+        h_state[(CurrentHatch + 1) % COUNT_HATCHES] = lcRed;
+        h_state[(CurrentHatch + 3) % COUNT_HATCHES] = lcRed;
+        h_state[(CurrentHatch + 4) % COUNT_HATCHES] = lcRed;
         CurrentHatch++ ;
         break;
     }
-    CurrentHatch = CurrentHatch % 6;
+    CurrentHatch = CurrentHatch % COUNT_HATCHES;
 }
 
 // ---------------------------------------------------------------------------
 void FifthRoundRotating() {
 
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 2;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+        h_state[i] = lcBlue;
     }
 
     switch (AnimationFrame++ % 2) {
     case 0:
-        h_state[CurrentHatch] = 4;
-        h_state[(CurrentHatch + 1) % 6] = 4;
-        h_state[(CurrentHatch + 2) % 6] = 4;
-        h_state[(CurrentHatch + 3) % 6] = 4;
-        h_state[(CurrentHatch + 4) % 6] = 4;
+        h_state[CurrentHatch] = lcWhite;
+        h_state[(CurrentHatch + 1) % COUNT_HATCHES] = lcWhite;
+        h_state[(CurrentHatch + 2) % COUNT_HATCHES] = lcWhite;
+        h_state[(CurrentHatch + 3) % COUNT_HATCHES] = lcWhite;
+        h_state[(CurrentHatch + 4) % COUNT_HATCHES] = lcWhite;
         break;
     case 1:
-        h_state[CurrentHatch] = 3;
-        h_state[(CurrentHatch + 1) % 6] = 3;
-        h_state[(CurrentHatch + 2) % 6] = 3;
-        h_state[(CurrentHatch + 3) % 6] = 3;
-        h_state[(CurrentHatch + 4) % 6] = 3;
+        h_state[CurrentHatch] = lcRed;
+        h_state[(CurrentHatch + 1) % COUNT_HATCHES] = lcRed;
+        h_state[(CurrentHatch + 2) % COUNT_HATCHES] = lcRed;
+        h_state[(CurrentHatch + 3) % COUNT_HATCHES] = lcRed;
+        h_state[(CurrentHatch + 4) % COUNT_HATCHES] = lcRed;
         CurrentHatch++ ;
         break;
     default:
         AnimationFrame = 0;
         break;
     }
-    CurrentHatch = CurrentHatch % 6;
+    CurrentHatch = CurrentHatch % COUNT_HATCHES;
+}
+
+// ---------------------------------------------------------------------------
+void LightAllHatchesWith(HatchLightState light) {
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+		h_state[i] = light;
+	}
+	MechanizmSetHatchesStates(h_state);
+}
+
+// ---------------------------------------------------------------------------
+void ChangeHatchesLight(HatchLightState exclude, HatchLightState to) {
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+		if (h_state[i] != exclude) {
+			h_state[i] = to;
+		}
+	}
+	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 void choosingplayer() {
-    h_state[chooseplayer] = 4;
+    h_state[chooseplayer] = lcWhite;
 	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 void before_spin_lights() {
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 4;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+        h_state[i] = lcWhite;
     }
     MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 void after_spin_lights() {
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 2;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+        h_state[i] = lcBlue;
     }
-    h_state[CurrentHatch] = 4;
-    h_state[chooseplayer] = 4;
+    h_state[CurrentHatch] = lcWhite;
+    h_state[chooseplayer] = lcWhite;
     MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 void Proverka2() {
-    h_state[chooseplayer] = 3;
+    h_state[chooseplayer] = lcRed;
     MechanizmSetHatchesStates(h_state);
     F->imgPlace->Picture->LoadFromFile("Data\\Place_red_zero.png");
 }
@@ -341,42 +348,42 @@ void Proverka2() {
 // ---------------------------------------------------------------------------
 void UpdateHatches() {
     if (F->FinalRoundOfGame > 0) {
-        for (int i = 0; i < 6; i++) {
-            h_state[i] = 1;
+		for (int i = 0; i < COUNT_HATCHES; i++) {
+            h_state[i] = lcBase;
         }
     } else {
-        for (int i = 0; i < 6; i++) {
-            h_state[i] = 2;
+		for (int i = 0; i < COUNT_HATCHES; i++) {
+            h_state[i] = lcBlue;
         }
     }
-    h_state[CurrentHatch] = 4;
+    h_state[CurrentHatch] = lcWhite;
 	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
-void OpenHatches() {
-    h_state[chooseplayer] = 0;
+void OpenHatchNow(int hatchToOpen) {
+    h_state[hatchToOpen] = lcBlack;
 	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
 void SwitchesLights() {
-    for (int i = 0; i < 6; i++) {
-        h_state[i] = 5;
+	for (int i = 0; i < COUNT_HATCHES; i++) {
+        h_state[i] = lcBase;
     }
 
     switch (AnimationFrame) {
     case 0: {
-            for (int i = 0; i < 5; i++) {
-                if ((F->isPlayerInGame[i]) && (CantFall != i)) {
-                    h_state[i + 1] = 4;
+			for (int i = 0; i < COUNT_PLAYERS; i++) {
+                if ((F->isPlayerInGame[i]) && (CantFall != int(i))) {
+                    h_state[i + 1] = lcWhite;
                 }
             }
         } break;
     case 1: {
-            for (int i = 0; i < 5; i++) {
-                if ((F->isPlayerInGame[i]) && (CantFall != i)) {
-                    h_state[i + 1] = 5;
+			for (int i = 0; i < COUNT_PLAYERS; i++) {
+				if ((F->isPlayerInGame[i]) && (CantFall != int(i))) {
+                    h_state[i + 1] = lcBase;
                 }
             }
         } break;
@@ -385,20 +392,20 @@ void SwitchesLights() {
     AnimationFrame = ++AnimationFrame % 2;
 }
 
-void OpenRndHatches() // открытие люков
+void OpenHatches() // РѕС‚РєСЂС‹С‚РёРµ Р»СЋРєРѕРІ
 {
-    for (int i = 0; i < 6; i++)
-        if (opened_now[i] == 1) {
-            h_state[i] = 0;
+	for (int i = 0; i < COUNT_HATCHES; i++)
+        if (opened_now[i] == true) {
+            h_state[i] = lcBlack;
             chooseplayer = i;
         }
-    MechanizmSetHatchesStates(h_state);
+	MechanizmSetHatchesStates(h_state);
 }
 
 void DoSpin(const RoundEnum round) {
 	switch(round) {
 		case Zero:
-			ZeroRoundRotating();
+			ZeroRoundSpin();
 			break;
 		case First:
 			ZeroRoundRotating();
@@ -416,4 +423,5 @@ void DoSpin(const RoundEnum round) {
 			FifthRoundRotating();
 			break;
 	}
+	MechanizmSetHatchesStates(h_state);
 }
