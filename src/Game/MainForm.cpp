@@ -211,7 +211,7 @@ void __fastcall TF::btnMechStartClick(TObject *) {
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	imgPlace->Picture->Assign(gfx->PlaceRedMechActive.get());
 	tmrRotator->Enabled = true;
-	PlaySound(rr_mexopen);
+	PlaySFX(rr_mexopen);
 	btnMechStart->Enabled = false;
 	btnMechStop->Enabled = true;
 }
@@ -230,7 +230,7 @@ void __fastcall TF::btnMechStopClick(TObject *) {
 	if (RoundOfGame == -1) {
 		RoundOfGame = 0;
 	}
-	PlaySound(rr_mexclose);
+	PlaySFX(rr_mexclose);
 	randomize();
 	WaitForFate = 5 + random(11);
 	imgPlace->Picture->Assign(gfx->PlaceRedZero.get());
@@ -331,7 +331,7 @@ void __fastcall TF::tmrRotatorTimer(TObject *) {
 					RoundOfGame = 1;
 				}
 			}
-			PlaySound(rr_endround);
+			PlaySFX(rr_endround);
 			switchonquestion();
 			ModeOfGame = mRoundQuestion;
 			if (TSettings::Instance()->HostMode == false) {
@@ -377,7 +377,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 				for (int i = 0; i < 5; i++) { // magic constant
 					indexes[i] = -1;
 					variants[i] = -1;
-					PlaySound(rr_nextq);
+					PlaySFX(rr_nextq);
 				}
 				tmrWaiting->Enabled = false;
 				showquestion();
@@ -443,7 +443,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 		if (Wait == 3) {
 			if (RoundOfGame != 4) {
 				spin_round_mode = 1;
-				PlaySound(rr_choosen);
+				PlaySFX(rr_choosen);
 			}
 			MoneyTransferMode = 'c';
 			LabelMoney->Caption = lblMoney[chooseplayer - 1]->Caption;
@@ -529,7 +529,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 				answer = 255;
 				// и включение возможности ответить
 				CanAnswer = 1;
-				PlaySound(rr_20sec);
+				PlaySFX(rr_20sec);
 				tmrTime->Enabled = true;
 			}
 			Wait = 0;
@@ -576,9 +576,9 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 		}
 		if (Wait == 8) {
 			if (answer != RandomPlace) {
-				PlaySound(rr_bg1);
+				PlaySFX(rr_bg1);
 			} else {
-				PlaySound((rrSoundEvent)((int)rr_bg1 + (2 + random(4))));
+				PlaySFX((rrSoundEvent)((int)rr_bg1 + (1 + random(4))));
 			}
 			if (!Settings->HostMode) {
 				tmrWaiting->Enabled = true;
@@ -599,7 +599,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 			Choosen_Answer_Change_Position(RandomPlace);
 			MoneyTransferMode = chooseplayer;
 			tmrMoney->Enabled = true;
-			PlaySound(rr_money);
+			PlaySFX(rr_money);
 		}
 		if (Wait == 7) {
 			tmrWaiting->Enabled = false;
@@ -635,7 +635,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 			if (Wait == WaitForFate) {
 				if (opened_now[chooseplayer] == 1) {
 					OpenHatchNow(chooseplayer);
-					PlaySound(rr_fall);
+					PlaySFX(rr_fall);
 					int chooseplayer_debug_index = chooseplayer - 1;
 					EZDBGONLYLOGGERSTREAM << "mRoundMomentOfTruth: chooseplayer = " << chooseplayer <<
 						"; isPlayerInGame[" << chooseplayer_debug_index << "] " << isPlayerInGame[chooseplayer - 1]
@@ -685,7 +685,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 					}
 					ModeOfGame = mRoundEndOfCurrRound;
 				} else {
-					PlaySound(rr_save);
+					PlaySFX(rr_save);
 					CurrentHatch = chooseplayer;
 					chooseplayer = 255;
 					imgPlace->Picture->Assign(gfx->Place.get());
@@ -701,7 +701,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 					Wait = 4;
 				}
 				ModeOfGame = mRoundQuestion;
-				PlaySound((rrSoundEvent)(rr_bg1 + 4 + random(2)));
+				PlaySFX((rrSoundEvent)(rr_bg1 + 3 + random(2)));
 			}
 			break;
 		}
@@ -761,7 +761,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 			if (Wait == WaitForFate) {
 				int NumberOfPlayers = 0;
 				OpenHatches();
-				PlaySound(rr_fall);
+				PlaySFX(rr_fall);
 				int chooseplayer_debug_index = chooseplayer - 1;
 				EZDBGONLYLOGGERSTREAM << "mRoundSuddenDeath: chooseplayer = " << chooseplayer << "; isPlayerInGame[" <<
 					chooseplayer_debug_index << "] " << isPlayerInGame[chooseplayer - 1] << "->0" << endl;
@@ -781,7 +781,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 				imgPlayer[chooseplayer - 1]->Visible = false;
 			}
 			if (Wait == (WaitForFate + 7)) {
-				PlaySound(rr_bg1);
+				PlaySFX(rr_bg1);
 				if (!Settings->HostMode) {
 					tmrWaiting->Enabled = true;
 					Wait = 0;
@@ -794,7 +794,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 		} break;
 	case mRoundEndOfCurrRound: {
 			if (Wait == 10) {
-				PlaySound(rr_endround);
+				PlaySFX(rr_endround);
 				ChangeHatchesLight(lcBlue, lcBlack);
 				Wait = 0;
 				RoundOfGame++ ;
@@ -811,14 +811,14 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 		} break;
 	case mRoundNewRound: {
 			if (Wait == 5) {
-				PlaySound(rr_round);
+				PlaySFX(rr_round);
 				imgSplash->Visible = true;
 				LightAllHatchesWith(lcBlue);
 				imgPlace->Picture->Assign(gfx->Place.get());
 			}
 			if (Wait == 12) {
 				imgSplash->Visible = false;
-				PlaySound(rr_openround);
+				PlaySFX(rr_openround);
 				Wait = 0;
 				ModeOfGame = mRoundStartNewRound;
 			}
@@ -861,7 +861,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 				switchonquestion();
 			}
 			if (Wait == 12) {
-				PlaySound(rr_bg4);
+				PlaySFX(rr_bg4);
 				if (!Settings->HostMode) {
 					Wait = 0;
 					tmrWaiting->Enabled = true;
@@ -983,7 +983,7 @@ void __fastcall TF::FormKeyDown(TObject *, WORD &Key, TShiftState Shift) {
 		if (RoundOfGame >= 1 && RoundOfGame <= 4) {
 			if (ModeOfGame == 3) {
 				CanAnswer = 1;
-				PlaySound(rr_20sec);
+				PlaySFX(rr_20sec);
 				tmrTime->Enabled = true;
 			} else {
 				tmrWaiting->Enabled = true;
@@ -1199,7 +1199,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 						LeaderPlayerAtFinal = i;
 					}
 				}
-				PlaySound(rr_final);
+				PlaySFX(rr_final);
 				hatches_enable_state(false);
 				imgSplash->Picture->Assign(gfx->FinalSplash.get());
 				imgSplash->Visible = true;
@@ -1233,7 +1233,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				imgQuestion->Visible = false;
 				LabelQuestion->Visible = false;
 				lblRightAnswer->Visible = false;
-				PlaySound(rr_nextq);
+				PlaySFX(rr_nextq);
 				if (Settings->PlayerType[LeaderPlayerAtFinal] == bbHuman) {
 					btnMechStart->Enabled = true;
 					imgLiver->Enabled = true;
@@ -1293,7 +1293,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				LabelMoney->Visible = true;
 			}
 			if (Wait == 8) {
-				PlaySound(rr_question);
+				PlaySFX(rr_question);
 				TimeOfQuestion = 10;
 				load_final_question();
 				lblTimer->Caption = IntToStr(TimeOfQuestion);
@@ -1312,7 +1312,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 			}
 			if (Wait == 13) {
 				tmrTime->Enabled = true;
-				PlaySound(rr_20sec);
+				PlaySFX(rr_20sec);
 				ModeOfGame = mFinalAnswering;
 				tmrWaitingFinal->Enabled = false;
 			}
@@ -1321,7 +1321,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 			edFinalAnswer->Visible = false;
 			StopSound(rr_20sec);
 			if (CheckAnswerAtFinalRound(edFinalAnswer->Text, NumberOfQuestion)) {
-				PlaySound(rr_true);
+				PlaySFX(rr_true);
 				lblRightAnswer->Top = imgQuestion->Top + 160;
 				lblRightAnswer->Height = 19;
 				lblRightAnswer->AutoSize = true;
@@ -1344,7 +1344,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				LightAllHatchesWith(lcWhite);
 				ModeOfGame = mFinalGiveMoney;
 			} else {
-				PlaySound(rr_false);
+				PlaySFX(rr_false);
 				lblRightAnswer->Top = imgQuestion->Top + 160;
 				lblRightAnswer->Height = 19;
 				lblRightAnswer->AutoSize = true;
@@ -1372,7 +1372,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 		} break;
 	case mFinalGiveMoney: {
 			if (Wait == 8) {
-				PlaySound(rr_bg3);
+				PlaySFX(rr_bg3);
 				MoneyTransferMode = 0;
 				tmrMoney->Enabled = true;
 			}
@@ -1436,7 +1436,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 			if (Wait == WaitForFate) {
 				OpenHatches();
 				if (opened_now[CurrentHatch] == 1) {
-					PlaySound(rr_fall);
+					PlaySFX(rr_fall);
 					for (int i = 0; i < COUNT_PLAYERS; i++)
 						if (isPlayerInGame[i]) {
 							lblPlayer[i]->Visible = false;
@@ -1462,7 +1462,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 					ModeOfGame = mFinalPlayerFall;
 					Wait = 23;
 				} else {
-					PlaySound(rr_notfall);
+					PlaySFX(rr_notfall);
 					ModeOfGame = mFinalPlayerSave;
 					Wait = 30;
 				}
@@ -1501,7 +1501,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				} else {
 					LightAllHatchesWith(lcBase);
 					Wait = 10;
-					PlaySound(rr_bg5);
+					PlaySFX(rr_bg5);
 					ModeOfGame = mFinalStartNewRound;
 				}
 			}
@@ -1524,7 +1524,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 			LabelMoney->Left = imgTotalPrize->Left + 9;
 			imgTotalPrize->Visible = true;
 			imgBorder->Visible = true;
-			PlaySound(rr_closing);
+			PlaySFX(rr_closing);
 			tmrWaitingFinal->Enabled = false;
 		} break;
 	}
@@ -1692,7 +1692,7 @@ void __fastcall TF::FormShow(TObject *) {
 
 	imgSplash->Visible = true;
 	tmrSplash->Enabled = true;
-	PlaySound(rr_round);
+	PlaySFX(rr_round);
 
 	for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
 		imgNumber[i]->Enabled = false;

@@ -40,15 +40,20 @@ public:
         BASS_StreamFree(stream);
     }
 
-    void Play() { BASS_ChannelPlay(stream, 1); }
+	void Play() { BASS_ChannelPlay(stream, 1); }
 
-    void Stop() { BASS_ChannelStop(stream); }
+	void PlayWithPos(int seconds) {
+		BASS_ChannelSetPosition(stream, BASS_ChannelSeconds2Bytes(stream, seconds), BASS_POS_BYTE);
+		Play();
+	}
 
-    void SetVolume(float volume) { BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, volume); }
+	void Stop() { BASS_ChannelStop(stream); }
+
+	void SetVolume(float volume) { BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, volume); }
 
 private:
-    HSTREAM stream;
-    shared_ptr<TMemoryStream> mem;
+	HSTREAM stream;
+	shared_ptr<TMemoryStream> mem;
 };
 
 // ---------------------------------------------------------------------------
@@ -57,45 +62,45 @@ map <rrSoundEvent, shared_ptr <Sound> > event_map;
 #define MAP_FILE_TO_EVENT(X) event_map[X] = shared_ptr <Sound> (new Sound(#X))
 
 void init_audio(HWND hwnd) {
-    if (!BASS_Init(-1, 44100, 0, hwnd, NULL)) {
-        __asm INT 3;
-    }
+	if (!BASS_Init(-1, 44100, 0, hwnd, NULL)) {
+		__asm INT 3;
+	}
 
-    MAP_FILE_TO_EVENT(Next_Question);
-    MAP_FILE_TO_EVENT(question_clear);
-    MAP_FILE_TO_EVENT(rr_20sec);
-    MAP_FILE_TO_EVENT(rr_bg1);
-    MAP_FILE_TO_EVENT(rr_bg2);
-    MAP_FILE_TO_EVENT(rr_bg3);
-    MAP_FILE_TO_EVENT(rr_bg4);
-    MAP_FILE_TO_EVENT(rr_bg5);
-    MAP_FILE_TO_EVENT(rr_choosen);
-    MAP_FILE_TO_EVENT(rr_closing);
-    MAP_FILE_TO_EVENT(rr_endround);
-    MAP_FILE_TO_EVENT(rr_fall);
-    MAP_FILE_TO_EVENT(rr_fall_with_host);
-    MAP_FILE_TO_EVENT(rr_false);
-    MAP_FILE_TO_EVENT(rr_final);
-    MAP_FILE_TO_EVENT(rr_intro_Take_2);
-    MAP_FILE_TO_EVENT(rr_intro);
-    MAP_FILE_TO_EVENT(rr_mexclose);
-    MAP_FILE_TO_EVENT(rr_mexopen);
-    MAP_FILE_TO_EVENT(rr_money);
-    MAP_FILE_TO_EVENT(rr_nextq);
-    MAP_FILE_TO_EVENT(rr_notfall);
-    MAP_FILE_TO_EVENT(rr_openhole);
-    MAP_FILE_TO_EVENT(rr_openround);
-    MAP_FILE_TO_EVENT(rr_players);
-    MAP_FILE_TO_EVENT(rr_question);
-    MAP_FILE_TO_EVENT(rr_round);
-    MAP_FILE_TO_EVENT(rr_save);
-    MAP_FILE_TO_EVENT(rr_true);
+	MAP_FILE_TO_EVENT(Next_Question);
+	MAP_FILE_TO_EVENT(question_clear);
+	MAP_FILE_TO_EVENT(rr_20sec);
+	MAP_FILE_TO_EVENT(rr_bg1);
+	MAP_FILE_TO_EVENT(rr_bg2);
+	MAP_FILE_TO_EVENT(rr_bg3);
+	MAP_FILE_TO_EVENT(rr_bg4);
+	MAP_FILE_TO_EVENT(rr_bg5);
+	MAP_FILE_TO_EVENT(rr_choosen);
+	MAP_FILE_TO_EVENT(rr_closing);
+	MAP_FILE_TO_EVENT(rr_endround);
+	MAP_FILE_TO_EVENT(rr_fall);
+	MAP_FILE_TO_EVENT(rr_fall_with_host);
+	MAP_FILE_TO_EVENT(rr_false);
+	MAP_FILE_TO_EVENT(rr_final);
+	MAP_FILE_TO_EVENT(rr_intro_Take_2);
+	MAP_FILE_TO_EVENT(rr_intro);
+	MAP_FILE_TO_EVENT(rr_mexclose);
+	MAP_FILE_TO_EVENT(rr_mexopen);
+	MAP_FILE_TO_EVENT(rr_money);
+	MAP_FILE_TO_EVENT(rr_nextq);
+	MAP_FILE_TO_EVENT(rr_notfall);
+	MAP_FILE_TO_EVENT(rr_openhole);
+	MAP_FILE_TO_EVENT(rr_openround);
+	MAP_FILE_TO_EVENT(rr_players);
+	MAP_FILE_TO_EVENT(rr_question);
+	MAP_FILE_TO_EVENT(rr_round);
+	MAP_FILE_TO_EVENT(rr_save);
+	MAP_FILE_TO_EVENT(rr_true);
 }
 
-void PlaySound(rrSoundEvent event) {
-    switch (event) {
-    case Next_Question: break;
-    case question_clear: break;
+void PlaySound(rrSoundEvent event, int startPosInSeconds) {
+	switch (event) {
+	case Next_Question: break;
+	case question_clear: break;
     case rr_20sec:
         event_map[rr_choosen]->Stop();
         event_map[rr_question]->Stop();
@@ -152,8 +157,17 @@ void PlaySound(rrSoundEvent event) {
         break;
     case rr_true: break;
     }
-    event_map[event]->Play();
+	if (startPosInSeconds <= 0) {
+		event_map[event]->Play();
+	}
+	else {
+       	event_map[event]->PlayWithPos(startPosInSeconds);
+    }
 }
+
+// алиасы для вызова PlaySound с указанием стартовой позиции в секундах и без
+void PlaySFX(rrSoundEvent event) { PlaySound(event, 0); }
+void PlaySFX(rrSoundEvent event, int startPos) { PlaySound(event, startPos); }
 
 void StopSound(rrSoundEvent event) { event_map[event]->Stop(); }
 
