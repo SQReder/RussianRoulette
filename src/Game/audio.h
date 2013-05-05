@@ -55,7 +55,11 @@ void init_audio(HWND hwnd);
 
 void SetVolumeAll(float volume);
 
-void PlaySound(rrSoundEvent sound_event);
+void PlaySound(rrSoundEvent sound_event, int startPosInSeconds);
+
+void PlaySFX(rrSoundEvent);
+void PlaySFX(rrSoundEvent, int startPos);
+
 void StopSound(rrSoundEvent sound_event);
 void StopSoundAll();
 #endif

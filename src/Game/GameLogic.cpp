@@ -69,7 +69,7 @@ void showquestion() {
 	F->LabelQuestion->Left = F->imgQuestion->Left + offset;
 	F->LabelQuestion->Visible = true;
     F->tmrWaiting->Enabled = true;
-	PlaySound(rr_question);
+	PlaySFX(rr_question);
     // считать вопрос из файла; для начала заранее с помощью отдельной программы
 }
 
@@ -102,7 +102,7 @@ void GiveHumanChooseOpponent() {
 // -----------------------------------------------------------------------------
 /* 2.2. Затем игрок должен дать ответ (обработка клавиши) */
 void Proverka() {
-    PlaySound(F->answer == F->RandomPlace ? rr_true : rr_false);
+    PlaySFX(F->answer == F->RandomPlace ? rr_true : rr_false);
     F->LabelMoney->Visible = false;
     F->tmrWaiting->Enabled = true;
 }
