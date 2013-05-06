@@ -19,3 +19,6 @@ __history/
 [Rr]elease*/
 *.todo
 *.sublime-workspace
+*.cache
+*.i
+option sets/
