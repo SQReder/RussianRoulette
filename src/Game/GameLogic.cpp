@@ -103,7 +103,6 @@ void GiveHumanChooseOpponent() {
 /* 2.2. Затем игрок должен дать ответ (обработка клавиши) */
 void Proverka() {
     PlaySFX(F->answer == F->RandomPlace ? rr_true : rr_false);
-    F->LabelMoney->Visible = false;
     F->tmrWaiting->Enabled = true;
 }
 

@@ -70,6 +70,8 @@ int TimeToDecide; // время, необходимое боту для прин
 int LeaderPlayerAtFinal;
 // порядковый индекс игрока, прошедшего в финал (необходимо для принятия решений)
 int RoundOfGame; // указывается номер текущего раунда (влияет на механизм)
+int RewardTick;
+static int MechState = 1;
 
 array<bool, COUNT_HATCHES> opened_now;
 // указывает какие люки будут открыты после остановки механизма
@@ -1048,6 +1050,7 @@ void __fastcall TF::FormKeyDown(TObject *, WORD &Key, TShiftState Shift) {
 		}
 
 		Reward = RoundOfGame * 1000;
+		RewardTick = Reward / 50.;
 	}
 }
 // ---------------------------------------------------------------------------
@@ -1109,33 +1112,34 @@ void __fastcall TF::tmrTimeTimer(TObject *) {
 // ---------------------------------------------------------------------------
 void TF::TransferMoney() {
 	if (chooseplayer != 255) {
-		money[chooseplayer - 1] -= (Reward >= 100) ? 100 : Reward;
+		money[chooseplayer - 1] -= (Reward >= RewardTick) ? RewardTick : Reward;
 		lblMoney[chooseplayer - 1]->Caption = IntToStr(money[chooseplayer - 1]);
-		LabelMoney->Caption = IntToStr(money[chooseplayer - 1]);
 	}
 
 	if (Reward > 0) {
-		money[CurrentHatch - 1] += (Reward >= 100) ? 100 : Reward;
+		money[CurrentHatch - 1] += (Reward >= RewardTick) ? RewardTick : Reward;
 		lblMoney[CurrentHatch - 1]->Caption = IntToStr(money[CurrentHatch - 1]);
 		LabelMoney->Caption = IntToStr(money[CurrentHatch - 1]);
 	} else {
 		int dt = money[CurrentHatch - 1] % 100;
+		// for refactoring… later… -->
 		if (dt > 97) {
-			money[chooseplayer - 1] += 100 - dt;
+			if (chooseplayer != 255) { money[chooseplayer - 1] += 100 - dt; }
 			money[CurrentHatch - 1] += 100 - dt;
 		}
 		dt = money[CurrentHatch - 1] % 10;
 		if (dt > 7) {
-			money[chooseplayer - 1] += 10 - dt;
+			if (chooseplayer != 255) { money[chooseplayer - 1] += 10 - dt; }
 			money[CurrentHatch - 1] += 10 - dt;
 		}
+		// <-- {refactoring}
 		tmrMoney->Enabled = false;
 		lblMoney[CurrentHatch - 1]->Caption = IntToStr(money[CurrentHatch - 1]);
 		LabelMoney->Caption = IntToStr(money[CurrentHatch - 1]);
 	}
 
-	if (Reward >= 100) {
-		Reward -= 100;
+	if (Reward >= RewardTick) {
+		Reward -= RewardTick;
 	} else {
 		Reward = 0;
 		if (answer == RandomPlace) {
@@ -1149,6 +1153,11 @@ void TF::TransferMoney() {
 			}
 			ResetForm();
 		}
+	}
+	// если мы не будем убирать область с деньгами, как нас просят делать,
+	// то мы должны показывать текущий счёт ошибившегося игрока
+	if (chooseplayer != 255) {
+		LabelMoney->Caption = IntToStr(money[chooseplayer - 1]);
 	}
 }
 
@@ -1345,6 +1354,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				ModeOfGame = mFinalGiveMoney;
 			} else {
 				PlaySFX(rr_false);
+				PlaySFX(rr_mexclose, 5);
 				lblRightAnswer->Top = imgQuestion->Top + 160;
 				lblRightAnswer->Height = 19;
 				lblRightAnswer->AutoSize = true;
@@ -1604,8 +1614,14 @@ void __fastcall TF::FormClose(TObject *, TCloseAction &) {
 	}
 
 	for (int i = 0; i < COUNT_ANSWER_NUMBERS; ++i) {
-		imgNumber[0]->Enabled = false;
+		imgNumber[i]->Enabled = false;
 	}
+
+    // скрываем варианты ответов и ответ на финальный вопрос
+	for (int i = 0; i < 5; i++) {
+        lblAnswers[i]->Visible = false;
+	}
+	lblRightAnswer->Visible = false;
 
 	RoundOfGame = -1;
 	Wait = 0;
@@ -1629,6 +1645,8 @@ void __fastcall TF::FormClose(TObject *, TCloseAction &) {
 		imgPlayer[i]->Visible = true;
 	}
 	imgLiver->Enabled = true;
+	MechState = 1;
+	MechanizmState = Off;
 
 	tmrLog->Enabled = false;
 	tmrMoney->Enabled = false;
@@ -1845,9 +1863,9 @@ void __fastcall TF::FormResize(TObject *) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrMechamizmTimer(TObject *) {
-	static int MechState = 1;
+	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	if (MechanizmState == Spining) {
-		if (++MechState == 15) {
+		if (++MechState == gfx->LiverFramesCount - 1) {
 			tmrMechamizm->Enabled = false;
 		}
 	} else {
@@ -1855,7 +1873,6 @@ void __fastcall TF::tmrMechamizmTimer(TObject *) {
 			tmrMechamizm->Enabled = false;
 		}
 	}
-	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
 	imgLiver->Picture->Assign(gfx->GetLiverFrame(MechState));
 }
 // ---------------------------------------------------------------------------
@@ -2161,11 +2178,11 @@ void TF::ShowAnswers() {
 		static const array<int, 2> top =  {imgQuestion->Top  + 150, imgQuestion->Top  + 175};
 		SetLabel(lblAnswers[0], top[0], left[0],
 			base->GetAnswer(NumberOfQuestion, variants[0]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[0]));
-		SetLabel(lblAnswers[1], top[0], left[2],
+		SetLabel(lblAnswers[1], top[0], left[1],
 			base->GetAnswer(NumberOfQuestion, variants[1]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[1]));
 		SetLabel(lblAnswers[2], top[1], left[0],
 			base->GetAnswer(NumberOfQuestion, variants[2]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[2]));
-		SetLabel(lblAnswers[3], top[1], left[2],
+		SetLabel(lblAnswers[3], top[1], left[1],
 			base->GetAnswer(NumberOfQuestion, variants[3]).Length() * 12, base->GetAnswer(NumberOfQuestion, variants[3]));
 	}
 	if (RoundOfGame == 4) {

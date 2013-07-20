@@ -5,7 +5,7 @@ object AboutForm: TAboutForm
   BorderStyle = bsToolWindow
   Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
   ClientHeight = 473
-  ClientWidth = 378
+  ClientWidth = 379
   Color = clBlack
   DoubleBuffered = True
   Font.Charset = RUSSIAN_CHARSET
@@ -25,7 +25,7 @@ object AboutForm: TAboutForm
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 372
+    Width = 373
     Height = 41
     Align = alTop
     Alignment = taCenter
@@ -39,12 +39,13 @@ object AboutForm: TAboutForm
     Font.Quality = fqAntialiased
     ParentFont = False
     WordWrap = True
+    ExplicitWidth = 372
   end
   object lblLicence: TLabel
     AlignWithMargins = True
     Left = 3
     Top = 422
-    Width = 372
+    Width = 373
     Height = 16
     Margins.Top = 0
     Margins.Bottom = 0
@@ -65,7 +66,7 @@ object AboutForm: TAboutForm
     AlignWithMargins = True
     Left = 3
     Top = 454
-    Width = 372
+    Width = 373
     Height = 16
     Margins.Top = 0
     Align = alBottom
@@ -84,13 +85,13 @@ object AboutForm: TAboutForm
     AlignWithMargins = True
     Left = 3
     Top = 438
-    Width = 372
+    Width = 373
     Height = 16
     Margins.Top = 0
     Margins.Bottom = 0
     Align = alBottom
     Alignment = taRightJustify
-    Caption = 'Copyright '#169' 2010-2012 QWERule Studios'
+    Caption = 'Copyright '#169' 2010-2013 QWERule Studios'
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clSilver
     Font.Height = -13

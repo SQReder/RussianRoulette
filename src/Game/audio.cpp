@@ -44,7 +44,7 @@ public:
 
 	void PlayWithPos(int seconds) {
 		BASS_ChannelSetPosition(stream, BASS_ChannelSeconds2Bytes(stream, seconds), BASS_POS_BYTE);
-		Play();
+		BASS_ChannelPlay(stream, 0);
 	}
 
 	void Stop() { BASS_ChannelStop(stream); }

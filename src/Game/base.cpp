@@ -166,7 +166,7 @@ const size_t QuestionBase::GetRandomQuestionForRound(int round) {
 		wrongRound = GetRound(rndq) != round;
 		isUsed = (find(used.begin(), used.end(), rndq) != used.end());
 	}
-	while (wrongRound && isUsed);
+	while (wrongRound || isUsed);
 
 	used.push_back(rndq);
 	return rndq;

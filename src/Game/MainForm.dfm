@@ -3712,6 +3712,7 @@ object F: TF
     Font.Height = -32
     Font.Name = 'Dauphin'
     Font.Style = []
+    Font.Quality = fqClearTypeNatural
     ParentFont = False
   end
   object imgTicker: TImage
@@ -4195,6 +4196,7 @@ object F: TF
     Font.Height = -48
     Font.Name = 'Dauphin'
     Font.Style = []
+    Font.Quality = fqClearTypeNatural
     ParentFont = False
     Visible = False
   end
@@ -4756,13 +4758,14 @@ object F: TF
     Font.Height = -16
     Font.Name = 'Arial'
     Font.Style = [fsBold]
+    Font.Quality = fqClearTypeNatural
     ParentColor = False
     ParentFont = False
     WordWrap = True
   end
   object imgContGame: TImage
     Left = 302
-    Top = 637
+    Top = 645
     Width = 288
     Height = 48
     AutoSize = True
@@ -5383,7 +5386,7 @@ object F: TF
   end
   object tmrMechamizm: TTimer
     Enabled = False
-    Interval = 20
+    Interval = 40
     OnTimer = tmrMechamizmTimer
     Left = 72
     Top = 312

@@ -9,7 +9,7 @@ public:
 
 	static const size_t PulseFramesCount = 56;
 	static const size_t TickFramesCount = 21;
-	static const size_t LiverFramesCount = 16;
+	static const size_t LiverFramesCount = 13;
 	static const size_t HatchesCount = 6;
 
 	// one moar for 1..4

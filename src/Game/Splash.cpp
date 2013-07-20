@@ -58,7 +58,7 @@ void CheckSystemIntegrity() {
         CheckFile("data\\" + IntToStr(i) + "sec.png");
     }
 
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 12; i++) {
         CheckFile("data\\рычаг_" + IntToStr(i) + ".png");
     }
 
