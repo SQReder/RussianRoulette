@@ -42,9 +42,10 @@ void TSettings::LoadFromFile(String filename) {
     FormsTop = ini->ReadInteger("Global", "Top", 0);
     SoundEnabled = ini->ReadBool("Global", "Sound", false);
     SoundVolume = ini->ReadInteger("Global", "SoundVolume", 100);
-    SetVolumeAll(SoundVolume/100.);
+	SetVolumeSFX(SoundVolume/100.);
     MusicEnabled = ini->ReadBool("Global", "Music", false);
-    MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
+	MusicVolume = ini->ReadInteger("Global", "MusicVolume", 100);
+	SetVolumeMusic(MusicVolume/100.);
     HostMode = ini->ReadBool("Global", "HostMode", false);
 
     MinWidth = 1024;

@@ -57,44 +57,47 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-map <rrSoundEvent, shared_ptr <Sound> > event_map;
+map <rrSoundEvent, shared_ptr <Sound> > bg_event_map;
+map <rrSoundEvent, shared_ptr <Sound> > snd_event_map;
 
-#define MAP_FILE_TO_EVENT(X) event_map[X] = shared_ptr <Sound> (new Sound(#X))
+#define ADD_BG_FILE_TO_MAP(X) bg_event_map[X] = shared_ptr <Sound> (new Sound(#X))
+#define ADD_SFX_FILE_TO_MAP(X) snd_event_map[X] = shared_ptr <Sound> (new Sound(#X))
 
 void init_audio(HWND hwnd) {
 	if (!BASS_Init(-1, 44100, 0, hwnd, NULL)) {
 		__asm INT 3;
 	}
 
-	MAP_FILE_TO_EVENT(Next_Question);
-	MAP_FILE_TO_EVENT(question_clear);
-	MAP_FILE_TO_EVENT(rr_20sec);
-	MAP_FILE_TO_EVENT(rr_bg1);
-	MAP_FILE_TO_EVENT(rr_bg2);
-	MAP_FILE_TO_EVENT(rr_bg3);
-	MAP_FILE_TO_EVENT(rr_bg4);
-	MAP_FILE_TO_EVENT(rr_bg5);
-	MAP_FILE_TO_EVENT(rr_choosen);
-	MAP_FILE_TO_EVENT(rr_closing);
-	MAP_FILE_TO_EVENT(rr_endround);
-	MAP_FILE_TO_EVENT(rr_fall);
-	MAP_FILE_TO_EVENT(rr_fall_with_host);
-	MAP_FILE_TO_EVENT(rr_false);
-	MAP_FILE_TO_EVENT(rr_final);
-	MAP_FILE_TO_EVENT(rr_intro_Take_2);
-	MAP_FILE_TO_EVENT(rr_intro);
-	MAP_FILE_TO_EVENT(rr_mexclose);
-	MAP_FILE_TO_EVENT(rr_mexopen);
-	MAP_FILE_TO_EVENT(rr_money);
-	MAP_FILE_TO_EVENT(rr_nextq);
-	MAP_FILE_TO_EVENT(rr_notfall);
-	MAP_FILE_TO_EVENT(rr_openhole);
-	MAP_FILE_TO_EVENT(rr_openround);
-	MAP_FILE_TO_EVENT(rr_players);
-	MAP_FILE_TO_EVENT(rr_question);
-	MAP_FILE_TO_EVENT(rr_round);
-	MAP_FILE_TO_EVENT(rr_save);
-	MAP_FILE_TO_EVENT(rr_true);
+	ADD_BG_FILE_TO_MAP(question_clear);
+	ADD_BG_FILE_TO_MAP(rr_bg1);
+	ADD_BG_FILE_TO_MAP(rr_bg2);
+	ADD_BG_FILE_TO_MAP(rr_bg3);
+	ADD_BG_FILE_TO_MAP(rr_bg4);
+	ADD_BG_FILE_TO_MAP(rr_bg5);
+	ADD_BG_FILE_TO_MAP(rr_question);
+	//-------------------------------------
+	ADD_SFX_FILE_TO_MAP(Next_Question);
+	ADD_SFX_FILE_TO_MAP(rr_20sec);
+	ADD_SFX_FILE_TO_MAP(rr_choosen);
+	ADD_SFX_FILE_TO_MAP(rr_closing);
+	ADD_SFX_FILE_TO_MAP(rr_endround);
+	ADD_SFX_FILE_TO_MAP(rr_fall);
+	ADD_SFX_FILE_TO_MAP(rr_fall_with_host);
+	ADD_SFX_FILE_TO_MAP(rr_false);
+	ADD_SFX_FILE_TO_MAP(rr_final);
+	ADD_SFX_FILE_TO_MAP(rr_intro_Take_2);
+	ADD_SFX_FILE_TO_MAP(rr_intro);
+	ADD_SFX_FILE_TO_MAP(rr_mexclose);
+	ADD_SFX_FILE_TO_MAP(rr_mexopen);
+	ADD_SFX_FILE_TO_MAP(rr_money);
+	ADD_SFX_FILE_TO_MAP(rr_nextq);
+	ADD_SFX_FILE_TO_MAP(rr_notfall);
+	ADD_SFX_FILE_TO_MAP(rr_openhole);
+	ADD_SFX_FILE_TO_MAP(rr_openround);
+	ADD_SFX_FILE_TO_MAP(rr_players);
+	ADD_SFX_FILE_TO_MAP(rr_round);
+	ADD_SFX_FILE_TO_MAP(rr_save);
+	ADD_SFX_FILE_TO_MAP(rr_true);
 }
 
 void PlaySound(rrSoundEvent event, int startPosInSeconds) {
@@ -102,8 +105,8 @@ void PlaySound(rrSoundEvent event, int startPosInSeconds) {
 	case Next_Question: break;
 	case question_clear: break;
     case rr_20sec:
-        event_map[rr_choosen]->Stop();
-        event_map[rr_question]->Stop();
+		snd_event_map[rr_choosen]->Stop();
+		bg_event_map[rr_question]->Stop();
         break;
     case rr_bg1: break;
     case rr_bg2: break;
@@ -111,21 +114,21 @@ void PlaySound(rrSoundEvent event, int startPosInSeconds) {
     case rr_bg4: break;
     case rr_bg5: break;
     case rr_choosen:
-        event_map[rr_question]->Stop();
+		bg_event_map[rr_question]->Stop();
         break;
     case rr_closing:
     case rr_endround:
     case rr_mexopen:
         {
-            event_map[rr_bg1]->Stop();
-            event_map[rr_bg2]->Stop();
-            event_map[rr_bg3]->Stop();
-            event_map[rr_bg4]->Stop();
-            event_map[rr_bg5]->Stop();
-        }
+			bg_event_map[rr_bg1]->Stop();
+			bg_event_map[rr_bg2]->Stop();
+			bg_event_map[rr_bg3]->Stop();
+			bg_event_map[rr_bg4]->Stop();
+			bg_event_map[rr_bg5]->Stop();
+		}
         break;
     case rr_fall:
-        event_map[rr_mexclose]->Stop();
+		snd_event_map[rr_mexclose]->Stop();
         break;
     case rr_fall_with_host: break;
     case rr_false: break;
@@ -133,7 +136,7 @@ void PlaySound(rrSoundEvent event, int startPosInSeconds) {
     case rr_intro_Take_2: break;
     case rr_intro: break;
     case rr_mexclose:
-        event_map[rr_mexopen]->Stop();
+		snd_event_map[rr_mexopen]->Stop();
         break;
     case rr_money: break;
     case rr_nextq: break;
@@ -143,50 +146,83 @@ void PlaySound(rrSoundEvent event, int startPosInSeconds) {
     case rr_players: break;
     case rr_question:
         {
-            event_map[rr_bg1]->Stop();
-            event_map[rr_bg2]->Stop();
-            event_map[rr_bg3]->Stop();
-            event_map[rr_bg4]->Stop();
-            event_map[rr_bg5]->Stop();
-            event_map[rr_mexclose]->Stop();
+			bg_event_map[rr_bg1]->Stop();
+			bg_event_map[rr_bg2]->Stop();
+			bg_event_map[rr_bg3]->Stop();
+			bg_event_map[rr_bg4]->Stop();
+			bg_event_map[rr_bg5]->Stop();
+			snd_event_map[rr_mexclose]->Stop();
         }
         break;
     case rr_round: break;
     case rr_save:
-        event_map[rr_mexclose]->Stop();
+		snd_event_map[rr_mexclose]->Stop();
         break;
     case rr_true: break;
-    }
+	}
+
 	if (startPosInSeconds <= 0) {
-		event_map[event]->Play();
+		if (bg_event_map[event] != NULL) { bg_event_map[event]->Play(); }
+		if (snd_event_map[event] != NULL) {	snd_event_map[event]->Play(); }
 	}
 	else {
-       	event_map[event]->PlayWithPos(startPosInSeconds);
+		if (bg_event_map[event] != NULL) {
+			bg_event_map[event]->PlayWithPos(startPosInSeconds);
+		}
+		if (snd_event_map[event] != NULL) {
+			snd_event_map[event]->PlayWithPos(startPosInSeconds);
+        }
     }
 }
 
 // алиасы для вызова PlaySound с указанием стартовой позиции в секундах и без
+// воспроизведение музыки
+void PlayMusic(rrSoundEvent event) { PlaySound(event, 0); }
+void PlayMusic(rrSoundEvent event, int startPos) { PlaySound(event, startPos); }
+// воспроизведение звука
 void PlaySFX(rrSoundEvent event) { PlaySound(event, 0); }
 void PlaySFX(rrSoundEvent event, int startPos) { PlaySound(event, startPos); }
 
-void StopSound(rrSoundEvent event) { event_map[event]->Stop(); }
+// остановка музыки и звуков
+void StopMusic(rrSoundEvent event) { bg_event_map[event]->Stop(); }
+void StopSFX(rrSoundEvent event) { snd_event_map[event]->Stop(); }
 
-void SetVolumeAll(float volume) {
-    if (volume < 0) {
-        volume = 0;
-    } else if (volume > 1) {
-        volume = 1;
-    }
+void SetVolumeMusic(float volume) {
+	if (volume < 0) {
+		volume = 0;
+	} else if (volume > 1) {
+		volume = 1;
+	}
 
-    map <rrSoundEvent, shared_ptr <Sound> > ::iterator it;
-    for (it = event_map.begin(); it != event_map.end(); ++it) {
-        it->second->SetVolume(volume);
-    }
+	map <rrSoundEvent, shared_ptr <Sound> > ::iterator it;
+	for (it = bg_event_map.begin(); it != bg_event_map.end(); ++it) {
+		if (it->second != NULL) { it->second->SetVolume(volume); }
+	}
 }
 
-void StopSoundAll() {
-    map <rrSoundEvent, shared_ptr <Sound> > ::iterator it;
-    for (it = event_map.begin(); it != event_map.end(); ++it) {
-        it->second->Stop();
-    }
+void SetVolumeSFX(float volume) {
+	if (volume < 0) {
+		volume = 0;
+	} else if (volume > 1) {
+		volume = 1;
+	}
+
+	map <rrSoundEvent, shared_ptr <Sound> > ::iterator it;
+	for (it = snd_event_map.begin(); it != snd_event_map.end(); ++it) {
+		if (it->second != NULL) { it->second->SetVolume(volume); }
+	}
+}
+
+void StopAllMusic() {
+	map <rrSoundEvent, shared_ptr <Sound> > ::iterator it;
+	for (it = bg_event_map.begin(); it != bg_event_map.end(); ++it) {
+		if (it->second != NULL) { it->second->Stop(); }
+	}
+}
+
+void StopAllSFX() {
+	map <rrSoundEvent, shared_ptr <Sound> > ::iterator it;
+	for (it = snd_event_map.begin(); it != snd_event_map.end(); ++it) {
+		if (it->second != NULL) { it->second->Stop(); }
+	}
 }

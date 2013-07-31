@@ -147,7 +147,8 @@ void ZeroRoundRotating() // установки для нулевого раун�
     }
     int blah = random(COUNT_HATCHES);
     h_state[blah] = lcWhite;
-    CurrentHatch = blah;
+	CurrentHatch = blah;
+	MechanizmSetHatchesStates(h_state);
 }
 
 // ---------------------------------------------------------------------------
@@ -307,6 +308,9 @@ void LightAllHatchesWith(HatchLightState light) {
 }
 
 // ---------------------------------------------------------------------------
+// функция, регулирующая подсветку
+// exclude - режим, который исключается из выборки и не меняет цвета вообще
+// to - режим подсветки, которым закрашивается все люки, кроме исключённых
 void ChangeHatchesLight(HatchLightState exclude, HatchLightState to) {
 	for (int i = 0; i < COUNT_HATCHES; i++) {
 		if (h_state[i] != exclude) {
@@ -391,7 +395,8 @@ void SwitchesLights() {
         } break;
     default: ;
     }
-    AnimationFrame = ++AnimationFrame % 2;
+	AnimationFrame = ++AnimationFrame % 2;
+	MechanizmSetHatchesStates(h_state);
 }
 
 void OpenHatches() // открытие люков

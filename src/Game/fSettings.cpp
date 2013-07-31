@@ -57,12 +57,13 @@ void __fastcall TSettingsForm::FormShow(TObject *) {
     cmbPlayerType3->ItemIndex = (int)(Settings->PlayerType[3]);
     cmbPlayerType4->ItemIndex = (int)(Settings->PlayerType[4]);
 
-    cbSoundOnOff->Checked = Settings->SoundEnabled;
-    cbMusicOnOff->Checked = Settings->MusicEnabled;
+	cbSoundOnOff->Checked = Settings->SoundEnabled;
+	cbMusicOnOff->Checked = Settings->MusicEnabled;
+
     cbFullscreen->Checked = Settings->Fullscreen;
 
     tbSoundVolume->Position = Settings->SoundVolume;
-    tbMusicVolume->Position = Settings->MusicVolume;
+	tbMusicVolume->Position = Settings->MusicVolume;
 
     // «режим ведущего» отныне и навеки работает ТОЛЬКО при наличии
     // 2-х и более подключенных мониторов к ПК
@@ -114,11 +115,19 @@ void __fastcall TSettingsForm::btnOKClick(TObject *) {
     Settings->PlayerType[3] = (TBotType)cmbPlayerType3->ItemIndex;
     Settings->PlayerType[4] = (TBotType)cmbPlayerType4->ItemIndex;
 
-    Settings->SoundEnabled = cbSoundOnOff->Checked;
+	Settings->SoundEnabled = cbSoundOnOff->Checked;
     Settings->SoundVolume = tbSoundVolume->Position;
-    SetVolumeAll(tbSoundVolume->Position / (float) tbSoundVolume->Max);
-    Settings->MusicEnabled = cbMusicOnOff->Checked;
-    Settings->MusicVolume = tbMusicVolume->Position;
+	if (Settings->SoundEnabled) {
+		SetVolumeSFX(tbSoundVolume->Position / (float) tbSoundVolume->Max);
+	}
+	else { SetVolumeSFX(0); }
+	Settings->MusicEnabled = cbMusicOnOff->Checked;
+	Settings->MusicVolume = tbMusicVolume->Position;
+	if (Settings->MusicEnabled) {
+		SetVolumeMusic(tbMusicVolume->Position / (float) tbMusicVolume->Max);
+	}
+	else { SetVolumeMusic(0); }
+	SetVolumeMusic(tbMusicVolume->Position / (float) tbMusicVolume->Max);
     Settings->Fullscreen = cbFullscreen->Checked;
     Settings->HostMode = cbHostModeOnOff->Checked;
 

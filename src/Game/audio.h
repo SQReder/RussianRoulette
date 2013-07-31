@@ -53,13 +53,19 @@ typedef enum {
 
 void init_audio(HWND hwnd);
 
-void SetVolumeAll(float volume);
+void SetVolumeMusic(float volume);
+void SetVolumeSFX(float volume);
 
 void PlaySound(rrSoundEvent sound_event, int startPosInSeconds);
 
+void PlayMusic(rrSoundEvent);
+void PlayMusic(rrSoundEvent, int startPos);
 void PlaySFX(rrSoundEvent);
 void PlaySFX(rrSoundEvent, int startPos);
 
-void StopSound(rrSoundEvent sound_event);
-void StopSoundAll();
+void StopMusic(rrSoundEvent sound_event);
+void StopSFX(rrSoundEvent sound_event);
+
+void StopAllMusic();
+void StopAllSFX();
 #endif

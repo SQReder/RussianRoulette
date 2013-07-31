@@ -204,6 +204,7 @@ void __fastcall TF::tmrPulseAnimationTimer(TObject *) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TF::btnMechStartClick(TObject *) {
+	AnimationFrame = 0;
 	SpeedOfRotation = (ModeOfGame == mRoundNoQuestions) ? 75 : _StartRotaingSpeed;
 	if (RoundOfGame == -1 || FinalRoundOfGame > 0) {
 		SpeedOfRotation = 35;
@@ -211,6 +212,7 @@ void __fastcall TF::btnMechStartClick(TObject *) {
 	tmrRotator->Interval = SpeedOfRotation;
 	MechanizmState = Spining;
 	const shared_ptr<GfxCache> gfx = GfxCache::Instance();
+	LightAllHatchesWith(lcBase);
 	imgPlace->Picture->Assign(gfx->PlaceRedMechActive.get());
 	tmrRotator->Enabled = true;
 	PlaySFX(rr_mexopen);
@@ -240,12 +242,6 @@ void __fastcall TF::btnMechStopClick(TObject *) {
 		imgPlace->Picture->Assign(gfx->Place.get());
 	}
 
-	if (FinalRoundOfGame > 0) {
-		SwitchOffMech_WhiteLights();
-		CanChoose = 1;
-		OpenRandomHatches(FinalRoundOfGame + 2, ModeOfGame);
-	}
-
 	bool b2 = RoundOfGame >= 1 && ModeOfGame != mRoundNoQuestions;
 	bool b3 = !b2 && ModeOfGame == mRoundNoQuestions;
 	if (b2 || b3) {
@@ -254,7 +250,7 @@ void __fastcall TF::btnMechStopClick(TObject *) {
 	// ------------------
 
 	if (RoundOfGame == 0) {
-		ZeroRoundSpin();
+		ZeroRoundRotating();
 	} else {
 		if (ModeOfGame != mRoundNoQuestions) {
 			OpenRandomHatches(RoundOfGame, ModeOfGame);
@@ -265,6 +261,12 @@ void __fastcall TF::btnMechStopClick(TObject *) {
 			ModeOfGame = mRoundSuddenDeath;
 		}
 		tmrWaiting->Enabled = true;
+	}
+
+	if (FinalRoundOfGame > 0) {
+		SwitchOffMech_WhiteLights();
+		CanChoose = 1;
+		OpenRandomHatches(FinalRoundOfGame + 2, ModeOfGame);
 	}
 
 	imgLiver->Enabled = false;
@@ -286,29 +288,29 @@ void __fastcall TF::btnExitClick(TObject *) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TF::tmrRotatorTimer(TObject *) {
-	if (ModeOfGame == mRoundNoQuestions) {
-		SwitchesLights();
-	} else {
+	if (FinalRoundOfGame == 0) {
+		if (ModeOfGame == mRoundNoQuestions) {
+			SwitchesLights();
+		} else {
 		switch (RoundOfGame) {
-		case -1: ZeroRoundSpin();
-			break;
-		case 0: ShiftHatches();
-			break;
-		case 1: DoRotating(First);
-			break;
-		case 2: DoRotating(Second);
-			break;
-		case 3: DoRotating(Third);
-			break;
-		case 4: DoRotating(Fourth);
-			break;
-		case 5: ZeroRoundSpin();
-			break;
+			case -1: ZeroRoundSpin();
+				break;
+			case 0: ShiftHatches();
+				break;
+			case 1: DoRotating(First);
+				break;
+			case 2: DoRotating(Second);
+				break;
+			case 3: DoRotating(Third);
+				break;
+			case 4: DoRotating(Fourth);
+				break;
+			}
 		}
 	}
-
-	if (FinalRoundOfGame > 0) {
+	else {
 		ZeroRoundSpin();
+
 	}
 
 	if (RoundOfGame < 1) {
@@ -325,7 +327,7 @@ void __fastcall TF::tmrRotatorTimer(TObject *) {
 		{
 			tmrRotator->Enabled = false; // вырубаем таймер
 			if (RoundOfGame == 0) {
-				ChangeHatchesLight(lcBlue, lcWhite);
+				ChangeHatchesLight(lcWhite, lcBlue);
 				if (TempRoundOfGame != 0) {
 					RoundOfGame = TempRoundOfGame;
 				} else {
@@ -540,7 +542,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 	case mRoundAnswerLocked: // проверка ответа
 		if (Wait == 2) {
 			CanAnswer = 0;
-			StopSound(rr_20sec);
+			StopSFX(rr_20sec);
 			if (answer == RandomPlace) {
 				imgQuestion->Picture->Assign(gfx->quest_correct.get());
 				FlashBackground(clLime);
@@ -578,9 +580,9 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 		}
 		if (Wait == 8) {
 			if (answer != RandomPlace) {
-				PlaySFX(rr_bg1);
+				PlayMusic(rr_bg1);
 			} else {
-				PlaySFX((rrSoundEvent)((int)rr_bg1 + (1 + random(4))));
+				PlayMusic((rrSoundEvent)((int)rr_bg1 + (1 + random(4))));
 			}
 			if (!Settings->HostMode) {
 				tmrWaiting->Enabled = true;
@@ -703,7 +705,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 					Wait = 4;
 				}
 				ModeOfGame = mRoundQuestion;
-				PlaySFX((rrSoundEvent)(rr_bg1 + 3 + random(2)));
+				PlayMusic((rrSoundEvent)(rr_bg1 + 3 + random(2)));
 			}
 			break;
 		}
@@ -783,7 +785,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 				imgPlayer[chooseplayer - 1]->Visible = false;
 			}
 			if (Wait == (WaitForFate + 7)) {
-				PlaySFX(rr_bg1);
+				PlayMusic(rr_bg1);
 				if (!Settings->HostMode) {
 					tmrWaiting->Enabled = true;
 					Wait = 0;
@@ -797,7 +799,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 	case mRoundEndOfCurrRound: {
 			if (Wait == 10) {
 				PlaySFX(rr_endround);
-				ChangeHatchesLight(lcBlue, lcBlack);
+				ChangeHatchesLight(lcBlack, lcBlue);
 				Wait = 0;
 				RoundOfGame++ ;
 				if (RoundOfGame != 5) {
@@ -863,7 +865,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 				switchonquestion();
 			}
 			if (Wait == 12) {
-				PlaySFX(rr_bg4);
+				PlayMusic(rr_bg4);
 				if (!Settings->HostMode) {
 					Wait = 0;
 					tmrWaiting->Enabled = true;
@@ -1302,7 +1304,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				LabelMoney->Visible = true;
 			}
 			if (Wait == 8) {
-				PlaySFX(rr_question);
+				PlayMusic(rr_question);
 				TimeOfQuestion = 10;
 				load_final_question();
 				lblTimer->Caption = IntToStr(TimeOfQuestion);
@@ -1328,7 +1330,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 		} break;
 	case mFinalAnswerLocked: { // игрок даёт ответ
 			edFinalAnswer->Visible = false;
-			StopSound(rr_20sec);
+			StopSFX(rr_20sec);
 			if (CheckAnswerAtFinalRound(edFinalAnswer->Text, NumberOfQuestion)) {
 				PlaySFX(rr_true);
 				lblRightAnswer->Top = imgQuestion->Top + 160;
@@ -1372,7 +1374,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				imgChoosenAnswer->Visible = true;
 				imgChAnsLeft->Visible = true;
 				imgChAnsRight->Visible = true;
-				ChangeHatchesLight(lcRed, lcWhite);
+				ChangeHatchesLight(lcWhite, lcRed);
 				ModeOfGame = mFinalMomentOfTruth;
 				WaitForFate = 10 + random(11);
 				imgQuestion->Picture->Assign(gfx->quest_incorrect.get());
@@ -1382,7 +1384,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 		} break;
 	case mFinalGiveMoney: {
 			if (Wait == 8) {
-				PlaySFX(rr_bg3);
+				PlayMusic(rr_bg3);
 				MoneyTransferMode = 0;
 				tmrMoney->Enabled = true;
 			}
@@ -1511,7 +1513,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				} else {
 					LightAllHatchesWith(lcBase);
 					Wait = 10;
-					PlaySFX(rr_bg5);
+					PlayMusic(rr_bg5);
 					ModeOfGame = mFinalStartNewRound;
 				}
 			}
@@ -1524,9 +1526,9 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 	case mFinalPlayerFall:
 	case mFinalEndOfGame: {
 			if (Wait == 30 && ModeOfGame == mFinalPlayerFall) {
-				ChangeHatchesLight(lcRed, lcBlack);
+				ChangeHatchesLight(lcBlack, lcRed);
 			} else if (Wait == 8 && ModeOfGame == mFinalEndOfGame) {
-				ChangeHatchesLight(lcBlue, lcRed);
+				ChangeHatchesLight(lcRed, lcBlue);
 			}
 			imgTotalPrize->Top = imgBorder->Top + 30;
 			LabelMoney->Top = imgTotalPrize->Top + 10;
@@ -1685,6 +1687,8 @@ void __fastcall TF::FormShow(TObject *) {
 	LabelQuestion->Top = imgQuestion->Top + 47;
 	LabelQuestion->Left = imgQuestion->Left + 149;
 
+//	lblTimer->Parent = imgTicker;
+//	lblTimer->BringToFront();
 	lblTimer->Top = imgTicker->Top + 31;
 	lblTimer->Left = imgTicker->Left + 17;
 
@@ -1725,6 +1729,15 @@ void __fastcall TF::FormShow(TObject *) {
 	for (int i = 0; i < COUNT_PLAYERS; i++) {
 		lblPlayer[i]->Caption = TSettings::Instance()->PlayerNames[i];
 	}
+
+	if (TSettings::Instance()->SoundEnabled) {
+		SetVolumeSFX(TSettings::Instance()->SoundVolume / 100.);
+	}
+	else { SetVolumeSFX(0); }
+	if (TSettings::Instance()->MusicEnabled) {
+		SetVolumeMusic(TSettings::Instance()->MusicVolume / 100.);
+	}
+	else { SetVolumeMusic(0); }
 
 #ifdef _DEBUG
 	SetQuestionsMaximum(1, 1, 1, 1);
@@ -1845,8 +1858,6 @@ void __fastcall TF::FormResize(TObject *) {
 	imgLiver->Top = 145;
 	imgLiver->Picture->Assign(gfx->GetLiverFrame(0));
 
-	imgSplash->Left = int((F->ClientWidth - imgSplash->Width) / 2);
-	imgSplash->Top = int((F->ClientHeight - imgSplash->Height) / 2);
 	imgSplash->BringToFront();
 
 	TPoint offset((imgHatch[0]->Width - imgPlayer[0]->Width) / 2,
@@ -1856,9 +1867,17 @@ void __fastcall TF::FormResize(TObject *) {
 		imgPlayer[i]->Left = imgHatch[i + 1]->Left + offset.x;
 	}
 
+	imgSplash->AutoSize = true;
+	imgSplash->AutoSize = false;
+
 	imgSplash->Center = true;
-	imgSplash->Width = (F->Width > F->Height) ? F->Width : F->Height;
-	imgSplash->Height = imgSplash->Width;
+	// коэффициент ресайза картинки splash-скрина раундов без нарушения пропорций
+	float propscalewidth = F->Width / (float)imgSplash->Width;
+	// непосредственный ресайз
+	imgSplash->Width = F->Width;
+	imgSplash->Height = (int)(imgSplash->Height * propscalewidth);
+	imgSplash->Left = int((F->Width - imgSplash->Width) / 2);
+	imgSplash->Top = int((F->Height - imgSplash->Height) / 2);
 }
 
 // ---------------------------------------------------------------------------
@@ -2221,7 +2240,8 @@ void TF::Choosen_Answer_Change_Position(int mode) {
 void __fastcall TF::FormHide(TObject *) {
 	tmrPulseAnimation->Enabled = false;
 	SaveFormPosition(F);
-	StopSoundAll();
+	StopAllSFX();
+	StopAllMusic();
 }
 // ---------------------------------------------------------------------------
 

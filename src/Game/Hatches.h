@@ -43,6 +43,7 @@ void ShiftHatches();
 
 void DoRotating(const RoundEnum round);
 void ZeroRoundSpin();
+void ZeroRoundRotating();
 void OpenRandomHatches(const int OpenHatches, int ModeOfGame);
 void UpdateHatches();
 void choosingplayer();
