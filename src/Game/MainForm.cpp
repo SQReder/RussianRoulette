@@ -576,6 +576,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 				Choosen_Answer_Change_Position(answer);
 				Proverka2();
 				Reward = money[chooseplayer - 1];
+				RewardTick = Reward / 50.;
 				QuestionsLeft-- ;
 			}
 		}
@@ -1293,6 +1294,7 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 				imgTicker->Visible = true;
 				imgPulse->Visible = true;
 				imgTotalPrize->Visible = true;
+				tmrPulseAnimation->Enabled = true;
 				if (FinalRoundOfGame == 1) {
 					LabelMoney->Caption = "50000";
 				}
@@ -1539,6 +1541,9 @@ void __fastcall TF::tmrWaitingFinalTimer(TObject *) {
 			imgBorder->Visible = true;
 			PlaySFX(rr_closing);
 			tmrWaitingFinal->Enabled = false;
+			tmrWaiting->Enabled = false;
+			ModeOfGame = ModesOfGame::mRoundStartNewRound;
+			Wait = 0;
 		} break;
 	}
 }
@@ -1813,8 +1818,8 @@ void __fastcall TF::FormResize(TObject *) {
 	imgTicker->Left = imgQuestion->Left + 30;
 
 	LabelQuestion->Top = imgQuestion->Top + 47;
-	static int labelQuestionOffcet = (F->imgQuestion->Width - F->LabelQuestion->Width) / 2;
-	F->LabelQuestion->Left = F->imgQuestion->Left + labelQuestionOffcet;
+	int labelQuestionOffcet = (imgQuestion->Width - LabelQuestion->Width) / 2;
+	LabelQuestion->Left = imgQuestion->Left + labelQuestionOffcet;
 
 	lblTimer->Top = imgTicker->Top + 31;
 	lblTimer->Left = imgTicker->Left + 17;

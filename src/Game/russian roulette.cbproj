@@ -3,7 +3,7 @@
 			<ProjectGuid>{F4C714DE-4D39-48F1-AEA0-EE53EB016C79}</ProjectGuid>
 			<ProjectVersion>13.4</ProjectVersion>
 			<MainSource>russian roulette.cpp</MainSource>
-			<Config Condition="'$(Config)'==''">Debug</Config>
+			<Config Condition="'$(Config)'==''">Release</Config>
 			<Base>True</Base>
 			<AppType>Application</AppType>
 			<FrameworkType>None</FrameworkType>
