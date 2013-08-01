@@ -125,7 +125,7 @@ void __fastcall TF::LoadGraphic() {
 
 // ---------------------------------------------------------------------------
 void TF::SetLabel(shared_ptr<TLabel> typedLabel, int top, int left, int width,
-				  String caption, int height) {
+				  String caption, int height, bool visible) {
 	typedLabel->Top = top;
 	typedLabel->Left = left;
 	typedLabel->Width = width;
@@ -134,7 +134,7 @@ void TF::SetLabel(shared_ptr<TLabel> typedLabel, int top, int left, int width,
 	typedLabel->Caption = caption;
 	typedLabel->Transparent = true;
 
-	typedLabel->Visible = true;
+	typedLabel->Visible = visible;
 }
 
 // ---------------------------------------------------------------------------
@@ -412,6 +412,7 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 			Wait = 2;
 			if (TransferAll == 1) {
 				Reward = 1000;
+				PlaySFX(rr_players);
 				tmrMoney->Enabled = true;
 				MoneyTransferMode = 'a';
 			} else {
@@ -561,6 +562,8 @@ void __fastcall TF::tmrWaitingTimer(TObject *) {
 				CurrentHatch = chooseplayer;
 				chooseplayer = 255;
 				QuestionsLeft-- ;
+				Reward = RoundOfGame * 1000;
+				RewardTick = Reward / 50.;
 			} else {
 				imgQuestion->Picture->Assign(gfx->quest_incorrect.get());
 				FlashBackground(clRed);
@@ -1052,9 +1055,6 @@ void __fastcall TF::FormKeyDown(TObject *, WORD &Key, TShiftState Shift) {
 			ModeOfGame = mRoundAnswerLocked;
 			tmrTime->Enabled = false;
 		}
-
-		Reward = RoundOfGame * 1000;
-		RewardTick = Reward / 50.;
 	}
 }
 // ---------------------------------------------------------------------------
@@ -1793,7 +1793,8 @@ void __fastcall TF::FormResize(TObject *) {
 
 	imgTotalPrize->Top = imgQuestion->Top - 28;
 	imgTotalPrize->Left = imgQuestion->Left + 163;
-	if (FinalRoundOfGame >= 1 && (ModeOfFinalGame == 7 || ModeOfFinalGame == 8)) {
+	if (FinalRoundOfGame >= 1 && (ModeOfFinalGame == ModesOfGame::mFinalPlayerFall
+		|| ModesOfGame::mFinalEndOfGame)) {
 		imgTotalPrize->Top = imgBorder->Top + 30;
 	}
 
@@ -1848,8 +1849,8 @@ void __fastcall TF::FormResize(TObject *) {
 	// Создаем лейблочки для имен игроков и денег
 	int offcet = 0;
 	for (int i = 0; i < COUNT_PLAYERS; ++i) {
-		SetLabel(lblPlayer[i], 15 + offcet, imgPlayers->Left + 67, 201, TSettings::Instance()->PlayerNames[i]);
-		SetLabel(lblMoney[i], 43 + offcet, imgPlayers->Left + 80, 176, money[i], 25);
+		SetLabel(lblPlayer[i], 15 + offcet, imgPlayers->Left + 67, 201, TSettings::Instance()->PlayerNames[i], 20, isPlayerInGame[i]);
+		SetLabel(lblMoney[i], 43 + offcet, imgPlayers->Left + 80, 176, money[i], 25, isPlayerInGame[i]);
 		offcet += 83;
 	}
 

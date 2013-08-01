@@ -119,7 +119,7 @@ __published: // IDE-managed Components
 	void __fastcall imgTakeAMoneyClick(TObject *Sender);
 
 private: // User declarations
-	void SetLabel(shared_ptr<TLabel>, int, int, int, String, int = 20);
+	void SetLabel(shared_ptr<TLabel>, int, int, int, String, int = 20, bool = true);
 
 public: // User declarations
 	__fastcall TF(TComponent *Owner);

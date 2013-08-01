@@ -5,6 +5,7 @@ object MenuForm: TMenuForm
   ClientHeight = 445
   ClientWidth = 741
   Color = clBlack
+  TransparentColorValue = clMaroon
   DoubleBuffered = True
   Font.Charset = RUSSIAN_CHARSET
   Font.Color = clWhite

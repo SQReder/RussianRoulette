@@ -55,6 +55,7 @@ void __fastcall TMenuForm::btnBblNTuHaxepClick(TObject *) {
 	memoRules->Visible = false;
 	imgRulesBgUp->Visible = false;
 	imgRulesBgDown->Visible = false;
+	this->GlassFrame->SheetOfGlass = true;
 	TCloseAction ca = caFree;
     FormClose(NULL, ca);
 }
@@ -64,6 +65,7 @@ void __fastcall TMenuForm::btnNewGameClick(TObject *) {
 	memoRules->Visible = false;
 	imgRulesBgUp->Visible = false;
 	imgRulesBgDown->Visible = false;
+	this->GlassFrame->SheetOfGlass = true;
 	const shared_ptr<QuestionBase> base = QuestionBase::Instance();
 	base->LoadFromFile(TSettings::Instance()->LastBase);
 
@@ -79,6 +81,7 @@ void __fastcall TMenuForm::btnShowSettingsClick(TObject *) {
 	memoRules->Visible = false;
 	imgRulesBgUp->Visible = false;
 	imgRulesBgDown->Visible = false;
+	this->GlassFrame->SheetOfGlass = true;
 	SettingsForm->ShowModal();
 
     LoadFormPosition(MenuForm);
@@ -89,6 +92,7 @@ void __fastcall TMenuForm::btnAboutClick(TObject *) {
 	memoRules->Visible = false;
 	imgRulesBgUp->Visible = false;
 	imgRulesBgDown->Visible = false;
+	this->GlassFrame->SheetOfGlass = true;
 	AboutForm->ShowModal();
 }
 // ---------------------------------------------------------------------------
@@ -103,7 +107,7 @@ void __fastcall TMenuForm::FormResize(TObject *) {
     CoolPositionFix(MenuForm);
     const spacer = 0;
 
-    btnNewGame->Top = spacer;
+	btnNewGame->Top = spacer;
 	btnNewGame->Left = MenuForm->ClientWidth - btnNewGame->ClientWidth - spacer;
 	btnNewGame->Transparent = true;
 
@@ -185,6 +189,7 @@ void __fastcall TMenuForm::btnGameRulesClick(TObject *Sender)
 	imgRulesBgDown->Top = 150 + memoRules->Height;
 	imgRulesBgDown->Left = memoRules->Left;
 	imgRulesBgDown->Width = memoRules->Width;
+	this->GlassFrame->SheetOfGlass = false;
 	LoadRulesText();
 	memoRules->Visible = true;
 	imgRulesBgUp->Visible = true;
