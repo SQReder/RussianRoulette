@@ -59,7 +59,7 @@ object AboutForm: TAboutForm
     Font.Style = [fsItalic]
     ParentFont = False
     OnClick = lblLicenceClick
-    ExplicitLeft = 37
+    ExplicitLeft = 38
     ExplicitWidth = 338
   end
   object Label22: TLabel
@@ -78,7 +78,7 @@ object AboutForm: TAboutForm
     Font.Name = 'Verdana'
     Font.Style = []
     ParentFont = False
-    ExplicitLeft = 196
+    ExplicitLeft = 197
     ExplicitWidth = 179
   end
   object Label1: TLabel
@@ -98,7 +98,7 @@ object AboutForm: TAboutForm
     Font.Name = 'Verdana'
     Font.Style = []
     ParentFont = False
-    ExplicitLeft = 101
+    ExplicitLeft = 102
     ExplicitWidth = 274
   end
 end

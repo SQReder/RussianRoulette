@@ -132,6 +132,7 @@ void TF::SetLabel(shared_ptr<TLabel> typedLabel, int top, int left, int width,
 	typedLabel->Height = height;
 
 	typedLabel->Caption = caption;
+	typedLabel->Transparent = true;
 
 	typedLabel->Visible = true;
 }
@@ -1676,6 +1677,15 @@ void ResetPlayers() {
 void __fastcall TF::FormShow(TObject *) {
 	ResetPlayers();
 
+	if (TSettings::Instance()->SoundEnabled) {
+		SetVolumeSFX(TSettings::Instance()->SoundVolume / 100.);
+	}
+	else { SetVolumeSFX(0); }
+	if (TSettings::Instance()->MusicEnabled) {
+		SetVolumeMusic(TSettings::Instance()->MusicVolume / 100.);
+	}
+	else { SetVolumeMusic(0); }
+
 	tmrPulseAnimation->Enabled = true;
 
 	imgBorder->Left = (ClientWidth - imgBorder->Width) / 2;
@@ -1686,20 +1696,22 @@ void __fastcall TF::FormShow(TObject *) {
 
 	LabelQuestion->Top = imgQuestion->Top + 47;
 	LabelQuestion->Left = imgQuestion->Left + 149;
+	LabelQuestion->Transparent = true;
 
-//	lblTimer->Parent = imgTicker;
-//	lblTimer->BringToFront();
 	lblTimer->Top = imgTicker->Top + 31;
 	lblTimer->Left = imgTicker->Left + 17;
+	lblTimer->Transparent = true;
 
 	imgTimer->Top = imgTicker->Top + 13;
 	imgTimer->Left = imgTicker->Left + 21;
 
 	imgTotalPrize->Top = imgQuestion->Top - 28;
 	imgTotalPrize->Left = imgQuestion->Left + 163;
+	imgTotalPrize->Transparent = true;
 
 	LabelMoney->Top = imgTotalPrize->Top + 10;
 	LabelMoney->Left = imgTotalPrize->Left + 9;
+	LabelMoney->Transparent = true;
 
 	imgPulseBar->Top = imgQuestion->Top - 58;
 	imgPulseBar->Left = imgQuestion->Left + 704;
@@ -1728,16 +1740,8 @@ void __fastcall TF::FormShow(TObject *) {
 
 	for (int i = 0; i < COUNT_PLAYERS; i++) {
 		lblPlayer[i]->Caption = TSettings::Instance()->PlayerNames[i];
+		lblPlayer[i]->Transparent = true;
 	}
-
-	if (TSettings::Instance()->SoundEnabled) {
-		SetVolumeSFX(TSettings::Instance()->SoundVolume / 100.);
-	}
-	else { SetVolumeSFX(0); }
-	if (TSettings::Instance()->MusicEnabled) {
-		SetVolumeMusic(TSettings::Instance()->MusicVolume / 100.);
-	}
-	else { SetVolumeMusic(0); }
 
 #ifdef _DEBUG
 	SetQuestionsMaximum(1, 1, 1, 1);

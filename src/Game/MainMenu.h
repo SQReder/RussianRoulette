@@ -8,6 +8,7 @@
 #include <StdCtrls.hpp>
 #include <Forms.hpp>
 #include <ExtCtrls.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
 
 // ---------------------------------------------------------------------------
 class TMenuForm : public TForm {
@@ -19,6 +20,9 @@ __published: // IDE-managed Components
     TLabel *btnAbout;
     TLabel *btnBblNTuHaxep;
     TImage *Background;
+	TMemo *memoRules;
+	TImage *imgRulesBgUp;
+	TImage *imgRulesBgDown;
 
     void __fastcall FormCreate(TObject *Sender);
     void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
@@ -29,9 +33,11 @@ __published: // IDE-managed Components
     void __fastcall FormResize(TObject *Sender);
     void __fastcall FormShow(TObject *Sender);
     void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall btnGameRulesClick(TObject *Sender);
 
 public: // User declarations
-    __fastcall TMenuForm(TComponent *Owner);
+	__fastcall TMenuForm(TComponent *Owner);
+	void LoadRulesText();
 };
 
 // ---------------------------------------------------------------------------

@@ -62,7 +62,7 @@ const char *licence =
     "мой; если нет,смотрите\n" "                            http://www.gnu.org/licenses/";
 
 // People who works with project
-String sversion = "1.2 BETA";
+String sversion = "1.3 (BETA 2)";
 
 #define dev_count 2
 const char *sdevelopers[dev_count] = {
@@ -74,7 +74,7 @@ String scomposer = "Сергей Чекрыжов";
 
 #define tnx_count 6
 const char *sthank_list[tnx_count] = {
-    "Денису Колобаеву",
+	"Владимиру Крупину",
     "Павлу Кашлакову",
     "Ирине Матысик",
     "Марку-Юлиусу Пикату",
@@ -89,7 +89,7 @@ const char *squestions_by[qautors_count] = {
     "Владимир Крупин",
     "Артур Асаёнок",
     "Артём Горячев",
-    "Денис Долгоруков"
+	"Денис Долгоруков"
 };
 // end people list
 
